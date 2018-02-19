@@ -347,8 +347,13 @@ class Statblock(object):
                 challenge = curr_line.strip().split()[0]
                 values['challenge'] = ChallengeRating(challenge)
 
+            if not lines:
+                return values
+
             while lines[0].strip('>').strip().startswith('_'):
                 lines.pop(0)
+                if not lines:
+                    return values
 
             values['abilities'], lines = parse_actions(lines)
             while lines:

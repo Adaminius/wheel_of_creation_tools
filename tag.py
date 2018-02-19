@@ -95,66 +95,157 @@ class Tag(object):
         for effect in effects:
             values = new_block.to_dict()
 
-            # Number-like tag operations
-            if re.search(r'\b(increase|decrease)\b\s*\b(.*)\s*by\s*(.*)', effect):
-                inc_or_dec, key, operands = re.search(r'\b(increase|decrease)\b\s*\b(.*)\s*by\s*(.*)', effect).groups()
-                inc_or_dec = -1 if inc_or_dec == 'decrease' else 1
+            # ----  Number-like tag operations  ---- #
+            inc_dec_search = re.search(r'\b(increase|decrease)\b\s*\b(.*)\s*by\s*(.*)', effect)
+            if inc_dec_search:
+                new_block = self.inc_or_dec(values, inc_dec_search)
+                continue
 
-                key = self.normalize_key(key, values)
-                operands = self.process_operands(operands.split(), values)
+            set_search = re.search(r'\b(set)\b\s*\b(.*)\s*to\s*(.*)', effect)
+            if set_search:
+                new_block = self.set(values, set_search)
+                continue
 
-                if key in values.keys():
-                    values[key] += inc_or_dec * operands
-                # elif key in values.get('ability_scores', {}).keys():
-                #     values['ability_scores'][key].value += inc_or_dec * operands
-                elif key[:3].upper() in values.get('ability_scores', {}).keys():
-                    values['ability_scores'][key[:3].upper()].value += inc_or_dec * operands
-                elif key in values.get('skills', {}).keys():
-                    values['skills'][key] += inc_or_dec * operands
-                elif key in values.get('saving_throws', {}).keys():
-                    values['skills'][key] += inc_or_dec * operands
-                else:
-                    raise KeyError('Unrecognized key "{}" for operation "increase/decrease".'.format(key))
+            reset_search = re.search(r'\b(reset)\b\s*\b(.*)', effect)
+            if reset_search:
+                new_block = self.reset(values, reset_search)
+                continue
 
-                new_block = Statblock(**values)
+            # ----  List-like tag operations    ---- #
+            # Damage vulnerability, resistance, immunity
+            # |clear damage resistances|remove all damage resistances|
+            # |add resistance to foo, bar damage|adds "foo" and "bar" to damage resistances, and removes them from vulnerabilities|
+            # |add immunity to foo, bar damage|adds "foo" and "bar" to damage immunities, removes them from resist/vuln|
+            # |add vulnerability to foo, bar damage|adds "foo" and "bar" to damage vulnerabilities, removes from resist/immune|
+            # |remove vulnerability to foo, bar damage||
+            # |add resistance to bludgeoning, piercing, and slashing damage from...|special case for resist/immune/vulnerable|
+            # |add immunity to foo, bar|adds "foo" and "bar" to condition immunities|
 
-            if re.search(r'\b(set)\b\s*\b(.*)\s*to\s*(.*)', effect):
-                _, key, operands = re.search(r'\b(set)\b\s*\b(.*)\s*to\s*(.*)', effect).groups()
-                key = self.normalize_key(key, values)
-                operands = self.process_operands(operands.split(), values)
-
-                if key in values.keys():
-                    values[key] = operands
-                # elif key in values.get('ability_scores', {}).keys():
-                #     values['ability_scores'][key].value = operands
-                elif key[:3].upper() in values.get('ability_scores', {}).keys():
-                    values['ability_scores'][key[:3].upper()].value = operands
-                elif key in values.get('skills', {}).keys():
-                    values['skills'][key] = operands
-                elif key in values.get('saving_throws', {}).keys():
-                    values['skills'][key] = operands
-                else:
-                    raise KeyError('Unrecognized key "{}" for operation "set".'.format(key))
-
-                new_block = Statblock(**values)
-
-            if re.search(r'\b(reset)\b\s*\b(.*)', effect):
-                _, key = re.search(r'\b(reset)\b\s*\b(.*)', effect).groups()
-                key = self.normalize_key(key, values)
-
-                if key == 'hit_points':
-                    new_block = Statblock(**values)
-                    new_block.calc_hit_points()
-
-                else:
-                    raise KeyError('Unrecognized key "{}" for operation "reset".'.format(key))
-
-            # List-like tag operations
+            add_vuln_search = re.search(r'\badd\s+(resistance|immunity|vulnerability)\s+to\s+(.*)\s+damage', effect)
+            if add_vuln_search:
+                new_block = self.add_vuln_res_immun(values, add_vuln_search)
+                continue
 
             # Other tag operations
 
         new_block.calc_challenge()
         return new_block
+
+    def inc_or_dec(self, values: dict, search_result) -> Statblock:
+        inc_or_dec, key, operands = search_result.groups()
+
+        inc_or_dec = -1 if inc_or_dec == 'decrease' else 1
+
+        key = self.normalize_key(key, values)
+        operands = self.process_operands(operands.split(), values)
+
+        if key in values.keys():
+            values[key] += inc_or_dec * operands
+        elif key[:3].upper() in values.get('ability_scores', {}).keys():
+            values['ability_scores'][key[:3].upper()].value += inc_or_dec * operands
+        elif key in values.get('skills', {}).keys():
+            values['skills'][key] += inc_or_dec * operands
+        elif key in values.get('saving_throws', {}).keys():
+            values['skills'][key] += inc_or_dec * operands
+        else:
+            raise KeyError('Unrecognized key "{}" for operation "increase/decrease".'.format(key))
+
+        return Statblock(**values)
+
+    def set(self, values: dict, search) -> Statblock:
+        _, key, operands = search.groups()
+        key = self.normalize_key(key, values)
+        operands = self.process_operands(operands.split(), values)
+
+        if key in values.keys():
+            values[key] = operands
+        elif key[:3].upper() in values.get('ability_scores', {}).keys():
+            values['ability_scores'][key[:3].upper()].value = operands
+        elif key in values.get('skills', {}).keys():
+            values['skills'][key] = operands
+        elif key in values.get('saving_throws', {}).keys():
+            values['skills'][key] = operands
+        else:
+            raise KeyError('Unrecognized key "{}" for operation "set".'.format(key))
+
+        return Statblock(**values)
+
+    def reset(self, values: dict, search) -> Statblock:
+        _, key = search.groups()
+        key = self.normalize_key(key, values)
+
+        if key == 'hit_points':
+            new_block = Statblock(**values)
+            new_block.calc_hit_points()
+            return new_block
+
+        raise KeyError('Unrecognized key "{}" for operation "reset".'.format(key))
+
+    # Damage vulnerability, resistance, immunity
+    # |clear damage resistances|remove all damage resistances|
+    # |add resistance to foo, bar damage|adds "foo" and "bar" to damage resistances, and removes them from vulnerabilities|
+    # |add immunity to foo, bar damage|adds "foo" and "bar" to damage immunities, removes them from resist/vuln|
+    # |add vulnerability to foo, bar damage|adds "foo" and "bar" to damage vulnerabilities, removes from resist/immune|
+    # |remove vulnerability to foo, bar damage||
+    # |add resistance to bludgeoning, piercing, and slashing damage from...|special case for resist/immune/vulnerable|
+    # |add immunity to foo, bar|adds "foo" and "bar" to condition immunities|
+
+    # add_vul_search = re.search(r'\badd\s+(resistance|immunity|vulnerability)\s+to\s+(.*)\s+damage', effect)
+
+    def add_vuln_res_immun(self, values: dict, search) -> Statblock:
+        field, keys = search.groups()
+
+        if 'bludgeoning, piercing, and slashing da' in keys:
+            bps = 'bludgeoning, piercing, and slashing da' + keys.split('bludgeoning, piercing, and slashing da')[-1]
+            keys = keys.split('bludgeoning, piercing, and slashing da')[0].split(',') + [bps]
+        else:
+            keys = keys.split(',')
+
+        keys = [key.strip() for key in keys if key.strip()]
+
+        vuln_set = set(values.get('damage_vulnerabilities', []))
+        res_set = set(values.get('damage_resistances', []))
+        immun_set = set(values.get('damage_immunities', []))
+
+        if field == 'vulnerability':
+            for key in keys:
+                vuln_set.add(key)
+                if key in res_set:
+                    res_set.remove(key)
+                if key in immun_set:
+                    immun_set.remove(key)
+            values['damage_vulnerabilities'] = list(vuln_set)
+            values['damage_resistances'] = list(res_set)
+            values['damage_immunities'] = list(immun_set)
+
+        elif field == 'resistance':
+            for key in keys:
+                if key in immun_set:
+                    pass
+                elif key in vuln_set:
+                    vuln_set.remove(key)
+                    res_set.add(key)
+                else:
+                    res_set.add(key)
+            values['damage_vulnerabilities'] = list(vuln_set)
+            values['damage_resistances'] = list(res_set)
+            values['damage_immunities'] = list(immun_set)
+
+        else:
+            for key in keys:
+                immun_set.add(key)
+                if key in vuln_set:
+                    vuln_set.remove(key)
+                if key in res_set:
+                    res_set.remove(key)
+            values['damage_vulnerabilities'] = list(vuln_set)
+            values['damage_resistances'] = list(res_set)
+            values['damage_immunities'] = list(immun_set)
+
+        print(values['damage_resistances'])
+        print('foo')
+
+        return Statblock(**values)
 
 
 def read_tag_table(text: str) -> list:

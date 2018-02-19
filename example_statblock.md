@@ -1,6 +1,6 @@
 ___
 ___
-> ## Mike Koebel
+> ## Kevin Gygax
 > *Medium Humanoid, unaligned*
 > ___
 > - **Armor Class** 10
