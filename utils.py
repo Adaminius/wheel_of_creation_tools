@@ -3,9 +3,21 @@ import json
 import pandas as pd
 import re
 import io
+import math
 from collections import OrderedDict
 
 # defaults = json.load('defaults.json')
+
+size_val_to_name = {0:  'Tiny',
+                    1:  'Small',
+                    2:  'Medium',
+                    3:  'Large',
+                    4:  'Huge',
+                    5:  'Gargantuan',
+                    }
+size_name_to_val = dict([(val, key) for key, val in size_val_to_name.items()])
+size_min = 0
+size_max = 5
 
 
 class RollableTable(object):
@@ -47,8 +59,8 @@ class Dice(object):
         return cls(count=int(s[0]), size=int(s[1]))
 
     def upper_average(self):
-        """This should be the 'average' given in WotC manuals."""
-        return int(self.size / 2) + 1
+        """This should be the average given in WotC manuals"""
+        return math.ceil((self.size * self.count + self.count) / 2)
 
     def roll(self):
         return sum([random.randint(1, self.size) for _ in range(self.count)])
@@ -101,15 +113,48 @@ class Action(object):
     def __init__(self, name, description_template, is_legendary=False, **kwargs):
         self.name = name
         self.description_template = description_template
-        self.description = {}
+        self.description = ''
         self.is_legendary = is_legendary
         self.update_description(**kwargs)
 
-    def update_description(self, **kwargs):
+    def update_description(self, values: dict):
+        description = self.description_template
+
         try:
-            self.description = self.description_template.format(**kwargs)
+            operand_groups = re.findall(r'{[^{}]}', self.description_template)
+            op_strings = []
+            for operands in operand_groups:
+                operands = [op.strip() for op in operands if op.strip()]
+                total = process_operands(operands, values)
+                op_string = str(total)
+
+                # stuff with rolls involved is displayed as e.g. "19 (3d8 + 6)"
+                dice_ops = []
+                for op in operands:
+                    if re.search(r'\d*d\d+', op):
+                        dice_ops = op
+
+                if dice_ops:
+                    op_string += ' (' + ' + '.join(dice_ops)
+                    for dice_op in dice_ops:
+                        operands.pop(operands.index(dice_op))
+
+                    non_dice_total = process_operands(operands, values)
+                    if non_dice_total != 0:
+                        if non_dice_total > 0:
+                            op_string += ' + {})'.format(non_dice_total)
+                        else:
+                            op_string += ' - {})'.format(non_dice_total)
+                    else:
+                        op_string += ')'
+
+                op_strings.append(op_string)
+
+            while '{' in description:
+                description = re.sub(r'{([^{}])}', op_strings.pop(0), description, count=1)
+
         except KeyError as e:
-            print('Missing values for updating action description template:')
+            print('Missing values for updating action description template.')
             print(e)
 
     def __str__(self):
@@ -144,3 +189,62 @@ def format_modifier(modifier: int) -> str:
     if modifier >= 0:
         return '+' + str(modifier)
     return str(modifier)
+
+
+def process_operands(operands: list, values: dict):
+    total = 0
+    next_mul = 1
+    for operand in operands:
+        operand = operand.replace('ft.', '').strip()
+
+        if operand == '':
+            continue
+
+        if operand == '+':
+            next_mul = 1
+            continue
+
+        if operand == '-':
+            next_mul = -1
+            continue
+
+        try:
+            total += int(operand)
+            continue
+        except ValueError:
+            pass
+
+        if re.search(r'\d*d\d+', operand):
+            total += Dice.from_string(operand).roll() * next_mul
+            next_mul = 1
+            continue
+
+        if operand in values.keys():
+            try:
+                total += values[operand]
+                continue
+            except Exception as e:
+                print(e)
+                print(operands)
+                raise e
+
+        if 'ability_scores' in values.keys():
+            if operand in values['ability_scores'].keys():
+                total += values['ability_scores'][operand].modifier * next_mul
+                next_mul = 1
+                continue
+            if operand[:3].upper() in values['ability_scores'].keys():
+                total += values['ability_scores'][operand].value * next_mul
+                next_mul = 1
+                continue
+
+        if 'skills' in values.keys():
+            if operand in values['skills'].keys():
+                total += values['skills'][operand] * next_mul
+                next_mul = 1
+                continue
+
+        raise RuntimeError('Couldn\'t parse operand {} of operands {}'.format(operand, operands))
+
+    return total
+

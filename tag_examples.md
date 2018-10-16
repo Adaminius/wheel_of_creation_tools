@@ -1,7 +1,7 @@
 |effect example|description|
 |-|-|
-|increase size by n|increases creature's size by n steps, e.g. from "small" to "medium"|
-|decrease size by n|increases creature's size by n steps, e.g. from "small" to "medium"|
+|increase size by n|increases creature's size by n steps, e.g. from "small" to "medium" for n=1|
+|decrease size by n|decrease creature's size by n steps, e.g. from "medium" to "small" for n=1|
 |set size to foo|sets creature's size to "foo"|
 |set type to foo|sets creature's primary type to "foo"|
 |set type to foo (bar)|sets creature's primary type to "foo" and secondary type to "bar"|
@@ -29,16 +29,19 @@
 |add immunity to foo, bar damage|adds "foo" and "bar" to damage immunities, removes them from resist/vuln|
 |add vulnerability to foo, bar damage|adds "foo" and "bar" to damage vulnerabilities, removes from resist/immune|
 |remove vulnerability to foo, bar damage||
-|add resistance to bludgeoning, piercing, and slashing damage from...|special case for resist/immune/vulnerable|
+|add resistance to bludgeoning, piercing, and slashing damage from weapons not made from X|special case for resist/immune/vulnerable|
+|add resistance to bludgeoning, piercing, and slashing damage from non-magical weapons|special case for resist/immune/vulnerable|
 |add immunity to foo, bar|adds "foo" and "bar" to condition immunities|
 |set STAT saving throw to n + STAT||
 |set foo skill to n + STAT||
 |increase darkvision by n||
 |add language foo||
 |increase telepathy by n||
-|add ability Foo: can foo bars|adds this ability to the section before the Action section|
-|add action Foo: foos the bar with 2d6 + STR + proficiency||
-|add bonus action Foo: foos the bar||
+|add ability Foo: can foo bars |adds this ability to the section before the Action section|
+|add action Foo: foos the bar with {2d6 + STR + proficiency}||
+|add bonus action Foo: foos the bar on a DC {Charisma + 8 + proficiency} Charisma saving throw||
 |add reaction Foo: foos the bar||
 |add legendary action Foo: foos the bar||
 |increase legendary actions by n|increase the number of legendary actions creature can take by n|
+|clear abilities|remove all abilities|
+|clear actions|remove all actions; useful for e.g. a tag which wants to overwrite piercing damage attacks with fire damage attacks|

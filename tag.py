@@ -1,5 +1,7 @@
 import re
 from statblock import Statblock
+from utils import Action
+from utils import process_operands
 from utils import Dice
 
 
@@ -19,7 +21,7 @@ class Tag(object):
 
     @staticmethod
     def normalize_key(key: str, values: dict) -> str:
-        original_key = key
+        # original_key = key
         key = key.strip().lower().replace(' ', '_')
 
         if key == 'hp':
@@ -28,64 +30,13 @@ class Tag(object):
             return 'armor_class'
         if key == 'ac_type':
             return 'armor_class_type'
+        if key == 'legendary_actions':
+            return 'num_legendary'
 
-        if key in values.keys():
-            return key
+        # if key in values.keys():
+        return key
 
-        return original_key.strip()
-
-    @staticmethod
-    def process_operands(operands: list, values: dict):
-        total = 0
-        next_mul = 1
-        for operand in operands:
-            operand = operand.replace('ft.', '').strip()
-
-            if operand == '':
-                continue
-
-            if operand == '+':
-                next_mul = 1
-                continue
-
-            if operand == '-':
-                next_mul = -1
-                continue
-
-            try:
-                total += int(operand)
-                continue
-            except ValueError:
-                pass
-
-            if re.search(r'\d*d\d+', operand):
-                total += Dice.from_string(operand).roll() * next_mul
-                next_mul = 1
-                continue
-
-            if operand in values.keys():
-                total += values[operand]
-                continue
-
-            if 'ability_scores' in values.keys():
-                if operand in values['ability_scores'].keys():
-                    total += values['ability_scores'][operand].modifier * next_mul
-                    next_mul = 1
-                    continue
-                if operand[:3].upper() in values['ability_scores'].keys():
-                    total += values['ability_scores'][operand].value * next_mul
-                    next_mul = 1
-                    continue
-
-            if 'skills' in values.keys():
-                if operand in values['skills'].keys():
-                    total += values['skills'][operand] * next_mul
-                    next_mul = 1
-                    continue
-
-            raise RuntimeError('Couldn\'t parse operand {} of operands {}'.format(operand, operands))
-
-        return total
+        # return original_key.strip()
 
     def apply(self, block: Statblock) -> Statblock:
         """Return a new Statblock with effects of this tag applied."""
@@ -95,38 +46,100 @@ class Tag(object):
         for effect in effects:
             values = new_block.to_dict()
 
+            print(new_block.skills)
+
             # ----  Number-like tag operations  ---- #
-            inc_dec_search = re.search(r'\b(increase|decrease)\b\s*\b(.*)\s*by\s*(.*)', effect)
+            inc_dec_search = re.search(r'(increase|decrease)\s+\b(.*)\s*by\s*(.*)', effect)
             if inc_dec_search:
                 new_block = self.inc_or_dec(values, inc_dec_search)
                 continue
 
-            set_search = re.search(r'\b(set)\b\s*\b(.*)\s*to\s*(.*)', effect)
+            set_search = re.search(r'(set)\s+\b(.*)\s*to\s*(.*)', effect)
             if set_search:
                 new_block = self.set(values, set_search)
                 continue
 
-            reset_search = re.search(r'\b(reset)\b\s*\b(.*)', effect)
+            reset_search = re.search(r'(reset)\s+\b(.*)', effect)
             if reset_search:
                 new_block = self.reset(values, reset_search)
                 continue
 
             # ----  List-like tag operations    ---- #
-            # Damage vulnerability, resistance, immunity
-            # |clear damage resistances|remove all damage resistances|
-            # |add resistance to foo, bar damage|adds "foo" and "bar" to damage resistances, and removes them from vulnerabilities|
-            # |add immunity to foo, bar damage|adds "foo" and "bar" to damage immunities, removes them from resist/vuln|
-            # |add vulnerability to foo, bar damage|adds "foo" and "bar" to damage vulnerabilities, removes from resist/immune|
-            # |remove vulnerability to foo, bar damage||
-            # |add resistance to bludgeoning, piercing, and slashing damage from...|special case for resist/immune/vulnerable|
-            # |add immunity to foo, bar|adds "foo" and "bar" to condition immunities|
+            add_bps_search = re.search(r'add\s+(resistance|immunity|vulnerability)\s+to\s+bludgeoning,\s+piercing,*'
+                                       r'\s+and\s+slashing\s+damage\s+from\s+(.*)', effect)
+            if add_bps_search:
+                new_block = self.add_bps(values, add_bps_search)
+                continue
 
-            add_vuln_search = re.search(r'\badd\s+(resistance|immunity|vulnerability)\s+to\s+(.*)\s+damage', effect)
+            remove_bps_search = re.search(r'remove\s+(resistance|immunity|vulnerability)\s+to\s+bludgeoning,\s+piercing,*'
+                                       r'\s+and\s+slashing\s+damage\s+from\s+(.*)', effect)
+            if remove_bps_search:
+                new_block = self.remove_bps(values, remove_bps_search)
+                continue
+
+            add_vuln_search = re.search(r'add\s+(resistance|immunity|vulnerability)\s+to\s+(.*)\s+damage', effect)
             if add_vuln_search:
                 new_block = self.add_vuln_res_immun(values, add_vuln_search)
                 continue
 
-            # Other tag operations
+            remove_vuln_search = re.search(r'remove\s+(resistance|immunity|vulnerability)\s+to\s+(.*)\s+damage', effect)
+            if remove_vuln_search:
+                new_block = self.remove_vuln_res_immun(values, remove_vuln_search)
+                continue
+
+            add_cond_search = re.search('add\s+immunity\s+to\s+(.*)', effect)
+            if add_cond_search:
+                new_block = self.add_cond(values, add_cond_search)
+                continue
+
+            remove_cond_search = re.search('add\s+immunity\s+to\s+(.*)', effect)
+            if remove_cond_search:
+                new_block = self.remove_cond(values, add_cond_search)
+                continue
+
+            clear_search = re.search(r'clear\s+(condition immunities|damage immunities|damage resistances|'
+                                     r'damage vulnerabilities|abilities|actions|bonus actions|reactions|'
+                                     r'legendary actions)', effect)
+            if clear_search:
+                new_block = self.clear_listlike(values, clear_search)
+                continue
+
+            add_lang_search = re.search(r'add\s+language\s+(.*)', effect)
+            if add_lang_search:
+                new_block = self.add_lang(values, add_lang_search)
+                continue
+
+            add_ability_search = re.search(r'add\s+ability(.*):\s+(.*)', effect)
+            if add_ability_search:
+                new_block = self.add_action_or_ability(values, add_ability_search, 'abilities')
+                continue
+
+            add_action_search = re.search(r'add\s+action(.*):\s+(.*)', effect)
+            if add_action_search:
+                new_block = self.add_action_or_ability(values, add_action_search, 'actions')
+                continue
+
+            add_bonus_action_search = re.search(r'add\s+bonus\s+action(.*):\s+(.*)', effect)
+            if add_bonus_action_search:
+                new_block = self.add_action_or_ability(values, add_bonus_action_search, 'bonus_actions')
+                continue
+
+            add_reaction_search = re.search(r'add\s+reaction(.*):\s+(.*)', effect)
+            if add_ability_search:
+                new_block = self.add_action_or_ability(values, add_reaction_search, 'reactions')
+                continue
+
+            add_legendary_action_search = re.search(r'add\s+legendary\s+action(.*):\s+(.*)', effect)
+            if add_legendary_action_search:
+                new_block = self.add_action_or_ability(values, add_legendary_action_search, 'legendary_actions')
+                continue
+
+            set_alignment_search = re.search(r'(.*)-aligned', effect)
+            if set_alignment_search:
+                new_block = self.set_alignment(values, set_alignment_search)
+                continue
+
+            print('Could not parse "{}"'.format(effect))
 
         new_block.calc_challenge()
         return new_block
@@ -137,7 +150,7 @@ class Tag(object):
         inc_or_dec = -1 if inc_or_dec == 'decrease' else 1
 
         key = self.normalize_key(key, values)
-        operands = self.process_operands(operands.split(), values)
+        operands = process_operands(operands.split(), values)
 
         if key in values.keys():
             values[key] += inc_or_dec * operands
@@ -148,14 +161,31 @@ class Tag(object):
         elif key in values.get('saving_throws', {}).keys():
             values['skills'][key] += inc_or_dec * operands
         else:
-            raise KeyError('Unrecognized key "{}" for operation "increase/decrease".'.format(key))
+            values[key] = values.get(key, 0) + inc_or_dec * operands
+        # else:
+        #     raise KeyError('Unrecognized key "{}" for operation "increase/decrease".'.format(key))
 
         return Statblock(**values)
 
     def set(self, values: dict, search) -> Statblock:
         _, key, operands = search.groups()
         key = self.normalize_key(key, values)
-        operands = self.process_operands(operands.split(), values)
+
+        if key == 'type':
+            types = operands.split('(')
+            if len(types) == 1:
+                values['primary_type'] = operands
+            else:
+                values['primary_type'] = types[0].strip()
+                values['secondary_type'] = types[1].strip().strip(')').strip()
+
+            return Statblock(**values)
+
+        if key == 'hit_dice':
+            values['hit_dice'] = Dice.from_string(operands.strip())
+            return Statblock(**values)
+
+        operands = process_operands(operands.split(), values)
 
         if key in values.keys():
             values[key] = operands
@@ -165,6 +195,8 @@ class Tag(object):
             values['skills'][key] = operands
         elif key in values.get('saving_throws', {}).keys():
             values['skills'][key] = operands
+        elif key == 'hit_point_bonus':
+            values['hit_point_bonus'] = operands
         else:
             raise KeyError('Unrecognized key "{}" for operation "set".'.format(key))
 
@@ -181,16 +213,97 @@ class Tag(object):
 
         raise KeyError('Unrecognized key "{}" for operation "reset".'.format(key))
 
-    # Damage vulnerability, resistance, immunity
-    # |clear damage resistances|remove all damage resistances|
-    # |add resistance to foo, bar damage|adds "foo" and "bar" to damage resistances, and removes them from vulnerabilities|
-    # |add immunity to foo, bar damage|adds "foo" and "bar" to damage immunities, removes them from resist/vuln|
-    # |add vulnerability to foo, bar damage|adds "foo" and "bar" to damage vulnerabilities, removes from resist/immune|
-    # |remove vulnerability to foo, bar damage||
-    # |add resistance to bludgeoning, piercing, and slashing damage from...|special case for resist/immune/vulnerable|
-    # |add immunity to foo, bar|adds "foo" and "bar" to condition immunities|
+    def add_bps(self, values: dict, search) -> Statblock:
+        field, key = search.groups()
 
-    # add_vul_search = re.search(r'\badd\s+(resistance|immunity|vulnerability)\s+to\s+(.*)\s+damage', effect)
+        full_key = 'bludgeoning, piercing, and slashing damage from {}'.format(key)
+
+        vuln_set = set(values.get('damage_vulnerabilities', []))
+        res_set = set(values.get('damage_resistances', []))
+        immun_set = set(values.get('damage_immunities', []))
+
+        if field == 'vulnerability':
+            for vuln in list(vuln_set):
+                if 'bludg' in vuln:
+                    vuln_set.remove(vuln)
+            for res in list(res_set):
+                if 'bludg' in res:
+                    res_set.remove(res)
+            for imm in list(immun_set):
+                if 'bludg' in immun_set:
+                    immun_set.remove(imm)
+            vuln_set.add(full_key)
+            values['damage_vulnerabilities'] = list(vuln_set)
+            values['damage_resistances'] = list(res_set)
+            values['damage_immunities'] = list(immun_set)
+
+        elif field == 'resistance':
+            already_immune = False
+            for imm in list(immun_set):
+                if key in imm:
+                    already_immune = True
+                    break
+                if 'bludg' in imm:
+                    immun_set.remove(imm)
+            for vuln in list(vuln_set):
+                if 'bludg' in vuln:
+                    vuln_set.remove(vuln)
+            for res in list(res_set):
+                if already_immune:
+                    break
+                if 'bludg' in res:
+                    res_set.remove(res)
+            if not already_immune:
+                res_set.add(full_key)
+            values['damage_vulnerabilities'] = list(vuln_set)
+            values['damage_resistances'] = list(res_set)
+            values['damage_immunities'] = list(immun_set)
+
+        else:
+            for vuln in list(vuln_set):
+                if 'bludg' in vuln:
+                    vuln_set.remove(vuln)
+            for res in list(res_set):
+                if 'bludg' in res:
+                    res_set.remove(res)
+            for imm in list(immun_set):
+                if 'bludg' in immun_set:
+                    immun_set.remove(imm)
+            immun_set.add(full_key)
+            values['damage_vulnerabilities'] = list(vuln_set)
+            values['damage_resistances'] = list(res_set)
+            values['damage_immunities'] = list(immun_set)
+
+        return Statblock(**values)
+
+    def remove_bps(self, values: dict, search) -> Statblock:
+        field, key = search.groups()
+
+        vuln_set = set(values.get('damage_vulnerabilities', []))
+        res_set = set(values.get('damage_resistances', []))
+        immun_set = set(values.get('damage_immunities', []))
+
+        if field == 'vulnerability':
+            for vuln in list(vuln_set):
+                if 'bludg' in vuln:
+                    if key in vuln:
+                        vuln_set.remove(vuln)
+        elif field == 'resistance':
+            for res in list(res_set):
+                if 'bludg' in res:
+                    if key in res:
+                        res_set.remove(res)
+        else:
+            for imm in list(immun_set):
+                if 'bludg' in imm:
+                    if key in imm:
+                        immun_set.remove(imm)
+
+        values['damage_vulnerabilities'] = list(vuln_set)
+        values['damage_resistances'] = list(res_set)
+        values['damage_immunities'] = list(immun_set)
+
+        return Statblock(**values)
 
     def add_vuln_res_immun(self, values: dict, search) -> Statblock:
         field, keys = search.groups()
@@ -242,29 +355,107 @@ class Tag(object):
             values['damage_resistances'] = list(res_set)
             values['damage_immunities'] = list(immun_set)
 
-        print(values['damage_resistances'])
-        print('foo')
+        return Statblock(**values)
+
+    def remove_vuln_res_immun(self, values: dict, search) -> Statblock:
+        field, keys = search.groups()
+
+        if 'bludgeoning, piercing, and slashing da' in keys:
+            bps = 'bludgeoning, piercing, and slashing da' + keys.split('bludgeoning, piercing, and slashing da')[-1]
+            keys = keys.split('bludgeoning, piercing, and slashing da')[0].split(',') + [bps]
+        else:
+            keys = keys.split(',')
+
+        keys = [key.strip() for key in keys if key.strip()]
+
+        vuln_set = set(values.get('damage_vulnerabilities', []))
+        res_set = set(values.get('damage_resistances', []))
+        immun_set = set(values.get('damage_immunities', []))
+
+        if field == 'vulnerability':
+            for key in keys:
+                vuln_set.remove(key)
+        elif field == 'resistance':
+            for key in keys:
+                res_set.remove(key)
+        else:
+            for key in keys:
+                immun_set.remove(key)
+
+        values['damage_vulnerabilities'] = list(vuln_set)
+        values['damage_resistances'] = list(res_set)
+        values['damage_immunities'] = list(immun_set)
 
         return Statblock(**values)
 
+    def clear_listlike(self, values: dict, search):
+        field = search.groups()[0]
+
+        if field == 'condition immunities':
+            values['condition_immunities'] = []
+        elif field == 'damage immunities':
+            values['damage_immunities'] = []
+        elif field == 'damage vulnerabilities':
+            values['damage_vulnerabilities'] = []
+        else:
+            values['damage_resistances'] = []
+
+        return Statblock(**values)
+
+    def add_cond(self, values: dict, search):
+        keys = [k.strip() for k in search.groups()[0].split(',') if k.strip()]
+        cond_set = set(values.get('condition_immunities', []))
+
+        for key in keys:
+            cond_set.add(key)
+
+        values['condition_immunities'] = list(cond_set)
+
+        return Statblock(**values)
+
+    def remove_cond(self, values: dict, search):
+        keys = [k.strip() for k in search.groups()[0].split(',') if k.strip()]
+        cond_set = set(values.get('condition_immunities', []))
+
+        for key in keys:
+            cond_set.remove(key)
+
+        values['condition_immunities'] = list(cond_set)
+
+        return Statblock(**values)
+
+    def add_lang(self, values: dict, search):
+        key = search.groups()[0].strip()
+        lang_set = set(values['languages'])
+        lang_set.add(key)
+        values['languages'] = list(lang_set)
+
+        return Statblock(**values)
+
+    def add_action_or_ability(self, values: dict, search, which):
+        action_name, action_effect = search.groups()
+
+        if which.startswith('legen'):
+            is_legendary = True
+        else:
+            is_legendary = False
+
+        if values.get(which) is not None:
+            values[which].append(Action(action_name, description_template=action_effect, is_legendary=is_legendary))
+
+        return Statblock(**values)
+
+    def clear_actions_or_abilities(self, values: dict, which):
+        values[which] = []
+        return Statblock(**values)
+
+    def set_alignment(self, values: dict, search):
+        new_alignment = search.groups()[0]
+        values['alignment'] = new_alignment.strip()
+        return Statblock(**values)
 
 def read_tag_table(text: str) -> list:
     tags = []
     for line in text.splitlines()[2:]:
         tags.append(Tag.from_table_line(line))
     return tags
-
-    #
-    # def __init__(self, name: str = None, size: str = 'Medium', primary_type: str = 'Humanoid',
-    #              secondary_type: str = '',
-    #              alignment: str = 'Chaotic Evil', armor_class: int = 10, armor_class_type: str = '',
-    #              hit_points: int = None, hit_point_bonus: int = 0, hit_dice: Dice = None, speed: int = 30,
-    #              climb_speed: int = 0,
-    #              fly_speed: int = 0, swim_speed: int = 0, ability_scores: dict = None, damage_resistances: list = None,
-    #              damage_immunities: list = None, condition_immunities: list = None, saving_throws: dict = None,
-    #              skills: dict = None, blindsight: int = 0, darkvision: int = 0, tremorsense: int = 0,
-    #              truesight: int = 0,
-    #              passive_perception: int = None, languages: list = None, telepathy: int = 0,
-    #              challenge: ChallengeRating = None,
-    #              abilities: list = None, actions: list = None, bonus_actions: list = None,
-    #              reactions: list = None, legendary_actions: list = None, num_legendary: int = 3):

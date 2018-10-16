@@ -8,6 +8,7 @@ from utils import ChallengeRating
 from utils import Action
 from utils import parse_table
 from utils import format_modifier
+from utils import size_min, size_max, size_name_to_val, size_val_to_name
 
 
 def parse_resist_or_immunity(text: str) -> list:
@@ -65,7 +66,7 @@ def random_name() -> str:
 class Statblock(object):
     # FIXME Might be better to redo this as just a dictionary. Could load in defaults from external json.
     #   Type-hinting is kind of fun, though.
-    def __init__(self, name: str = None, size: str = 'Medium', primary_type: str = 'Humanoid',
+    def __init__(self, name: str = None, size: int = 2, primary_type: str = 'Humanoid',
                  secondary_type: str = '',
                  alignment: str = 'unaligned', armor_class: int = 10, armor_class_type: str = '',
                  hit_points: int = None, hit_point_bonus: int = 0, hit_dice: Dice = None, speed: int = 30,
@@ -78,7 +79,8 @@ class Statblock(object):
                  passive_perception: int = None, languages: list = None, telepathy: int = 0,
                  challenge: ChallengeRating = None,
                  abilities: list = None, actions: list = None, bonus_actions: list = None,
-                 reactions: list = None, legendary_actions: list = None, num_legendary: int = 3, proficiency=0):
+                 reactions: list = None, legendary_actions: list = None, num_legendary: int = 3, proficiency=0,
+                 **additional_skills):
 
         self.name = name if name is not None else random_name()
         self.size = size
@@ -120,6 +122,9 @@ class Statblock(object):
         if skills is not None:
             for key, value in skills.items():
                 self.skills[key] = value
+        if additional_skills is not None:
+            for key, value in additional_skills.items():
+                self.skills[key] = value
 
         self.damage_vulnerabilities = damage_vulnerabilities if damage_vulnerabilities is not None else []
         self.damage_resistances = damage_resistances if damage_resistances is not None else []
@@ -154,7 +159,7 @@ class Statblock(object):
 
     def calc_hit_points(self):
         """Sets hit points using hit dice and either hit point bonus or constitution modifier."""
-        self.hit_points = self.hit_dice.roll()
+        self.hit_points = self.hit_dice.upper_average()
         if self.hit_point_bonus != 0:
             self.hit_points += self.hit_point_bonus
         elif self.ability_scores.get('CON') is not None:
@@ -180,7 +185,9 @@ class Statblock(object):
     def to_dict(self):
         # FIXME This is stupid, should have just stuffed attributes into a dict in the first place, there are way too
         # many of them
-        return self.parse_markdown(self.to_markdown())
+        values = self.parse_markdown(self.to_markdown())
+        values['proficiency'] = self.proficiency
+        return values
 
     @classmethod
     def from_markdown(cls, text: str):
@@ -217,7 +224,9 @@ class Statblock(object):
                 values['size'], values['primary_type'] = size_and_types
             elif len(size_and_types) == 3:
                 values['size'], values['primary_type'], values['secondary_type'] = size_and_types
-                values['secondary_type'] = values['secondary_type'].rstrip('(').lstrip(')')
+                values['secondary_type'] = values['secondary_type'].replace('(', '').replace(')', '').strip()
+
+            values['size'] = min(max(size_name_to_val.get(values['size'], -1), size_min), size_max)
 
             lines.pop(0)
             # assert curr_line.strip().endswith('_')
@@ -318,8 +327,8 @@ class Statblock(object):
                 values['damage_immunities'] = parse_resist_or_immunity(curr_line)
 
             if 'Condition Immun' in lines[0]:
-                curr_line = lines.pop(0).replace('> - **Damage Immunities** ', '')
-                values['condition_immunities'] = curr_line.strip().split(',')
+                curr_line = lines.pop(0).replace('> - **Condition Immunities** ', '')
+                values['condition_immunities'] = [c.strip() for c in curr_line.strip().split(',') if c.strip()]
 
             if 'Senses' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Senses** ', '')
@@ -384,7 +393,7 @@ class Statblock(object):
     def to_markdown(self) -> str:
         lines = ['## {}'.format(self.name)]
 
-        type_line = '*{} {}'.format(self.size, self.primary_type)
+        type_line = '*{} {}'.format(size_val_to_name.get(self.size, 'Medium'), self.primary_type)
         if self.secondary_type:
             type_line += ' ({})'.format(self.secondary_type)
         type_line += (', {}*'.format(self.alignment))
@@ -453,7 +462,7 @@ class Statblock(object):
         if self.damage_vulnerabilities:
             dv_line = '- **Damage Vulnerabilities** '
             if 'bludg' in self.damage_vulnerabilities[-1] or 'pierc' in self.damage_vulnerabilities[-1] \
-                    or 'slash' in self.damage_vulnerabilities[-1]:
+                    or 'slash' in self.damage_vulnerabilities[-1] and len(self.damage_vulnerabilities) > 1:
                 dv_line += ', '.join(sorted(self.damage_vulnerabilities[:-1]))
                 dv_line += '; {}'.format(self.damage_vulnerabilities[-1])
             else:
@@ -463,7 +472,7 @@ class Statblock(object):
         if self.damage_resistances:
             dr_line = '- **Damage Resistances** '
             if 'bludg' in self.damage_resistances[-1] or 'pierc' in self.damage_resistances[-1] \
-                    or 'slash' in self.damage_resistances[-1]:
+                    or 'slash' in self.damage_resistances[-1] and len(self.damage_resistances) > 1:
                 dr_line += ', '.join(sorted(self.damage_resistances[:-1]))
                 dr_line += '; {}'.format(self.damage_resistances[-1])
             else:
@@ -473,7 +482,7 @@ class Statblock(object):
         if self.damage_immunities:
             di_line = '- **Damage Immunities** '
             if 'bludg' in self.damage_immunities[-1] or 'pierc' in self.damage_immunities[-1] \
-                    or 'slash' in self.damage_immunities[-1]:
+                    or 'slash' in self.damage_immunities[-1] and len(self.damage_immunities) > 1:
                 di_line += ', '.join(sorted(self.damage_immunities[:-1]))
                 di_line += '; {}'.format(self.damage_immunities[-1])
             else:
@@ -501,7 +510,7 @@ class Statblock(object):
 
         lang_line = '- **Languages** {}'.format(', '.join(sorted(self.languages)))
         if self.telepathy:
-            lang_line += ' , telepathy {} ft.'.format(self.telepathy)
+            lang_line += ', telepathy {} ft.'.format(self.telepathy)
         lines.append(lang_line)
 
         lines.append('- **Challenge** {} ({:,} XP)'.format(self.challenge.rating, self.challenge.xp))

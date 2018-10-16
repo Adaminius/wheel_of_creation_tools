@@ -39,10 +39,6 @@
         margin-right:0.5em;
     }
 
-
-
-
-
 </style>
 
 <body>
@@ -122,7 +118,7 @@
         $scope.tag = {
             selected:'',
             additionalTags:[]
-        }
+        };
         $scope.tagNames = ['Duptie.md', 'Opptie.md'];
         //response
         $scope.tag.content = 'markdown for selected tag';
@@ -157,7 +153,7 @@
 
         $scope.removeTag = function(additionalTag) {
             for(var i=0;i<$scope.tag.additionalTags.length;i++){
-                if(additionalTag.id == $scope.tag.additionalTags[i].id){
+                if(additionalTag.id === $scope.tag.additionalTags[i].id){
                     $scope.tag.additionalTags.splice(i, 1);
                 }
             }
