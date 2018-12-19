@@ -80,6 +80,7 @@ class Statblock(object):
                  challenge: ChallengeRating = None,
                  abilities: list = None, actions: list = None, bonus_actions: list = None,
                  reactions: list = None, legendary_actions: list = None, num_legendary: int = 3, proficiency=0,
+                 applied_tags: list = None,
                  **additional_skills):
 
         self.name = name if name is not None else random_name()
@@ -191,13 +192,7 @@ class Statblock(object):
 
     @classmethod
     def from_markdown(cls, text: str):
-        values = cls.parse_markdown(text)
-        return cls(**values)
-
-    @staticmethod
-    def parse_markdown(text: str):
-        # TODO Really should have done this with regex instead, would be more succinct and flexible
-        values = {}
+        sb = Statblock()
 
         lines = text.split('\n')
         try:
@@ -208,25 +203,26 @@ class Statblock(object):
             # assert curr_line.strip().endswith('_')
 
             curr_line = curr_line.replace('> ##', '')
-            values['name'] = curr_line.strip()
+            sb.name = curr_line.strip()
 
             curr_line = lines.pop(0)
             curr_line = curr_line.strip('>').strip().strip('*').strip().split(',')
             if len(curr_line) < 2:
                 size_and_types = curr_line[0].strip()
-                values['alignment'] = 'Unaligned'
+                sb.alignment = 'Unaligned'
             else:
                 size_and_types, alignment = curr_line
-                values['alignment'] = alignment.strip()
+                sb.alignment = alignment.strip()
 
             size_and_types = size_and_types.split()
             if len(size_and_types) == 2:
-                values['size'], values['primary_type'] = size_and_types
+                sb.size, sb.primary_type = size_and_types
             elif len(size_and_types) == 3:
-                values['size'], values['primary_type'], values['secondary_type'] = size_and_types
-                values['secondary_type'] = values['secondary_type'].replace('(', '').replace(')', '').strip()
+                sb.size, sb.primary_type, sb.secondary_type = size_and_types
+                sb.secondary_type = sb.secondary_type.replace('(', '').replace(')', '').strip()
 
-            values['size'] = min(max(size_name_to_val.get(values['size'], -1), size_min), size_max)
+            sb.size = max(size_name_to_val.get(sb.size, -1), size_min)
+            sb.size = min(sb.size, size_max)
 
             lines.pop(0)
             # assert curr_line.strip().endswith('_')
@@ -234,36 +230,35 @@ class Statblock(object):
             curr_line = lines.pop(0)
             curr_line = curr_line.replace('> - **Armor Class** ', '').strip().split()
             if len(curr_line) >= 2:
-                values['armor_class'] = int(curr_line[0])
-                values['armor_class_type'] = ' '.join(curr_line[1:]).lstrip('(').rstrip(')')
+                sb.armor_class = int(curr_line[0])
+                sb.armor_class_type = ' '.join(curr_line[1:]).lstrip('(').rstrip(')')
             elif len(curr_line) == 1:
-                values['armor_class'] = int(curr_line[0])
+                sb.armor_class = int(curr_line[0])
 
             curr_line = lines.pop(0)
             curr_line = curr_line.replace('> - **Hit Points** ', '').strip().split()
             if len(curr_line) >= 2:
-                values['hit_points'] = int(curr_line[0])
+                sb.hit_points = int(curr_line[0])
                 if len(curr_line) >= 4:
-                    values['hit_dice'] = Dice.from_string(curr_line[1].lstrip('('))
-                    values['hit_point_bonus'] = int(curr_line[3].rstrip(')'))
+                    sb.hit_dice = Dice.from_string(curr_line[1].lstrip('('))
+                    sb.hit_point_bonus = int(curr_line[3].rstrip(')'))
                 else:
-                    values['hit_dice'] = Dice.from_string(curr_line[1].lstrip('(').rstrip(')'))
-
+                    sb.hit_dice = Dice.from_string(curr_line[1].lstrip('(').rstrip(')'))
             elif len(curr_line) == 1:
-                values['hit_points'] = int(curr_line[0])
+                sb.hit_points = int(curr_line[0])
 
             curr_line = lines.pop(0)
             curr_line = curr_line.replace('> - **Speed** ', '')
             speeds = curr_line.replace('ft.', '').split(',')
             for speed_text in speeds:
                 if len(speed_text.strip().split()) == 1:
-                    values['speed'] = int(speed_text.strip())
+                    sb.speed = int(speed_text.strip())
                 elif speed_text.strip().lower().startswith('climb'):
-                    values['climb_speed'] = int(speed_text.strip().split()[1])
+                    sb.climb_speed = int(speed_text.strip().split()[1])
                 elif speed_text.strip().lower().startswith('swim'):
-                    values['swim_speed'] = int(speed_text.strip().split()[1])
+                    sb.swim_speed = int(speed_text.strip().split()[1])
                 elif speed_text.strip().lower().startswith('fly'):
-                    values['fly_speed'] = int(speed_text.strip().split()[1])
+                    sb.fly_speed = int(speed_text.strip().split()[1])
                 else:
                     print('Warning: Couldn\'t parse speed {}'.format(speed_text))
 
@@ -276,59 +271,54 @@ class Statblock(object):
                 ab_score_table_lines.append(curr_line)
                 curr_line = lines.pop(0).strip('>')
 
-            score_tab = parse_table(ab_score_table_lines)
+            score_table = parse_table(ab_score_table_lines)
 
-            values['ability_scores'] = {}
             for ab_score_name in ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma']:
                 ab_score = AbilityScore(ab_score_name)
-                score_val = score_tab.pop(ab_score.short_name, [None])[0]
+                score_val = score_table.pop(ab_score.short_name, [None])[0]
                 if score_val is not None:
                     ab_score.value = int(score_val.split()[0])
-                values['ability_scores'][ab_score.short_name] = ab_score
+                sb.ability_scores[ab_score.short_name] = ab_score
 
-            for ab_score_name in list(score_tab.keys()):
+            for ab_score_name in list(score_table.keys()):
                 ab_score = AbilityScore(ab_score_name)
-                score_val = score_tab.pop(ab_score.short_name, [None])[0]
+                score_val = score_table.pop(ab_score.short_name, [None])[0]
                 if score_val is not None:
                     ab_score.value = int(score_val.split()[0])
-                values['ability_scores'][ab_score.short_name] = ab_score
+                sb.ability_scores[ab_score.short_name] = ab_score
 
             if lines[0].rstrip('>').strip().startswith('_'):
                 lines.pop(0)
 
-            if 'Skills' in lines[0]:
-                curr_line = lines.pop(0).replace('> - **Skills** ', '')
-                skill_texts = curr_line.split(',')
-
-                values['skills'] = {}
-                for skill_text in skill_texts:
-                    skill_name, skill_mod = skill_text.split()
-                    values['skills'][skill_name] = int(skill_mod)
-
             if 'Saving' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Saving Throws** ', '')
                 save_texts = curr_line.split(',')
-
-                values['saving_throws'] = {}
                 for save_text in save_texts:
                     save_name, save_mod = save_text.split()
-                    values['saving_throws'][save_name] = int(save_mod)
+                    sb.saving_throws[save_name] = int(save_mod)
+
+            if 'Skills' in lines[0]:
+                curr_line = lines.pop(0).replace('> - **Skills** ', '')
+                skill_texts = curr_line.split(',')
+                for skill_text in skill_texts:
+                    skill_name, skill_mod = skill_text.split()
+                    sb.skills[skill_name] = int(skill_mod)
 
             if 'Damage Vuln' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Damage Vulnerabilities** ', '')
-                values['damage_vulnerabilities'] = parse_resist_or_immunity(curr_line)
+                sb.damage_vulnerabilities = parse_resist_or_immunity(curr_line)
 
             if 'Damage Resist' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Damage Resistances** ', '')
-                values['damage_resistances'] = parse_resist_or_immunity(curr_line)
+                sb.damage_resistances = parse_resist_or_immunity(curr_line)
 
             if 'Damage Immun' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Damage Immunities** ', '')
-                values['damage_immunities'] = parse_resist_or_immunity(curr_line)
+                sb.damage_immunities = parse_resist_or_immunity(curr_line)
 
             if 'Condition Immun' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Condition Immunities** ', '')
-                values['condition_immunities'] = [c.strip() for c in curr_line.strip().split(',') if c.strip()]
+                sb.condition_immunities = [c.strip() for c in curr_line.strip().split(',') if c.strip()]
 
             if 'Senses' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Senses** ', '')
@@ -337,48 +327,53 @@ class Statblock(object):
                 for sense_text in sense_texts:
                     sense_text = sense_text.replace('ft.', '').strip().split()
                     if sense_text[0].lower() == 'blindsight':
-                        values['blindsight'] = int(sense_text[1])
+                        sb.blindsight = int(sense_text[1])
                     if sense_text[0].lower() == 'truesight':
-                        values['truesight'] = int(sense_text[1])
+                        sb.truesight = int(sense_text[1])
                     if sense_text[0].lower() == 'darkvision':
-                        values['darkvision'] = int(sense_text[1])
+                        sb.darkvision = int(sense_text[1])
                     if sense_text[0].lower() == 'tremorsense':
-                        values['tremorsense'] = int(sense_text[1])
+                        sb.tremorsense = int(sense_text[1])
                     if sense_text[0] == 'passive':
-                        values['passive_perception'] = int(sense_text[2])
+                        sb.__passive_perception = int(sense_text[2])
 
             if 'Languages' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Languages** ', '')
-                values['languages'] = [curr_line.strip()]
+                sb.languages = [lang.strip() for lang in curr_line.split(',') if 'telepathy' not in lang]
+                if 'telepathy' in curr_line:
+                    try:
+                        sb.telepathy = int(re.search(r'telepathy (\d+) ft', curr_line).group(1))
+                    except AttributeError:
+                        sb.telepathy = 60  # todo need an external default file
 
             if 'Challenge' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Challenge** ', '')
                 challenge = curr_line.strip().split()[0]
-                values['challenge'] = ChallengeRating(challenge)
+                sb.challenge = ChallengeRating(challenge)
 
             if not lines:
-                return values
+                return sb
 
             while lines[0].strip('>').strip().startswith('_'):
                 lines.pop(0)
                 if not lines:
-                    return values
+                    return sb
 
-            values['abilities'], lines = parse_actions(lines)
+            sb.abilities, lines = parse_actions(lines)
             while lines:
                 curr_line = lines.pop(0)
-                if '### Actions' in curr_line:
-                    values['actions'], lines = parse_actions(lines)
-                elif '### Bonus Actions' in curr_line:
-                    values['bonus_actions'], lines = parse_actions(lines)
-                elif '### Reactions' in curr_line:
-                    values['reactions'], lines = parse_actions(lines)
-                elif '### Legendary Actions' in curr_line:
+                if '## Actions' in curr_line:
+                    sb.actions, lines = parse_actions(lines)
+                elif '## Bonus Actions' in curr_line:
+                    sb.bonus_actions, lines = parse_actions(lines)
+                elif '## Reactions' in curr_line:
+                    sb.reactions, lines = parse_actions(lines)
+                elif '## Legendary Actions' in curr_line:
                     while not lines[0].strip('>').strip().startswith('*'):
                         num_leg = re.search(r'can take (\d+) legendary actions', lines.pop(0))
                         if num_leg:
-                            values['num_legendary'] = int(num_leg.groups()[0])
-                    values['legendary_actions'], lines = parse_actions(lines, is_legendary=True)
+                            sb.num_legendary = int(num_leg.groups()[0])
+                    sb.legendary_actions, lines = parse_actions(lines, is_legendary=True)
 
         except Exception as e:
             print('\nRemaining lines:')
@@ -388,7 +383,7 @@ class Statblock(object):
             print('Error parsing Statblock from markdown. Exception: ')
             raise e
 
-        return values
+        return sb
 
     def to_markdown(self) -> str:
         lines = ['## {}'.format(self.name)]

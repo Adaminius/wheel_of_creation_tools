@@ -5,8 +5,10 @@ import re
 import io
 import math
 from collections import OrderedDict
+from os import path
 
 # defaults = json.load('defaults.json')
+package_directory = path.dirname(path.abspath(__file__))
 
 size_val_to_name = {0:  'Tiny',
                     1:  'Small',
@@ -93,7 +95,7 @@ class AbilityScore(object):
 
 
 class ChallengeRating(object):
-    rating_to_xp = json.load(open('challenge_rating_to_xp.json', 'r'))
+    rating_to_xp = json.load(open(path.join(package_directory, 'challenge_rating_to_xp.json'), 'r'))
 
     def __init__(self, rating: str):
         self.rating = str(rating)
@@ -115,7 +117,10 @@ class Action(object):
         self.description_template = description_template
         self.description = ''
         self.is_legendary = is_legendary
-        self.update_description(**kwargs)
+        if kwargs:
+            self.update_description(**kwargs)
+        else:
+            self.update_description({})
 
     def update_description(self, values: dict):
         description = self.description_template
