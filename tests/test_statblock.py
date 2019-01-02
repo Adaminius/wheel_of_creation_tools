@@ -1,6 +1,7 @@
 import pytest
 import statblock
 import utils
+import tags.fey_physical
 
 
 @pytest.fixture(scope='function')
@@ -16,7 +17,7 @@ def test_statblock_md_parser(setup_statblock: statblock.Statblock):
     assert sb.size == utils.size_name_to_val['Small']
     assert sb.primary_type == 'testType'
     assert sb.secondary_type == 'secondaryTestType'
-    assert sb.alignment == 'testAlignment'
+    assert sb.alignment == 'Unaligned'
     assert sb.armor_class == 12
     assert sb.armor_class_type == 'natural armor'
     assert sb.hit_points == 10
@@ -49,3 +50,29 @@ def test_statblock_md_parser(setup_statblock: statblock.Statblock):
     assert sb.reactions[0].name == 'Test Reaction'
     assert sb.legendary_actions[0].name == 'Test Legendary Action'
     assert sb.num_legendary == 3
+    assert 'testTag' in [t.name for t in sb.applied_tags]
+    assert 'lithe' in [t.name for t in sb.applied_tags]
+
+
+def test_apply_tags(setup_statblock: statblock.Statblock):
+    sb = setup_statblock
+    sb = tags.fey_physical.all_tags['lumbering'].apply(sb)
+    assert sb.ability_scores['STR'].value == 10
+    assert sb.speed == 35
+    assert sb.fly_speed == 25
+    assert sb.swim_speed == 15
+    assert sb.climb_speed == 5
+    assert tags.fey_physical.all_tags['lumbering'] in sb.applied_tags
+    sb = tags.fey_physical.all_tags['Wintry'].apply(sb)
+    assert sb.alignment == 'Winter'
+    assert 'cold' in sb.damage_resistances
+    assert 'psychic' in sb.damage_resistances
+    assert tags.fey_physical.all_tags['Wintry'] in sb.applied_tags
+    sb = tags.fey_physical.all_tags['Summery'].apply(sb)
+    assert sb.alignment == 'Summer'
+    assert 'fire' in sb.damage_resistances
+    assert 'psychic' in sb.damage_resistances
+    assert 'cold' not in sb.damage_resistances
+    assert tags.fey_physical.all_tags['lumbering'] in sb.applied_tags
+    assert tags.fey_physical.all_tags['Wintry'] in sb.applied_tags
+    assert tags.fey_physical.all_tags['Summery'] in sb.applied_tags

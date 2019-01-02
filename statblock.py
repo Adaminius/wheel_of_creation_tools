@@ -2,6 +2,7 @@ import random
 import re
 import math
 from collections import defaultdict
+from typing import Callable
 from utils import Dice
 from utils import AbilityScore
 from utils import ChallengeRating
@@ -11,7 +12,7 @@ from utils import format_modifier
 from utils import size_min, size_max, size_name_to_val, size_val_to_name
 
 
-def parse_resist_or_immunity(text: str) -> list:
+def parse_resist_or_immunity(text: str) -> set:
     # TODO Ordering for this stuff is not super intuitive, should maybe consider creating a class for this rather than
     # always trying to keep in mind that the bludgeoning/piercing/slashing damage thing comes last after a semicolon
     bps_resistance = ''
@@ -26,7 +27,7 @@ def parse_resist_or_immunity(text: str) -> list:
     if bps_resistance != '':
         resistances += [bps_resistance]
 
-    return resistances
+    return set(resistances)
 
 
 def parse_actions(lines: list, is_legendary=False):
@@ -44,7 +45,7 @@ def parse_actions(lines: list, is_legendary=False):
             if actions:
                 if actions[-1].description:
                     # if actions[-1].description[-1] != '\n':
-                        # actions[-1].description += '\n'
+                    # actions[-1].description += '\n'
                     actions[-1].description += curr_line.strip('>').strip()
             continue
 
@@ -72,8 +73,8 @@ class Statblock(object):
                  hit_points: int = None, hit_point_bonus: int = 0, hit_dice: Dice = None, speed: int = 30,
                  climb_speed: int = 0,
                  fly_speed: int = 0, swim_speed: int = 0, ability_scores: dict = None,
-                 damage_vulnerabilities: list = None, damage_resistances: list = None,
-                 damage_immunities: list = None, condition_immunities: list = None, saving_throws: dict = None,
+                 damage_vulnerabilities: set = None, damage_resistances: set = None,
+                 damage_immunities: set = None, condition_immunities: set = None, saving_throws: dict = None,
                  skills: dict = None, blindsight: int = 0, darkvision: int = 0, tremorsense: int = 0,
                  truesight: int = 0,
                  passive_perception: int = None, languages: list = None, telepathy: int = 0,
@@ -127,10 +128,10 @@ class Statblock(object):
             for key, value in additional_skills.items():
                 self.skills[key] = value
 
-        self.damage_vulnerabilities = damage_vulnerabilities if damage_vulnerabilities is not None else []
-        self.damage_resistances = damage_resistances if damage_resistances is not None else []
-        self.damage_immunities = damage_immunities if damage_immunities is not None else []
-        self.condition_immunities = condition_immunities if condition_immunities is not None else []
+        self.damage_vulnerabilities = damage_vulnerabilities if damage_vulnerabilities is not None else set()
+        self.damage_resistances = damage_resistances if damage_resistances is not None else set()
+        self.damage_immunities = damage_immunities if damage_immunities is not None else set()
+        self.condition_immunities = condition_immunities if condition_immunities is not None else set()
 
         self.blindsight = blindsight
         self.darkvision = darkvision
@@ -151,8 +152,8 @@ class Statblock(object):
         self.legendary_actions = legendary_actions
 
         self.num_legendary = num_legendary
-
         self.__proficiency = proficiency
+        self.applied_tags = applied_tags
 
     def calc_challenge(self):
         # TODO
@@ -183,15 +184,14 @@ class Statblock(object):
     def proficiency(self, proficiency):
         self.__proficiency = proficiency
 
-    def to_dict(self):
-        # FIXME This is stupid, should have just stuffed attributes into a dict in the first place, there are way too
-        # many of them
-        values = self.parse_markdown(self.to_markdown())
-        values['proficiency'] = self.proficiency
-        return values
-
     @classmethod
-    def from_markdown(cls, text: str):
+    def from_markdown(cls, text: str='', filename=''):
+        if filename:
+            with open(filename) as file_handle:
+                text = file_handle.read()
+        if not text and not filename:
+            raise RuntimeError('Either text or filename must be specified.')
+
         sb = Statblock()
 
         lines = text.split('\n')
@@ -344,12 +344,16 @@ class Statblock(object):
                     try:
                         sb.telepathy = int(re.search(r'telepathy (\d+) ft', curr_line).group(1))
                     except AttributeError:
-                        sb.telepathy = 60  # todo need an external default file
+                        sb.telepathy = 60  # TODO need an external default file
 
             if 'Challenge' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Challenge** ', '')
                 challenge = curr_line.strip().split()[0]
                 sb.challenge = ChallengeRating(challenge)
+
+            if 'Tags' in lines[0]:
+                curr_line = lines.pop(0).replace('> - **Tags** ', '')
+                sb.applied_tags = [Tag(tag_name.strip()) for tag_name in curr_line.split(',')]
 
             if not lines:
                 return sb
@@ -444,44 +448,56 @@ class Statblock(object):
             if any([v > 0 for v in self.saving_throws.values()]):
                 save_line = '- **Saving Throws** '
                 save_line += ', '.join(['{} {}'.format(save, format_modifier(modifier)) for save, modifier in
-                                       sorted(self.saving_throws.items(), key=lambda x: x[0])])
+                                        sorted(self.saving_throws.items(), key=lambda x: x[0])])
                 lines.append(save_line)
 
         if self.skills:
             if any([v > 0 for v in self.skills.values()]):
                 skill_line = '- **Skills** '
                 skill_line += ', '.join(['{} {}'.format(skill, format_modifier(modifier)) for skill, modifier in
-                                        sorted(self.skills.items(), key=lambda x: x[0])])
+                                         sorted(self.skills.items(), key=lambda x: x[0])])
                 lines.append(skill_line)
 
         if self.damage_vulnerabilities:
             dv_line = '- **Damage Vulnerabilities** '
-            if 'bludg' in self.damage_vulnerabilities[-1] or 'pierc' in self.damage_vulnerabilities[-1] \
-                    or 'slash' in self.damage_vulnerabilities[-1] and len(self.damage_vulnerabilities) > 1:
-                dv_line += ', '.join(sorted(self.damage_vulnerabilities[:-1]))
-                dv_line += '; {}'.format(self.damage_vulnerabilities[-1])
-            else:
-                dv_line += ', '.join(sorted(self.damage_vulnerabilities))
+            vulns = self.damage_vulnerabilities.copy()
+            has_bps = False
+            for vuln in vulns:
+                if 'bludg' in vuln or 'pierc' in vuln or 'slash' in vuln and len(self.damage_vulnerabilities) > 1:
+                    vulns.remove(vuln)
+                    dv_line += ', '.join(sorted(vulns))
+                    dv_line += '; {}'.format(vuln)
+                    has_bps = True
+            if not has_bps:
+                dv_line += ', '.join(sorted(vulns))
             lines.append(dv_line)
 
         if self.damage_resistances:
             dr_line = '- **Damage Resistances** '
-            if 'bludg' in self.damage_resistances[-1] or 'pierc' in self.damage_resistances[-1] \
-                    or 'slash' in self.damage_resistances[-1] and len(self.damage_resistances) > 1:
-                dr_line += ', '.join(sorted(self.damage_resistances[:-1]))
-                dr_line += '; {}'.format(self.damage_resistances[-1])
-            else:
-                dr_line += ', '.join(sorted(self.damage_resistances))
+            vulns = self.damage_vulnerabilities.copy()
+            has_bps = False
+            for vuln in vulns:
+                if 'bludg' in vuln or 'pierc' in vuln or 'slash' in vuln and len(self.damage_vulnerabilities) > 1:
+                    vulns.remove(vuln)
+                    dr_line += ', '.join(sorted(vulns))
+                    dr_line += '; {}'.format(vuln)
+                    has_bps = True
+            if not has_bps:
+                dr_line += ', '.join(sorted(vulns))
             lines.append(dr_line)
 
         if self.damage_immunities:
             di_line = '- **Damage Immunities** '
-            if 'bludg' in self.damage_immunities[-1] or 'pierc' in self.damage_immunities[-1] \
-                    or 'slash' in self.damage_immunities[-1] and len(self.damage_immunities) > 1:
-                di_line += ', '.join(sorted(self.damage_immunities[:-1]))
-                di_line += '; {}'.format(self.damage_immunities[-1])
-            else:
-                di_line += ', '.join(sorted(self.damage_immunities))
+            vulns = self.damage_vulnerabilities.copy()
+            has_bps = False
+            for vuln in vulns:
+                if 'bludg' in vuln or 'pierc' in vuln or 'slash' in vuln and len(self.damage_vulnerabilities) > 1:
+                    vulns.remove(vuln)
+                    di_line += ', '.join(sorted(vulns))
+                    di_line += '; {}'.format(vuln)
+                    has_bps = True
+            if not has_bps:
+                di_line += ', '.join(sorted(vulns))
             lines.append(di_line)
 
         if self.condition_immunities:
@@ -509,6 +525,9 @@ class Statblock(object):
         lines.append(lang_line)
 
         lines.append('- **Challenge** {} ({:,} XP)'.format(self.challenge.rating, self.challenge.xp))
+
+        if self.applied_tags:
+            lines.append('- **Tags** {}'.format(', '.join([t.name for t in self.applied_tags])))
 
         lines.append('___')
 
@@ -545,7 +564,8 @@ class Statblock(object):
             lines.append('')
             lines.append('This creature can take {} legendary actions, choosing from the options below. Only one '
                          'legendary action can be used at a time and only at the end of another creature\'s turn. This '
-                         'creature regains spent legendary actions at the start of its turn.'.format(self.num_legendary))
+                         'creature regains spent legendary actions at the start of its turn.'.format(
+                self.num_legendary))
             if lines[-1].strip() != '':
                 lines.append('')
             for action in self.legendary_actions:
@@ -553,3 +573,75 @@ class Statblock(object):
                 lines.append('')
 
         return '\n'.join(['___', '___'] + ['> ' + line for line in lines])
+
+
+class Tag(object):
+    def __init__(self, name, effect_text='', on_apply=None, stacks=False, overwrites=None, overwritten_by=None,
+                 on_stack=None, on_overwrite=None, remove=None):
+        """Used for applying various little thematic changes to monster statblocks.
+
+        Args:
+            name (str): Name of the Tag
+            effect_text (str):  Human-readable description of what the Tag does, e.g. "add cold resistance"
+            on_apply (Callable[[Statblock], Statblock]): Function which modifies a statblock, e.g. add 'cold' to its
+                                                            set of resistances
+            stacks (bool):  If True, calls on_stack() when applying the Tag. This would be useful for something like
+                                a fire resistance Tag which is applied twice, which we would like to become fire
+                                immunity.
+            overwrites (set):   Labels for Tags which should interact with this Tag when it is applied, e.g. if we are
+                                    adding the 'hideous' Tag to a Statblock which already has the 'beautiful' Tag, we
+                                    might want to undo the 'beautiful' Tag's effects in addition to applying the effects
+                                    of the 'hideous' Tag (or not apply the effects of hideous at all). We could use a
+                                    label like 'appearance' for both of the Tags, or we could just use the names of the
+                                    Tags as triggering labels.
+            overwritten_by (set):   Labels for Tags which this Tag should interact with when they are applied.
+            on_stack (Callable[[Statblock], Statblock]):    Called when this Tag is applied on a Statblock which already
+                                                                has the Tag.
+            on_overwrite (Callable[[Tag, Statblock], Tuple(Statblock, bool)]):   See apply() to understand when this is
+                                                                                    called. Should return a modified
+                                                                                    Statblock and True or unmodified
+                                                                                    Statblock and False.
+            remove (Callable[[Statblock], Statblock]):  Returns a Statblock with the effects of this Tag undone.
+        """
+        self.name = name
+        self.effect_text = effect_text
+        self.on_apply = on_apply
+        if on_apply is None:
+            self.on_apply = lambda sb: sb
+        self.stacks = stacks
+        self.overwrites = set() if overwrites is None else overwrites
+        self.overwritten_by = set() if overwritten_by is None else overwritten_by
+        self.on_overwrite = on_overwrite
+        if on_overwrite is None:
+            self.on_stack = lambda sb: sb
+        self.on_overwrite = on_overwrite
+        if on_overwrite is None:
+            self.on_overwrite = lambda t, sb: sb, True
+        self.remove = remove
+        if remove is None:
+            self.remove = lambda sb: sb
+
+    def __repr__(self):
+        return 'Tag<name="{}", effect_text="{}", on_apply={}, stacks={}, overwrites={}, overwritten_by={}, on_stack={}, ' \
+               'on_overwrite={}, remove={}>'.format(
+                self.name, self.effect_text, self.on_apply, self.stacks, self.overwrites, self.overwritten_by,
+                self.on_stack, self.on_overwrite, self.remove)
+
+    def apply(self, statblock: Statblock) -> Statblock:
+        # FIXME Maybe make this a copy of the statblock?
+        if self.name in statblock.applied_tags:
+            if self.stacks:
+                statblock = self.on_stack(statblock)
+            else:
+                return statblock
+
+        for old_tag in statblock.applied_tags:
+            for label in old_tag.overwritten_by:
+                if label in self.overwrites:
+                    statblock, keep_applying = self.on_overwrite(old_tag, statblock)
+                    if not keep_applying:
+                        return statblock
+
+        statblock = self.on_apply(statblock)
+        statblock.applied_tags.append(self)
+        return statblock

@@ -1,7 +1,7 @@
 ___
 ___
 > ## Test Name
->*Small testType (secondaryTestType), testAlignment*
+>*Small testType (secondaryTestType), Unaligned*
 > ___
 > - **Armor Class** 12 (natural armor)
 > - **Hit Points** 10 (2d8 + 1)
@@ -17,6 +17,7 @@ ___
 > - **Senses** blindsight 10 ft., tremorsense 20 ft., passive Perception 8
 > - **Languages** Sylvan, testLanguage, telepathy 100 ft.
 > - **Challenge** 1 (6808 XP)
+> - **Tags** testTag, lithe 
 > ___
 > ***False Appearance.*** While the armor remains motionless, it is indistinguishable from a normal suit of armor.
 >
