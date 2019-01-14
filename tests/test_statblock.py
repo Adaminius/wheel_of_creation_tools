@@ -12,6 +12,8 @@ def setup_statblock():
 
 
 def test_statblock_md_parser(setup_statblock: statblock.Statblock):
+    utils.setup_logging(debug=True)
+
     sb = setup_statblock
     assert sb.name == 'Test Name'
     assert sb.size == utils.size_name_to_val['Small']
@@ -55,6 +57,8 @@ def test_statblock_md_parser(setup_statblock: statblock.Statblock):
 
 
 def test_apply_tags(setup_statblock: statblock.Statblock):
+    utils.setup_logging(debug=True)
+
     sb = setup_statblock
     sb = tags.fey_physical.all_tags['lumbering'].apply(sb)
     assert sb.ability_scores['STR'].value == 10
@@ -76,3 +80,15 @@ def test_apply_tags(setup_statblock: statblock.Statblock):
     assert tags.fey_physical.all_tags['lumbering'] in sb.applied_tags
     assert tags.fey_physical.all_tags['Wintry'] in sb.applied_tags
     assert tags.fey_physical.all_tags['Summery'] in sb.applied_tags
+    # open('test_statblock_applied.md', 'w').write(sb.to_markdown())
+
+
+def test_update_action_descriptions(setup_statblock: statblock.Statblock):
+    sb = setup_statblock
+    with open('test_statblock_updated.md', 'w') as file_handle:
+        file_handle.write(sb.to_markdown())
+    with open('test_statblock_updated.md') as file_handle:
+        text = file_handle.read()
+    sb_updated = statblock.Statblock.from_markdown(text)
+    assert sb_updated.actions[1].description_template == 'Explodes for 3 (1d6 - 1) cold damage.'
+

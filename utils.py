@@ -1,9 +1,11 @@
 import random
 import json
+import sys
 import pandas as pd
 import re
 import io
 import math
+import logging
 from collections import OrderedDict
 from os import path
 
@@ -21,6 +23,14 @@ size_name_to_val = dict([(val, key) for key, val in size_val_to_name.items()])
 size_min = 0
 size_max = 5
 
+
+def setup_logging(debug=True, filename=''):
+    log_level = logging.DEBUG if debug else logging.INFO
+    log_format = '%(asctime)s [%(levelname)s] %(message)s'
+    if filename:
+        logging.basicConfig(filename=filename, level=log_level, format=log_format)
+    else:
+        logging.basicConfig(stream=sys.stderr, level=log_level, format=log_format)
 
 class RollableTable(object):
     def __init__(self, df: pd.DataFrame):
@@ -112,55 +122,39 @@ class ChallengeRating(object):
 
 
 class Action(object):
-    def __init__(self, name, description_template, is_legendary=False, **kwargs):
+    def __init__(self, name: str, description_template: str, is_legendary: bool = False, **kwargs):
         self.name = name
         self.description_template = description_template
         self.description = ''
         self.is_legendary = is_legendary
-        if kwargs:
-            self.update_description(**kwargs)
-        else:
-            self.update_description({})
 
     def update_description(self, values: dict):
         description = self.description_template
 
         try:
-            operand_groups = re.findall(r'{[^{}]}', self.description_template)
-            op_strings = []
+            operand_groups = re.findall(r'{([^{}]+)}', self.description_template)
+            totals = []
             for operands in operand_groups:
-                operands = [op.strip() for op in operands if op.strip()]
-                total = process_operands(operands, values)
-                op_string = str(total)
+                operands = [op.strip() for op in operands.split() if op.strip()]
+                totals.append(process_operands(operands, values))
 
-                # stuff with rolls involved is displayed as e.g. "19 (3d8 + 6)"
-                dice_ops = []
-                for op in operands:
-                    if re.search(r'\d*d\d+', op):
-                        dice_ops = op
-
-                if dice_ops:
-                    op_string += ' (' + ' + '.join(dice_ops)
-                    for dice_op in dice_ops:
-                        operands.pop(operands.index(dice_op))
-
-                    non_dice_total = process_operands(operands, values)
-                    if non_dice_total != 0:
-                        if non_dice_total > 0:
-                            op_string += ' + {})'.format(non_dice_total)
-                        else:
-                            op_string += ' - {})'.format(non_dice_total)
-                    else:
-                        op_string += ')'
-
-                op_strings.append(op_string)
-
-            while '{' in description:
-                description = re.sub(r'{([^{}])}', op_strings.pop(0), description, count=1)
+            match = re.search(r'{([^{}]+)}', description)
+            while match:
+                description = description.replace(match.group(0), str(totals.pop(0)))
+                match = re.search(r'{([^{}]+)}', description)
 
         except KeyError as e:
             print('Missing values for updating action description template.')
             print(e)
+
+        matches = re.findall(r'([+\-]?\d+\s+\(([A-z0-9+\-\s]+)\))', description)
+        for match in matches:
+            total = process_operands([op.strip() for op in match[1].split()], values)
+            pretty = match[1].replace('+ -', '- ')  # turn adding negative numbers into subtracting positive
+            pretty = pretty.replace('- -', '+ ')  # turn subtracting negative numbers into adding positive
+            description = description.replace(match[0], '{} ({})'.format(total, pretty))
+
+        self.description = description
 
     def __str__(self):
         if self.is_legendary:
@@ -220,7 +214,7 @@ def process_operands(operands: list, values: dict):
             pass
 
         if re.search(r'\d*d\d+', operand):
-            total += Dice.from_string(operand).roll() * next_mul
+            total += Dice.from_string(operand).upper_average() * next_mul
             next_mul = 1
             continue
 
@@ -239,6 +233,7 @@ def process_operands(operands: list, values: dict):
                 next_mul = 1
                 continue
             if operand[:3].upper() in values['ability_scores'].keys():
+
                 total += values['ability_scores'][operand].value * next_mul
                 next_mul = 1
                 continue
@@ -252,4 +247,3 @@ def process_operands(operands: list, values: dict):
         raise RuntimeError('Couldn\'t parse operand {} of operands {}'.format(operand, operands))
 
     return total
-

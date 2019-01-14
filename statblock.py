@@ -1,8 +1,9 @@
 import random
 import re
 import math
+import logging
 from collections import defaultdict
-from typing import Callable
+from typing import Callable  # don't remove, used in docstrings
 from utils import Dice
 from utils import AbilityScore
 from utils import ChallengeRating
@@ -27,6 +28,7 @@ def parse_resist_or_immunity(text: str) -> set:
     if bps_resistance != '':
         resistances += [bps_resistance]
 
+    # logging.debug(f'parse_resist_or_immunity({text}) -> {resistances}')
     return set(resistances)
 
 
@@ -55,6 +57,7 @@ def parse_actions(lines: list, is_legendary=False):
         action_description = action_description.strip()
         actions.append(Action(action_name, action_description, is_legendary))
 
+    logging.debug(f'parse_actions(lines={lines},\n is_legendary={is_legendary}) -> {actions}, {lines}')
     return actions, lines
 
 
@@ -155,23 +158,38 @@ class Statblock(object):
         self.__proficiency = proficiency
         self.applied_tags = applied_tags
 
+    def get_substitutable_values(self):
+        values = {}
+        for ab_score in self.ability_scores.values():
+            values[ab_score.name] = ab_score.value
+            values[ab_score.short_name] = ab_score.modifier
+        for skill, skill_mod in self.skills.items():
+            values[skill] = skill_mod
+        values['proficiency'] = self.proficiency
+        values['prof'] = self.proficiency
+        return values
+
     def calc_challenge(self):
         # TODO
         self.challenge = self.challenge
 
     def calc_hit_points(self):
         """Sets hit points using hit dice and either hit point bonus or constitution modifier."""
+        try:
+            original_hp = self.hit_points
+        except AttributeError:
+            original_hp = '<unset>'
         self.hit_points = self.hit_dice.upper_average()
         if self.hit_point_bonus != 0:
             self.hit_points += self.hit_point_bonus
         elif self.ability_scores.get('CON') is not None:
             self.hit_points += self.ability_scores['CON']
+        logging.debug(f'calc_hit_points() updated hp from {original_hp} to {self.hit_points}')
 
     @property
     def passive_perception(self):
         if self.__passive_perception is None:
             return 10 + self.ability_scores['WIS'] + self.skills.get('Perception', 0)
-
         return self.__passive_perception
 
     @property
@@ -185,10 +203,13 @@ class Statblock(object):
         self.__proficiency = proficiency
 
     @classmethod
-    def from_markdown(cls, text: str='', filename=''):
+    def from_markdown(cls, text: str = '', filename=''):
         if filename:
+            logging.debug(f'New Statblock from file f{filename}.')
             with open(filename) as file_handle:
                 text = file_handle.read()
+        else:
+            logging.debug('New Statblock from text.')
         if not text and not filename:
             raise RuntimeError('Either text or filename must be specified.')
 
@@ -204,6 +225,7 @@ class Statblock(object):
 
             curr_line = curr_line.replace('> ##', '')
             sb.name = curr_line.strip()
+            logging.debug(f'Parsed name "{sb.name}"')
 
             curr_line = lines.pop(0)
             curr_line = curr_line.strip('>').strip().strip('*').strip().split(',')
@@ -213,6 +235,7 @@ class Statblock(object):
             else:
                 size_and_types, alignment = curr_line
                 sb.alignment = alignment.strip()
+            logging.debug(f'Parsed alignment "{sb.alignment}"')
 
             size_and_types = size_and_types.split()
             if len(size_and_types) == 2:
@@ -220,9 +243,11 @@ class Statblock(object):
             elif len(size_and_types) == 3:
                 sb.size, sb.primary_type, sb.secondary_type = size_and_types
                 sb.secondary_type = sb.secondary_type.replace('(', '').replace(')', '').strip()
+            logging.debug(f'Parsed types "{sb.primary_type}", "{sb.secondary_type}""')
 
             sb.size = max(size_name_to_val.get(sb.size, -1), size_min)
             sb.size = min(sb.size, size_max)
+            logging.debug(f'Parsed size "{size_val_to_name[sb.size]}"')
 
             lines.pop(0)
             # assert curr_line.strip().endswith('_')
@@ -234,6 +259,7 @@ class Statblock(object):
                 sb.armor_class_type = ' '.join(curr_line[1:]).lstrip('(').rstrip(')')
             elif len(curr_line) == 1:
                 sb.armor_class = int(curr_line[0])
+            logging.debug(f'Parsed AC "{sb.armor_class}", "{sb.armor_class_type}"')
 
             curr_line = lines.pop(0)
             curr_line = curr_line.replace('> - **Hit Points** ', '').strip().split()
@@ -246,6 +272,9 @@ class Statblock(object):
                     sb.hit_dice = Dice.from_string(curr_line[1].lstrip('(').rstrip(')'))
             elif len(curr_line) == 1:
                 sb.hit_points = int(curr_line[0])
+            logging.debug(f'Parsed HP "{sb.hit_points}"')
+            logging.debug(f'Parsed HP bonus "{sb.hit_point_bonus}"')
+            logging.debug(f'Parsed hit dice "{sb.hit_dice}"')
 
             curr_line = lines.pop(0)
             curr_line = curr_line.replace('> - **Speed** ', '')
@@ -261,6 +290,8 @@ class Statblock(object):
                     sb.fly_speed = int(speed_text.strip().split()[1])
                 else:
                     print('Warning: Couldn\'t parse speed {}'.format(speed_text))
+            logging.debug(f'Parsed speed="{sb.speed}", fly="{sb.fly_speed}", swim="{sb.swim_speed}", '
+                          f'climb="{sb.climb_speed}"')
 
             lines.pop(0)
             # assert curr_line.strip().endswith('_')
@@ -286,6 +317,7 @@ class Statblock(object):
                 if score_val is not None:
                     ab_score.value = int(score_val.split()[0])
                 sb.ability_scores[ab_score.short_name] = ab_score
+            logging.debug(f'Parsed ability scores "{sb.ability_scores}"')
 
             if lines[0].rstrip('>').strip().startswith('_'):
                 lines.pop(0)
@@ -296,6 +328,7 @@ class Statblock(object):
                 for save_text in save_texts:
                     save_name, save_mod = save_text.split()
                     sb.saving_throws[save_name] = int(save_mod)
+            logging.debug(f'Parsed saving throws "{sb.saving_throws}"')
 
             if 'Skills' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Skills** ', '')
@@ -303,22 +336,27 @@ class Statblock(object):
                 for skill_text in skill_texts:
                     skill_name, skill_mod = skill_text.split()
                     sb.skills[skill_name] = int(skill_mod)
+            logging.debug(f'Parsed skills "{sb.skills}"')
 
             if 'Damage Vuln' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Damage Vulnerabilities** ', '')
                 sb.damage_vulnerabilities = parse_resist_or_immunity(curr_line)
+            logging.debug(f'Parsed damage vulns "{sb.damage_vulnerabilities}"')
 
             if 'Damage Resist' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Damage Resistances** ', '')
                 sb.damage_resistances = parse_resist_or_immunity(curr_line)
+            logging.debug(f'Parsed damage resistances "{sb.damage_resistances}"')
 
             if 'Damage Immun' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Damage Immunities** ', '')
                 sb.damage_immunities = parse_resist_or_immunity(curr_line)
+            logging.debug(f'Parsed damage immunities "{sb.damage_immunities}"')
 
             if 'Condition Immun' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Condition Immunities** ', '')
                 sb.condition_immunities = [c.strip() for c in curr_line.strip().split(',') if c.strip()]
+            logging.debug(f'Parsed condition immunities "{sb.condition_immunities}"')
 
             if 'Senses' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Senses** ', '')
@@ -336,6 +374,9 @@ class Statblock(object):
                         sb.tremorsense = int(sense_text[1])
                     if sense_text[0] == 'passive':
                         sb.__passive_perception = int(sense_text[2])
+            logging.debug(
+                f'Parsed senses blindsight={sb.blindsight}, truesight={sb.truesight}, darkvision={sb.darkvision},'
+                f'tremorsense={sb.tremorsense}, passive perception={sb.__passive_perception}')
 
             if 'Languages' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Languages** ', '')
@@ -345,15 +386,19 @@ class Statblock(object):
                         sb.telepathy = int(re.search(r'telepathy (\d+) ft', curr_line).group(1))
                     except AttributeError:
                         sb.telepathy = 60  # TODO need an external default file
+            logging.debug(f'Parsed languages "{sb.languages}"')
+            logging.debug(f'Parsed telepathy "{sb.telepathy}"')
 
             if 'Challenge' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Challenge** ', '')
                 challenge = curr_line.strip().split()[0]
                 sb.challenge = ChallengeRating(challenge)
+            logging.debug(f'Parsed CR "{sb.challenge.rating}"')
 
             if 'Tags' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Tags** ', '')
                 sb.applied_tags = [Tag(tag_name.strip()) for tag_name in curr_line.split(',')]
+            logging.debug(f'Parsed tags "{sb.applied_tags}""')
 
             if not lines:
                 return sb
@@ -378,6 +423,8 @@ class Statblock(object):
                         if num_leg:
                             sb.num_legendary = int(num_leg.groups()[0])
                     sb.legendary_actions, lines = parse_actions(lines, is_legendary=True)
+            logging.debug(f'Parsed abilities={sb.abilities}, actions={sb.actions}, bonus actions={sb.bonus_actions},'
+                          f'legendary actions={sb.legendary_actions}, num legendary={sb.num_legendary}')
 
         except Exception as e:
             print('\nRemaining lines:')
@@ -534,6 +581,7 @@ class Statblock(object):
         if self.abilities:
             for action in self.abilities:
                 # These might get a little more complicated in future, so we will let the Action class do formatting
+                action.update_description(self.get_substitutable_values())
                 lines.append(str(action))
                 if lines[-1].strip() != '':
                     lines.append('')
@@ -541,6 +589,7 @@ class Statblock(object):
         if self.actions:
             lines.append('### Actions')
             for action in self.actions:
+                action.update_description(self.get_substitutable_values())
                 lines.append(str(action))
                 if lines[-1].strip() != '':
                     lines.append('')
@@ -548,6 +597,7 @@ class Statblock(object):
         if self.bonus_actions:
             lines.append('### Bonus Actions')
             for action in self.bonus_actions:
+                action.update_description(self.get_substitutable_values())
                 lines.append(str(action))
                 if lines[-1].strip() != '':
                     lines.append('')
@@ -555,6 +605,7 @@ class Statblock(object):
         if self.reactions:
             lines.append('### Reactions')
             for action in self.reactions:
+                action.update_description(self.get_substitutable_values())
                 lines.append(str(action))
                 if lines[-1].strip() != '':
                     lines.append('')
@@ -564,11 +615,12 @@ class Statblock(object):
             lines.append('')
             lines.append('This creature can take {} legendary actions, choosing from the options below. Only one '
                          'legendary action can be used at a time and only at the end of another creature\'s turn. This '
-                         'creature regains spent legendary actions at the start of its turn.'.format(
-                self.num_legendary))
+                         'creature regains spent legendary actions at the start of its turn.'.format(self.num_legendary)
+                         )
             if lines[-1].strip() != '':
                 lines.append('')
             for action in self.legendary_actions:
+                action.update_description(self.get_substitutable_values())
                 lines.append(str(action))
                 lines.append('')
 
@@ -603,6 +655,7 @@ class Tag(object):
                                                                                     Statblock and False.
             remove (Callable[[Statblock], Statblock]):  Returns a Statblock with the effects of this Tag undone.
         """
+        # TODO add tag weights
         self.name = name
         self.effect_text = effect_text
         self.on_apply = on_apply
@@ -612,20 +665,20 @@ class Tag(object):
         self.overwrites = set() if overwrites is None else overwrites
         self.overwritten_by = set() if overwritten_by is None else overwritten_by
         self.on_overwrite = on_overwrite
-        if on_overwrite is None:
+        if on_stack is None:
             self.on_stack = lambda sb: sb
         self.on_overwrite = on_overwrite
         if on_overwrite is None:
-            self.on_overwrite = lambda t, sb: sb, True
+            self.on_overwrite = lambda t, sb: (sb, True)
         self.remove = remove
         if remove is None:
             self.remove = lambda sb: sb
 
     def __repr__(self):
-        return 'Tag<name="{}", effect_text="{}", on_apply={}, stacks={}, overwrites={}, overwritten_by={}, on_stack={}, ' \
-               'on_overwrite={}, remove={}>'.format(
-                self.name, self.effect_text, self.on_apply, self.stacks, self.overwrites, self.overwritten_by,
-                self.on_stack, self.on_overwrite, self.remove)
+        return 'Tag<name="{}", effect_text="{}", on_apply={}, stacks={}, overwrites={}, overwritten_by={}, ' \
+               'on_stack={}, on_overwrite={}, remove={}>'.format(self.name, self.effect_text, self.on_apply,
+                                                                 self.stacks, self.overwrites, self.overwritten_by,
+                                                                 self.on_stack, self.on_overwrite, self.remove)
 
     def apply(self, statblock: Statblock) -> Statblock:
         # FIXME Maybe make this a copy of the statblock?

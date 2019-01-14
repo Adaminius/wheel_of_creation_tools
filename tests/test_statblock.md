@@ -25,7 +25,7 @@ ___
 > ### Actions
 > ***Open Chin Choke.*** *Melee Weapon Attack:* +4 to hit, reach 5ft., one target. *Hit* 5 (1d6 + 2)
 >
-> ***Test Action.*** Explodes for 4 (1d6) cold damage.
+> ***Test Action.*** Explodes for 3 (1d6 + {STR}) cold damage.
 >
 > ### Bonus Actions
 > ***testBonusAction.*** Explodes for 4 (1d6) fire damage.
