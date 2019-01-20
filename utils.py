@@ -9,7 +9,6 @@ import logging
 from collections import OrderedDict
 from os import path
 
-# defaults = json.load('defaults.json')
 package_directory = path.dirname(path.abspath(__file__))
 
 size_val_to_name = {0:  'Tiny',

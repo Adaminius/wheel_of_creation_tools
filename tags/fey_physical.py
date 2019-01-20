@@ -2,7 +2,7 @@ from statblock import Statblock
 from statblock import Tag
 
 all_tags = []
-
+table_name = 'Fey Physical'
 
 def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CHA'].value += 2
@@ -21,7 +21,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.swim_speed = max(0, sb.swim_speed - 5)
     sb.climb_speed = max(0, sb.climb_speed - 5)
     return sb
-all_tags.append(Tag('lumbering', 'add +2 to Strength; subtract 5 ft. from all speeds', on_apply=apply))
+all_tags.append(Tag('Lumbering', 'add +2 to Strength; subtract 5 ft. from all speeds', on_apply=apply))
 # all_tags.append(Tag('lumbering', 'add +2 to Strength; subtract 5 ft. from all speeds', on_apply=apply))
 # all_tags[2].on_apply = apply
 

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="../static/css/style.css">
+  <script src="../static/js/woct_monster.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12 justify-content-center">
+      <h3 style="text-align: center">The Wheel of Creation:</h3>
+      <h1 style="text-align: center">Monster Generator</h1>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col">
+      <div class="dropdown">
+        <button class="btn btn-success dropdown-toggle" type="button" id="tagListDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Choose a Tag Table
+        </button>
+        <div class="dropdown-menu" aria-labelledby="tagListDropdownButton" id="tagListDropdown">
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="dropdown">
+        <button class="btn btn-info dropdown-toggle" type="button" id="statblockDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Choose a Statblock
+        </button>
+        <div class="dropdown-menu" aria-labelledby="statblockDropdownButton" id="statblockDropdown"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table table-bordered table-striped tag-table table-hover">
+        <thead>
+          <tr>
+            <th>Weight</th>
+            <th>Tag</th>
+            <th>Effect</th>
+          </tr>
+        </thead>
+        <tbody id="availableTagTable" style="cursor: pointer;">
+        </tbody>
+      </table>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <!--<label for="baseStatblockTextArea">Statblock to be Modified</label>-->
+        <textarea class="form-control" id="baseStatblockTextArea" title="Statblock to be Modified"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+
+</html>

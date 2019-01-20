@@ -628,13 +628,14 @@ class Statblock(object):
 
 
 class Tag(object):
-    def __init__(self, name, effect_text='', on_apply=None, stacks=False, overwrites=None, overwritten_by=None,
-                 on_stack=None, on_overwrite=None, remove=None):
+    def __init__(self, name, effect_text='', weight=10, on_apply=None, stacks=False, overwrites=None,
+                 overwritten_by=None, on_stack=None, on_overwrite=None, remove=None):
         """Used for applying various little thematic changes to monster statblocks.
 
         Args:
             name (str): Name of the Tag
             effect_text (str):  Human-readable description of what the Tag does, e.g. "add cold resistance"
+            weight (float): How likely it is to roll this tag on a table compared to other tags on the table.
             on_apply (Callable[[Statblock], Statblock]): Function which modifies a statblock, e.g. add 'cold' to its
                                                             set of resistances
             stacks (bool):  If True, calls on_stack() when applying the Tag. This would be useful for something like
@@ -655,9 +656,9 @@ class Tag(object):
                                                                                     Statblock and False.
             remove (Callable[[Statblock], Statblock]):  Returns a Statblock with the effects of this Tag undone.
         """
-        # TODO add tag weights
         self.name = name
         self.effect_text = effect_text
+        self.weight = weight
         self.on_apply = on_apply
         if on_apply is None:
             self.on_apply = lambda sb: sb
@@ -698,3 +699,28 @@ class Tag(object):
         statblock = self.on_apply(statblock)
         statblock.applied_tags.append(self)
         return statblock
+
+    @staticmethod
+    def get_text_table(tag_list: list) -> str:
+        if isinstance(tag_list, dict):
+            tag_list = list(tag_list.values())
+
+        out_str = '| d1000 | Tag | Description | '
+        out_str += '|:-:|:-:|:-:|'
+        total_weight = 0
+        for tag in tag_list:
+            out_str += '{}-{} | {} | {}'.format(total_weight, tag.weight - 1, tag.name, tag.effect_text)
+            total_weight += tag.weight
+        return out_str
+
+    @staticmethod
+    def get_dict_table(tag_list: list) -> dict:
+        if isinstance(tag_list, dict):
+            tag_list = list(tag_list.values())
+
+        total_weight = sum([tag.weight for tag in tag_list])
+        out_dict = {}
+        for tag in tag_list:
+            tag_dict = {'weight': '{:.1%}'.format(tag.weight / total_weight), 'effect': tag.effect_text}
+            out_dict[tag.name] = tag_dict
+        return out_dict
