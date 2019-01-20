@@ -78,8 +78,9 @@ def test_apply_tags(setup_statblock: statblock.Statblock):
     assert 'psychic' in sb.damage_resistances
     assert 'cold' not in sb.damage_resistances
     assert tags.fey_physical.all_tags['lumbering'] in sb.applied_tags
-    assert tags.fey_physical.all_tags['Wintry'] in sb.applied_tags
+    assert tags.fey_physical.all_tags['Wintry'] not in sb.applied_tags
     assert tags.fey_physical.all_tags['Summery'] in sb.applied_tags
+    assert len(sb.applied_tags) == 4
     # open('test_statblock_applied.md', 'w').write(sb.to_markdown())
 
 

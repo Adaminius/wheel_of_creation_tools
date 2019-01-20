@@ -3,6 +3,7 @@ import re
 import math
 import logging
 from collections import defaultdict
+from copy import deepcopy
 from typing import Callable  # don't remove, used in docstrings
 from utils import Dice
 from utils import AbilityScore
@@ -85,6 +86,7 @@ class Statblock(object):
                  abilities: list = None, actions: list = None, bonus_actions: list = None,
                  reactions: list = None, legendary_actions: list = None, num_legendary: int = 3, proficiency=0,
                  applied_tags: list = None,
+                 original_text: str = None,
                  **additional_skills):
 
         self.name = name if name is not None else random_name()
@@ -158,6 +160,8 @@ class Statblock(object):
         self.__proficiency = proficiency
         self.applied_tags = applied_tags
 
+        self.original_text = original_text if original_text is not None else ''
+
     def get_substitutable_values(self):
         values = {}
         for ab_score in self.ability_scores.values():
@@ -213,7 +217,7 @@ class Statblock(object):
         if not text and not filename:
             raise RuntimeError('Either text or filename must be specified.')
 
-        sb = Statblock()
+        sb = Statblock(original_text=text)
 
         lines = text.split('\n')
         try:
@@ -627,6 +631,24 @@ class Statblock(object):
         return '\n'.join(['___', '___'] + ['> ' + line for line in lines])
 
 
+def default_on_overwrite(tag, other_tag, statblock: Statblock):
+    # When I'm overwritten, remove me!
+    return default_remove(tag, statblock), True
+
+def default_remove(tag, statblock: Statblock) -> Statblock:
+    if statblock.original_text is None:
+        logging.warning('Cannot remove tag, no original text for this Statblock.')
+        return statblock
+
+    new_sb = Statblock.from_markdown(statblock.original_text)
+    text_tags = [tag.name for tag in new_sb.applied_tags]
+    for applied_tag in statblock.applied_tags:
+        if applied_tag.name == tag.name or applied_tag.name in text_tags:
+            continue
+        new_sb = applied_tag.apply(new_sb)
+    return new_sb
+
+
 class Tag(object):
     def __init__(self, name, effect_text='', weight=10, on_apply=None, stacks=False, overwrites=None,
                  overwritten_by=None, on_stack=None, on_overwrite=None, remove=None):
@@ -654,7 +676,9 @@ class Tag(object):
                                                                                     called. Should return a modified
                                                                                     Statblock and True or unmodified
                                                                                     Statblock and False.
-            remove (Callable[[Statblock], Statblock]):  Returns a Statblock with the effects of this Tag undone.
+            remove (Callable[[Statblock], Statblock]):  Callable that should return a Statblock with the effects of
+                                                        this Tag undone. By default, this is done by taking the base
+                                                        statblock and reapplying every tag but this one.
         """
         self.name = name
         self.effect_text = effect_text
@@ -662,18 +686,25 @@ class Tag(object):
         self.on_apply = on_apply
         if on_apply is None:
             self.on_apply = lambda sb: sb
+        else:
+            self.on_apply = on_apply
         self.stacks = stacks
         self.overwrites = set() if overwrites is None else overwrites
         self.overwritten_by = set() if overwritten_by is None else overwritten_by
-        self.on_overwrite = on_overwrite
         if on_stack is None:
             self.on_stack = lambda sb: sb
-        self.on_overwrite = on_overwrite
-        if on_overwrite is None:
-            self.on_overwrite = lambda t, sb: (sb, True)
-        self.remove = remove
+        else:
+            self.on_stack = on_stack
+
         if remove is None:
-            self.remove = lambda sb: sb
+            self.remove = default_remove
+        else:
+            self.remove = remove
+
+        if on_overwrite is None:
+            self.on_overwrite = default_on_overwrite
+        else:
+            self.on_overwrite = on_overwrite
 
     def __repr__(self):
         return 'Tag<name="{}", effect_text="{}", on_apply={}, stacks={}, overwrites={}, overwritten_by={}, ' \
@@ -682,7 +713,6 @@ class Tag(object):
                                                                  self.on_stack, self.on_overwrite, self.remove)
 
     def apply(self, statblock: Statblock) -> Statblock:
-        # FIXME Maybe make this a copy of the statblock?
         if self.name in statblock.applied_tags:
             if self.stacks:
                 statblock = self.on_stack(statblock)
@@ -692,7 +722,7 @@ class Tag(object):
         for old_tag in statblock.applied_tags:
             for label in old_tag.overwritten_by:
                 if label in self.overwrites:
-                    statblock, keep_applying = self.on_overwrite(old_tag, statblock)
+                    statblock, keep_applying = old_tag.on_overwrite(old_tag, self, statblock)
                     if not keep_applying:
                         return statblock
 

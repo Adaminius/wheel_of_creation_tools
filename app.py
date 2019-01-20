@@ -71,6 +71,16 @@ def get_all_tag_lists() -> str:
 @app.route('/getAllStatblocks', methods=['GET'])
 def get_all_statblocks():
     """Returns filename for each statblock in statblocks/ as HTML"""
+    filenames = glob('statblocks/*py')
+    template = Template(
+        """<a class="dropdown-item" style="cursor: pointer;" onclick="selectStatblock('{{ filename }}')">
+          {{ filename }}
+        </a>"""
+    )
+    out = ''
+    for filename in filenames:
+        out += template.render(filename=os.path.basename(filename))
+    return out
 
 
 if __name__ == '__main__':
