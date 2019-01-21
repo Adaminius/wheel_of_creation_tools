@@ -3,19 +3,19 @@
 
 <head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
   <link rel="stylesheet" href="../static/css/style.css">
   <script src="../static/js/woct_monster.js"></script>
-
+  <title>Wheel of Creation -- Monster Generator</title>
 </head>
 
 <body>
-
 <div class="container">
   <div class="row">
     <div class="col-12 justify-content-center">
@@ -64,9 +64,49 @@
       </div>
     </div>
   </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-md-pull-4">
+      <button class="btn btn-warning" style="margin: .25rem;" id="addRandomButton">Add Random</button>
+      <button class="btn btn-secondary" style="margin: .25rem;" id="clearButton">Clear</button>
+    </div>
+    <div class="col-md" id="tagsToApplyDiv"
+         style="border-left: solid 1px rgba(0,0,0,.1); margin-left: 1rem; padding-left: 1rem; min-width: 6rem">
+    </div>
+  </div>
+  <div class="row" style="margin-top: 1rem;">
+    <!--<div class="col-md-1" style="border-left: solid 1px gray; margin-left: 1rem; padding-left: 1rem">-->
+      <button class="btn btn-success btn-block" id="applyTagsButton">Apply</button>
+    <!--</div>-->
+  </div>
+  <div class="row justify-content-md-center">
+    <div class="col-md-6">
+        <textarea class="form-control" title="Modified Statblock" id="modifiedStatblockTextArea"></textarea>
+    </div>
+  </div>
+<hr>
+  <div class="container">
+    <div class="row justify-content-sm-center">
+      <div class="col-sm-12" style="text-align: center">
+        <nav class="navbar navbar-expand-sm ">
+          <ul class="navbar-nav">
+            <li class="nav-item" style="border-left: none;">
+              &copy;2019 Adam "Attenius" Mansfield
+            </li>
+            <li class="nav-item">
+              View the source on <a href="https://github.com/Adaminius/wheel_of_creation_tools" target="_blank"><i class="fab fa-github" style="color: black"></i> Github</a>
+            </li>
+            <li class="nav-item">
+              Find me on <a href="https://www.reddit.com/user/Attenius" target="_blank"><i class="fab fa-reddit" style="color: orangered"></i> Reddit</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
 </div>
 
-
 </body>
-
 </html>

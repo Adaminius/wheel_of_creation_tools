@@ -158,7 +158,7 @@ class Statblock(object):
 
         self.num_legendary = num_legendary
         self.__proficiency = proficiency
-        self.applied_tags = applied_tags
+        self.applied_tags = applied_tags if applied_tags is not None else []
 
         self.original_text = original_text if original_text is not None else ''
 
@@ -751,6 +751,7 @@ class Tag(object):
         total_weight = sum([tag.weight for tag in tag_list])
         out_dict = {}
         for tag in tag_list:
-            tag_dict = {'weight': '{:.1%}'.format(tag.weight / total_weight), 'effect': tag.effect_text}
+            tag_dict = {'weight': '{:.1%}'.format(tag.weight / total_weight), 'effect': tag.effect_text,
+                        'stacks': str(tag.stacks)}
             out_dict[tag.name] = tag_dict
         return out_dict

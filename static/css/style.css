@@ -1,5 +1,9 @@
+body {
+}
+
 .table {
-    margin: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .container {
@@ -7,5 +11,23 @@
 }
 
 textarea {
-    margin: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    min-width: 300px;
+    min-height: 480px;
+    font-family: 'Operator Mono', 'Source Sans Pro', Menlo, Monaco, Consolas, Courier New, monospace;
+}
+
+.tag-button {
+    margin: .25rem;
+    /*margin-left: .25rem;*/
+    /*margin-right: .25rem;*/
+    /*margin-bottom: .25rem;*/
+}
+
+.nav-item {
+    border-left: solid 1px rgba(0,0,0,.1);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-bottom: 1rem;
 }

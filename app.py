@@ -1,8 +1,10 @@
 import importlib
 import importlib.util
-import os
+import sys
+import pprint
 import statblock
 import utils
+from os.path import basename
 from glob import glob
 from flask import Flask
 from flask import request
@@ -16,22 +18,38 @@ app = Flask(__name__)
 CORS(app)
 
 
+def load_tag_module(filename):
+    filename = basename(filename)
+    spec = importlib.util.spec_from_file_location(filename.split('.')[0], 'tags/{}'.format(filename))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    modules[filename] = module
+    print('loaded {}: {}'.format(filename, module))
+
+
 @app.route('/')
 def home():
     with open('templates/index.html') as file_handle:
         text = file_handle.read()
     return text
 
+@app.route('/getStatblock', methods=['GET'])
+def get_statblock():
+    filename = request.args.get('filename')
+    with open('statblocks/{}'.format(filename)) as file_handle:
+        text = file_handle.read()
+    return text
 
 @app.route('/getTagList', methods=['GET'])
 def get_tag_list():
-    # spec = importlib.util.spec_from_file_location('modulename', filename)
-    # module = importlib.util.module_from_spec(spec)
-    # spec.loader.exec_module(module)  # should already be loaded, but let's reload so we can edit on the fly
-    # importlib.reload(filename)
     filename = request.args.get('filename')
+    if modules[basename(filename)] is None:
+        load_tag_module(filename)
+
     template = Template(
-        """<tr onclick="selectTag('{{ filename }}', '{{ tag_name }}' data-toggle="tooltip" title="Add this tag">
+        """<tr onclick="selectTag('{{ filename }}', '{{ tag_name }}', '{{ stacks }}')" 
+        data-toggle="tooltip" title="stacks={{ stacks }}" data-name="{{ tag_name }}" data-filename="{{ filename }}"
+        data-weight="{{ weight }}" data-stacks="{{ stacks }}">
              <td>{{ weight }}</td>
              <td><strong>{{ tag_name }}</strong></td>
              <td>{{ effect }}</td>
@@ -39,8 +57,9 @@ def get_tag_list():
         """
     )
     out = ''
-    for name, tag_dict in statblock.Tag.get_dict_table(modules[filename].all_tags).items():
-        out += template.render(filename=filename, tag_name=name, weight=tag_dict['weight'], effect=tag_dict['effect'])
+    for name, tag_dict in statblock.Tag.get_dict_table(modules[basename(filename)].all_tags).items():
+        out += template.render(filename=filename, tag_name=name, weight=tag_dict['weight'], effect=tag_dict['effect'],
+                               stacks=tag_dict['stacks'])
     return out
 
 
@@ -56,22 +75,16 @@ def get_all_tag_lists() -> str:
     out = ''
     filenames = glob('tags/*py')
     for filename in filenames:
-        if modules.get(filename) is None:
-            spec = importlib.util.spec_from_file_location('modulename', filename)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            modules[os.path.basename(filename)] = module
-        else:
-            module = modules[filename]
-            if DEBUG:
-                importlib.reload(module)
-        out += template.render(filename=os.path.basename(filename), table_name=module.table_name)
+        if modules.get(filename) is None or DEBUG:
+            load_tag_module(filename)
+        module = modules[basename(filename)]
+        out += template.render(filename=basename(filename), table_name=module.table_name)
     return out
 
 @app.route('/getAllStatblocks', methods=['GET'])
 def get_all_statblocks():
     """Returns filename for each statblock in statblocks/ as HTML"""
-    filenames = glob('statblocks/*py')
+    filenames = glob('statblocks/*md')
     template = Template(
         """<a class="dropdown-item" style="cursor: pointer;" onclick="selectStatblock('{{ filename }}')">
           {{ filename }}
@@ -79,9 +92,19 @@ def get_all_statblocks():
     )
     out = ''
     for filename in filenames:
-        out += template.render(filename=os.path.basename(filename))
+        out += template.render(filename=basename(filename))
     return out
 
+@app.route('/modifyStatblock', methods=['POST', 'GET'])
+def get_modified_statblock():
+    data = request.get_json()
+    sb = statblock.Statblock.from_markdown(text=data['statblock'])
+    for tag in data['tags[]']:
+        print(tag['name'], tag['filename'])
+        if modules.get(tag['filename']) is None:
+            load_tag_module(tag['filename'])
+        sb = modules[basename(tag['filename'])].all_tags[tag['name']].apply(sb)
+    return sb.to_markdown()
 
 if __name__ == '__main__':
     app.run()

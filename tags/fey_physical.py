@@ -5,6 +5,13 @@ all_tags = []
 table_name = 'Fey Physical'
 
 def apply(sb: Statblock) -> Statblock:
+    sb.primary_type = 'fey'
+    sb.damage_immunities.add('immunity to bludgeoning, piercing, and slashing damage from weapons not made of thokcha')
+    sb.languages.append('Sylvan')
+    return sb
+all_tags.append(Tag('fey', 'Fey type; immunity to bludgeoning, piercing, and slashing damage from weapons not made of thokcha; speaks Sylvan', weight=0, on_apply=apply))
+
+def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CHA'].value += 2
     return sb
 all_tags.append(Tag('beautiful', 'add +2 to Charisma', on_apply=apply))
