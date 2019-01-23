@@ -2,6 +2,7 @@ import pytest
 import statblock
 import utils
 import tags.fey_physical
+import tags.fey_mental
 
 
 @pytest.fixture(scope='function')
@@ -81,6 +82,9 @@ def test_apply_tags(setup_statblock: statblock.Statblock):
     assert tags.fey_physical.all_tags['Wintry'] not in sb.applied_tags
     assert tags.fey_physical.all_tags['Summery'] in sb.applied_tags
     assert len(sb.applied_tags) == 4
+    sb = tags.fey_physical.all_tags['Wintry'].apply(sb)
+    sb = tags.fey_mental.all_tags['cold logic'].apply(sb)
+    assert len(sb.applied_tags) == 5
     # open('test_statblock_applied.md', 'w').write(sb.to_markdown())
 
 

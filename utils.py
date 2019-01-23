@@ -1,3 +1,4 @@
+import csv
 import random
 import json
 import sys
@@ -162,6 +163,19 @@ class Action(object):
 
     def __repr__(self):
         return 'Action<name="{}", description="{}">'.format(self.name, self.description)
+
+
+common_actions = {}
+with open('common_actions.csv') as file_handle:
+    reader = csv.DictReader(file_handle)
+    for row in reader:
+        name = str(row['name'])
+        description_template = str(row['description_template'])
+        if isinstance(row['is_legendary'], bool):
+            is_legendary = row['is_legendary']
+        else:
+            is_legendary = 'alse' in row['is_legendary']
+        common_actions[name] = Action(name=name, description_template=description_template, is_legendary=is_legendary)
 
 
 def parse_table(lines: list) -> OrderedDict:

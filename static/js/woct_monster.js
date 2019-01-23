@@ -46,17 +46,23 @@ $('document').ready(function () {
     $('#addRandomButton').on('click', function () {
         // remove stuff that we already have that doesn't stack
         let existingNonstackingTags = [];
+        let existingTags = [];
         $('#tagsToApplyDiv').children().each(function() {
-            tagNode = $(this);
+            let tagNode = $(this);
             if (tagNode.attr('data-stacks') === 'False')
-                existingNonstackingTags.push(tagNode.attr('data-name') + tagNode.attr('data-filename'));
+                existingNonstackingTags.push(tagNode.attr('data-name') + '$' + tagNode.attr('data-filename'));
+            existingTags.push(tagNode.attr('data-name') + '$' + tagNode.attr('data-filename'));
         });
 
         let choices = [];
         let weights = [];
         $('#availableTagTable').children().each(function() {
-            tagNode = $(this);
-            if(existingNonstackingTags.indexOf(tagNode.attr('data-name') + tagNode.attr('data-filename')) < 0) {
+            let tagNode = $(this);
+            if (existingNonstackingTags.indexOf(tagNode.attr('data-name') + '$' + tagNode.attr('data-filename')) < 0) {
+                if (!hasRequiredTags(tagNode, existingTags)) {
+                    console.log('dunnae have the required taegs!');
+                    return;
+                }
                 choices.push(tagNode);
                 weights.push(parseFloat(tagNode.attr('data-weight')));
             }
@@ -121,7 +127,23 @@ function selectTag(filename, tagName, stacks) {
     $('#tagsToApplyDiv').append(`<button class="btn btn-danger tag-button" data-stacks="${stacks}" data-filename="${filename}" data-name="${tagName}" title="${filename}"><strong>&times</strong> ${tagName}</button>`)
 }
 
+function hasRequiredTags(tagNode, existingTags) {
+    console.log('hasRequiredTags ' + tagNode.attr('data-requires').split(',') + ' ' + existingTags);
+    if (tagNode.attr('data-requires') === '-')
+        return true;
+    let requiredTags = tagNode.attr('data-requires').split(',');
+    let cleanedExistingTags = [];
+    existingTags = existingTags.forEach(function (tagName) {
+        cleanedExistingTags.push(tagName.split('$')[0]);
+    });
+    existingTags = cleanedExistingTags;
 
-
-
-
+    let requirementsFailed = false;
+    requiredTags.forEach(function (requiredTag) {
+        if (requirementsFailed)
+            return;
+        if (existingTags.indexOf(requiredTag) < 0)
+            requirementsFailed = true;
+    });
+    return !requirementsFailed;
+}

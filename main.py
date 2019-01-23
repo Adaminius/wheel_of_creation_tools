@@ -49,17 +49,19 @@ def get_tag_list():
     template = Template(
         """<tr onclick="selectTag('{{ filename }}', '{{ tag_name }}', '{{ stacks }}')" 
         data-toggle="tooltip" title="stacks={{ stacks }}" data-name="{{ tag_name }}" data-filename="{{ filename }}"
-        data-weight="{{ weight }}" data-stacks="{{ stacks }}">
+        data-weight="{{ weight }}" data-stacks="{{ stacks }}" data-requires="{{ requires }}">
              <td>{{ weight }}</td>
              <td><strong>{{ tag_name }}</strong></td>
              <td>{{ effect }}</td>
+             <td>{{ requires }}</td>
            </tr>
         """
     )
     out = ''
     for name, tag_dict in statblock.Tag.get_dict_table(modules[basename(filename)].all_tags).items():
+        requires = ','.join(tag_dict['requires']) if tag_dict['requires'] else '-'
         out += template.render(filename=filename, tag_name=name, weight=tag_dict['weight'], effect=tag_dict['effect'],
-                               stacks=tag_dict['stacks'])
+                               stacks=tag_dict['stacks'], requires=requires)
     return out
 
 

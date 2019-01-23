@@ -651,7 +651,7 @@ def default_remove(tag, statblock: Statblock) -> Statblock:
 
 class Tag(object):
     def __init__(self, name, effect_text='', weight=10, on_apply=None, stacks=False, overwrites=None,
-                 overwritten_by=None, on_stack=None, on_overwrite=None, remove=None):
+                 overwritten_by=None, on_stack=None, on_overwrite=None, remove=None, requires=None):
         """Used for applying various little thematic changes to monster statblocks.
 
         Args:
@@ -679,6 +679,7 @@ class Tag(object):
             remove (Callable[[Statblock], Statblock]):  Callable that should return a Statblock with the effects of
                                                         this Tag undone. By default, this is done by taking the base
                                                         statblock and reapplying every tag but this one.
+            requires (set): Set of tag names which this Tag requires in order to be applied
         """
         self.name = name
         self.effect_text = effect_text
@@ -691,6 +692,7 @@ class Tag(object):
         self.stacks = stacks
         self.overwrites = set() if overwrites is None else overwrites
         self.overwritten_by = set() if overwritten_by is None else overwritten_by
+        self.requires = set() if requires is None else requires
         if on_stack is None:
             self.on_stack = lambda sb: sb
         else:
@@ -717,6 +719,11 @@ class Tag(object):
             if self.stacks:
                 statblock = self.on_stack(statblock)
             else:
+                return statblock
+
+        if self.requires:
+            old_names = [tag.name for tag in statblock.applied_tags]
+            if not all([required_tag in old_names for required_tag in self.requires]):
                 return statblock
 
         for old_tag in statblock.applied_tags:
@@ -752,6 +759,6 @@ class Tag(object):
         out_dict = {}
         for tag in tag_list:
             tag_dict = {'weight': '{:.1%}'.format(tag.weight / total_weight), 'effect': tag.effect_text,
-                        'stacks': str(tag.stacks)}
+                        'stacks': str(tag.stacks), 'requires': tag.requires}
             out_dict[tag.name] = tag_dict
         return out_dict
