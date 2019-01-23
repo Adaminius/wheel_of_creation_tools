@@ -11,7 +11,9 @@ def apply(sb: Statblock) -> Statblock:
     sb.damage_vulnerabilities.add('psychic')
     sb.languages.append('Sylvan')
     return sb
-all_tags.append(Tag('fey', 'Fey type; immunity to bludgeoning, piercing, and slashing damage from weapons not made of thokcha; vulnerability to psychic damage; speaks Sylvan', weight=0, on_apply=apply))
+all_tags.append(Tag('fey', 'Fey type; immunity to bludgeoning, piercing, and slashing damage from weapons not made of '
+                           'thokcha; vulnerability to psychic damage; speaks Sylvan',
+                    weight=0, on_apply=apply))
 
 def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CHA'].value += 2
@@ -35,7 +37,7 @@ all_tags.append(Tag('lumbering', 'add +2 to Strength; subtract 5 ft. from all sp
 def apply(sb: Statblock) -> Statblock:
     sb.abilities.append(common_actions['Amphibious'])
     return sb
-all_tags.append(Tag('swamp-dweller', 'can breathe both air and water'))
+all_tags.append(Tag('swamp-dweller', 'can breathe both air and water', on_apply=apply))
 
 ############################
 #    ~~~ Alignments ~~~    #

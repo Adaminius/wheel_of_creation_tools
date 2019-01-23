@@ -174,7 +174,7 @@ with open('common_actions.csv') as file_handle:
         if isinstance(row['is_legendary'], bool):
             is_legendary = row['is_legendary']
         else:
-            is_legendary = 'alse' in row['is_legendary']
+            is_legendary = 'alse' not in row['is_legendary']
         common_actions[name] = Action(name=name, description_template=description_template, is_legendary=is_legendary)
 
 

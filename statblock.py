@@ -525,10 +525,10 @@ class Statblock(object):
 
         if self.damage_resistances:
             dr_line = '- **Damage Resistances** '
-            vulns = self.damage_vulnerabilities.copy()
+            vulns = self.damage_resistances.copy()
             has_bps = False
             for vuln in vulns:
-                if 'bludg' in vuln or 'pierc' in vuln or 'slash' in vuln and len(self.damage_vulnerabilities) > 1:
+                if 'bludg' in vuln or 'pierc' in vuln or 'slash' in vuln and len(self.damage_resistances) > 1:
                     vulns.remove(vuln)
                     dr_line += ', '.join(sorted(vulns))
                     dr_line += '; {}'.format(vuln)
@@ -539,10 +539,10 @@ class Statblock(object):
 
         if self.damage_immunities:
             di_line = '- **Damage Immunities** '
-            vulns = self.damage_vulnerabilities.copy()
+            vulns = self.damage_immunities.copy()
             has_bps = False
             for vuln in vulns:
-                if 'bludg' in vuln or 'pierc' in vuln or 'slash' in vuln and len(self.damage_vulnerabilities) > 1:
+                if 'bludg' in vuln or 'pierc' in vuln or 'slash' in vuln and len(self.damage_immunities) > 1:
                     vulns.remove(vuln)
                     di_line += ', '.join(sorted(vulns))
                     di_line += '; {}'.format(vuln)
