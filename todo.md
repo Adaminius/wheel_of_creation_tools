@@ -14,10 +14,12 @@
     are different from another
 * ~~Include applied tags in statblock~~
 * ~~Split parser/website code into separate dirs~~
+* ~~Get web code actually working~~
+* Fix www
+* Fix language input/output
+* Write tags!
 * Write a real README/License
 * Add OGL info from WotC
-* ~~Get web code actually working~~
-* Write tags!
 * Add burrow speed
 * Need to infer skills/ability score to use in actions?
 * Handle damage for melee/spell/ranged attacks
