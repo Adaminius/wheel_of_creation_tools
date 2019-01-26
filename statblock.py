@@ -390,6 +390,9 @@ class Statblock(object):
                         sb.telepathy = int(re.search(r'telepathy (\d+) ft', curr_line).group(1))
                     except AttributeError:
                         sb.telepathy = 60  # TODO need an external default file
+            if len(sb.languages) == 1:
+                if re.search(r'[A-Za-z0-9]', sb.languages[0]) is None:  # check for something like '-'
+                    sb.languages = []
             logging.debug(f'Parsed languages "{sb.languages}"')
             logging.debug(f'Parsed telepathy "{sb.telepathy}"')
 
@@ -570,7 +573,10 @@ class Statblock(object):
             sense_line += ', '.join(senses)
             lines.append(sense_line)
 
-        lang_line = '- **Languages** {}'.format(', '.join(sorted(self.languages)))
+        if self.languages:
+            lang_line = '- **Languages** {}'.format(', '.join(sorted(self.languages)))
+        else:
+            lang_line = '- **Languages** -'
         if self.telepathy:
             lang_line += ', telepathy {} ft.'.format(self.telepathy)
         lines.append(lang_line)
