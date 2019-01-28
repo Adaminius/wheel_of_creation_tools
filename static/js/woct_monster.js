@@ -15,7 +15,7 @@ $('document').ready(function () {
 
     $('#applyTagsButton').on('click', function () {
         let tags = [];
-        $('#tagsToApplyDiv').children().each(function() {
+        $('#tagsToApplyDiv').children().each(function () {
             tags.push({'name': $(this).attr('data-name'), 'filename': $(this).attr('data-filename')});
         });
 
@@ -27,11 +27,12 @@ $('document').ready(function () {
             type: 'POST',
             url: '/modifyStatblock',
             data: JSON.stringify(payload),
-            dataType: 'text',
+            dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
                 console.log(data);
-                $('#modifiedStatblockTextArea').html(data);
+                $('#modifiedStatblockTextArea').text(data['markdown']);
+                $('#mdPreview').empty().append(data['html']);
             },
             error: function (data) {
                 console.log(data)
@@ -39,7 +40,7 @@ $('document').ready(function () {
         });
     });
 
-    $('#clearButton').on('click', function() {
+    $('#clearButton').on('click', function () {
         $('#tagsToApplyDiv').children().remove();
     });
 
@@ -47,7 +48,7 @@ $('document').ready(function () {
         // remove stuff that we already have that doesn't stack
         let existingNonstackingTags = [];
         let existingTags = [];
-        $('#tagsToApplyDiv').children().each(function() {
+        $('#tagsToApplyDiv').children().each(function () {
             let tagNode = $(this);
             if (tagNode.attr('data-stacks') === 'False')
                 existingNonstackingTags.push(tagNode.attr('data-name') + '$' + tagNode.attr('data-filename'));
@@ -56,7 +57,7 @@ $('document').ready(function () {
 
         let choices = [];
         let weights = [];
-        $('#availableTagTable').children().each(function() {
+        $('#availableTagTable').children().each(function () {
             let tagNode = $(this);
             if (existingNonstackingTags.indexOf(tagNode.attr('data-name') + '$' + tagNode.attr('data-filename')) < 0) {
                 if (!hasRequiredTags(tagNode, existingTags)) {
@@ -74,7 +75,37 @@ $('document').ready(function () {
         let tag = chooseWeighted(choices, weights);
         console.log('addRandom ' + tag.attr('data-filename') + ' ' + tag.attr('data-name'));
         selectTag(tag.attr('data-filename'), tag.attr('data-name'), tag.attr('data-stacks'));
-    })
+    });
+
+    // From David Z. Chen's blog
+    // http://davidzchen.com/tech/2016/01/19/bootstrap-copy-to-clipboard.html
+    let modifiedTextArea = $('#modifiedStatblockTextArea');
+    modifiedTextArea.tooltip();
+
+    modifiedTextArea.bind('click', function () {
+        let input = document.querySelector('#modifiedStatblockTextArea');
+        input.setSelectionRange(0, input.value.length + 1);
+        try {
+            let success = document.execCommand('copy');
+            if (success) {
+                modifiedTextArea.trigger('copied', ['Copied!']);
+            }
+            else {
+                modifiedTextArea.trigger('copied', ['Copy with Ctrl-c']);
+            }
+        }
+        catch (err) {
+            modifiedTextArea.trigger('copied', ['Copy with Ctrl-c']);
+        }
+    });
+
+    modifiedTextArea.bind('copied', function (event, message) {
+        $(this).attr('title', message)
+            .tooltip('_fixTitle')
+            .tooltip('show')
+            .attr('title', "Copy to Clipboard")
+            .tooltip('_fixTitle');
+    });
 });
 
 function chooseWeighted(choices, weights) {
@@ -91,8 +122,7 @@ function chooseWeighted(choices, weights) {
     // generate number from 0 to 1
     let rand = Math.random();
     // subtract off weights until we are <= 0
-    for (let i = 0; i < weights.length; i++)
-    {
+    for (let i = 0; i < weights.length; i++) {
         rand -= weights[i];
         if (rand <= 0)
             return choices[i];
@@ -117,10 +147,10 @@ function selectStatblock(filename) {
     })
 }
 
-    // <div class="col-md-6" id="tagsToApplyDiv"
-    //      style="border-left: solid 1px rgba(0,0,0,.1); margin-left: 1rem; padding-left: 1rem; min-width: 6rem">
-    //   <button class="btn btn-danger"><strong>&times</strong> lumbering</button>
-    // </div>
+// <div class="col-md-6" id="tagsToApplyDiv"
+//      style="border-left: solid 1px rgba(0,0,0,.1); margin-left: 1rem; padding-left: 1rem; min-width: 6rem">
+//   <button class="btn btn-danger"><strong>&times</strong> lumbering</button>
+// </div>
 
 function selectTag(filename, tagName, stacks) {
     console.log('selectTag ' + filename + ' ' + tagName);

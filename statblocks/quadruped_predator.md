@@ -1,15 +1,16 @@
 ___
+___
 > ## Quadruped Predator
->*Medium beast, unaligned*
+> *Medium beast, unaligned*
 > ___
 > - **Armor Class** 14 (natural armor)
 > - **Hit Points** 11 (2d8 + 2)
 > - **Speed** 40 ft.
->___
->|STR|DEX|CON|INT|WIS|CHA|
->|:---:|:---:|:---:|:---:|:---:|:---:|
->|12 (+1)|15 (+2)|12 (+1)|2 (-4)|10 (0)|6 (-1)|
->___
+> ___
+> |STR|DEX|CON|INT|WIS|CHA|
+> |:---:|:---:|:---:|:---:|:---:|:---:|
+> |12 (+1)|15 (+2)|12 (+1)|2 (-4)|10 (0)|6 (-1)|
+> ___
 > - **Languages** -
 > - **Challenge** -
 > ___

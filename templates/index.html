@@ -50,7 +50,7 @@
           <li>Some tags are mutually exclusive, like 'Wintry' and 'Springy' in 'Fey Physical'. Only the last tag to be applied will have any effect.</li>
           <li>The first tag in a "means" table (e.g. <em>fey</em> in <em>WoC: Fey Mannerisms</em>) usually has a weight
             of 0 and sets a creature's type. The monster creation rules from <em>the Wheel of Creation</em> suggest
-            that you apply this tag first before adding other tags or adding random tags.</li>
+            that you add this tag first before adding other tags or adding random tags.</li>
         </ul>
     </div>
   </div>
@@ -75,7 +75,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-6 pre-scrollable" id="tagTableDiv">
       <table class="table table-bordered table-striped tag-table table-hover">
         <thead>
           <tr>
@@ -92,7 +92,7 @@
     <div class="col-sm-6">
       <div class="form-group">
         <!--<label for="baseStatblockTextArea">Statblock to be Modified</label>-->
-        <textarea class="form-control" id="baseStatblockTextArea" title="Statblock to be Modified"></textarea>
+        <textarea class="form-control" id="baseStatblockTextArea" title="Statblock to be Modified">{{ prefill_md }}</textarea>
       </div>
     </div>
   </div>
@@ -115,7 +115,11 @@
   </div>
   <div class="row justify-content-md-center">
     <div class="col-md-6">
-        <textarea class="form-control" title="Modified Statblock" id="modifiedStatblockTextArea"></textarea>
+        <textarea class="form-control" title="Copy modified statblock to keyboard" id="modifiedStatblockTextArea"
+          data-toggle="tooltip" data-placement="top">{{ prefill_md }}</textarea>
+    </div>
+    <div class="col-md-6">
+        <div title="Preview" class="md-preview" id="mdPreview">{{ prefill_preview }}</div>
     </div>
   </div>
 <hr>

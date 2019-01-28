@@ -1,5 +1,18 @@
 #### Todo
 
+* Copy markdown on click
+* Prefill input markdown, output markdown, and preview
+* Hit dice slider
+* CR calculation
+* export to Roll20
+* Write tags!
+* Write a real README/License
+* Add OGL info from WotC
+* Add burrow speed
+* Need to infer skills/ability score to use in actions?
+* Handle spells
+* Add to_json() and flatten_json() methods for Statblock? 
+
 * ~~Update Stablock.from_markdown() to create a new class first instead of building from dictionary~~
 * ~~Fix Action descriptions~~
 * ~~Update applying tags to modify a copy of class~~
@@ -15,16 +28,7 @@
 * ~~Include applied tags in statblock~~
 * ~~Split parser/website code into separate dirs~~
 * ~~Get web code actually working~~
-* Markdown preview
-* CR calculation
-* Set desired hit dice slider
 * ~~Fix www~~
 * ~~Fix language input/output~~
-* Write tags!
-* Write a real README/License
-* Add OGL info from WotC
-* Add burrow speed
-* Need to infer skills/ability score to use in actions?
 * ~~Handle damage for melee/spell/ranged attacks~~
-* Handle spells
-* Add to_json() and flatten_json() methods for Statblock? 
+~~* Markdown preview~~

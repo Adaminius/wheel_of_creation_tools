@@ -4,6 +4,9 @@ import sys
 import pprint
 import statblock
 import utils
+import markdown as md
+import re
+import json
 from os.path import basename
 from glob import glob
 from flask import Flask
@@ -30,8 +33,11 @@ def load_tag_module(filename):
 @app.route('/')
 def home():
     with open('templates/index.html') as file_handle:
-        text = file_handle.read()
-    return text
+        template = Template(file_handle.read())
+    with open('statblocks/quadruped_predator.md') as file_handle:
+        markdown_text = file_handle.read()
+    preview_html = md.markdown(prepare_markdown(markdown_text), extensions=['tables'])
+    return template.render(prefill_preview=preview_html, prefill_md=markdown_text)
 
 @app.route('/getStatblock', methods=['GET'])
 def get_statblock():
@@ -76,6 +82,12 @@ def get_all_tag_lists() -> str:
     )
     out = ''
     filenames = glob('tags/*py')
+
+    # put WoC filenames first
+    woc_filenames = sorted([filename for filename in filenames if 'woc' in filename.lower()])
+    not_woc_filenames = sorted([filename for filename in filenames if 'woc' not in filename.lower()])
+    filenames = woc_filenames + not_woc_filenames
+
     for filename in filenames:
         if modules.get(filename) is None or DEBUG:
             load_tag_module(filename)
@@ -97,6 +109,13 @@ def get_all_statblocks():
         out += template.render(filename=basename(filename))
     return out
 
+def prepare_markdown(text: str) -> str:
+    text = re.sub('___\s+___\n', '', text)
+    text = re.sub('> ___', '\n> ___\n', text)
+    text = text.replace('>', '> ')
+    text = text.replace('>  ', '> ')
+    return text
+
 @app.route('/modifyStatblock', methods=['POST', 'GET'])
 def get_modified_statblock():
     data = request.get_json()
@@ -106,7 +125,11 @@ def get_modified_statblock():
         if modules.get(tag['filename']) is None:
             load_tag_module(tag['filename'])
         sb = modules[basename(tag['filename'])].all_tags[tag['name']].apply(sb)
-    return sb.to_markdown()
+
+    markdown_text = sb.to_markdown()
+    preview_html = md.markdown(prepare_markdown(markdown_text), extensions=['tables'])
+
+    return json.dumps({'markdown': markdown_text, 'html': preview_html})
 
 if __name__ == '__main__':
     app.run()
