@@ -15,13 +15,16 @@
 * ~~Include applied tags in statblock~~
 * ~~Split parser/website code into separate dirs~~
 * ~~Get web code actually working~~
-* Fix www
-* Fix language input/output
+* Markdown preview
+* CR calculation
+* Set desired hit dice slider
+* ~~Fix www~~
+* ~~Fix language input/output~~
 * Write tags!
 * Write a real README/License
 * Add OGL info from WotC
 * Add burrow speed
 * Need to infer skills/ability score to use in actions?
-* Handle damage for melee/spell/ranged attacks
+* ~~Handle damage for melee/spell/ranged attacks~~
 * Handle spells
 * Add to_json() and flatten_json() methods for Statblock? 

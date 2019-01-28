@@ -2,7 +2,7 @@ from statblock import Statblock
 from statblock import Tag
 
 all_tags = []
-table_name = 'Fey Mental'
+table_name = 'WoC: Fey Mannerisms'
 
 all_tags.append(Tag('wants favors', effect_text='-', weight=20))
 all_tags.append(Tag('can\'t break a promise', effect_text='-', weight=40))

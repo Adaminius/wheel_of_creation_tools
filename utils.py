@@ -166,7 +166,7 @@ class Action(object):
 
 
 common_actions = {}
-with open('common_actions.csv') as file_handle:
+with open(path.join(package_directory, 'common_actions.csv')) as file_handle:
     reader = csv.DictReader(file_handle)
     for row in reader:
         name = str(row['name'])

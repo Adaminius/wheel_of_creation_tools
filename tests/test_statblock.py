@@ -1,8 +1,8 @@
 import pytest
 import statblock
 import utils
-import tags.fey_physical
-import tags.fey_mental
+import tags.woc_fey_means
+import tags.woc_fey_mannerisms
 
 
 @pytest.fixture(scope='function')
@@ -45,9 +45,9 @@ def test_statblock_md_parser(setup_statblock: statblock.Statblock):
     assert sb.languages == ['Sylvan', 'testLanguage']
     assert sb.telepathy == 100
     assert sb.challenge.rating == '1'
-    assert len(sb.abilities) == 2
-    assert sb.abilities[1].name == 'testAbility'
-    assert sb.abilities[1].description_template == 'Foos bars.'
+    assert len(sb.features) == 2
+    assert sb.features[1].name == 'testAbility'
+    assert sb.features[1].description_template == 'Foos bars.'
     assert sb.actions[1].name == 'Test Action'
     assert sb.bonus_actions[0].name == 'testBonusAction'
     assert sb.reactions[0].name == 'Test Reaction'
@@ -61,29 +61,29 @@ def test_apply_tags(setup_statblock: statblock.Statblock):
     utils.setup_logging(debug=True)
 
     sb = setup_statblock
-    sb = tags.fey_physical.all_tags['lumbering'].apply(sb)
+    sb = tags.woc_fey_means.all_tags['lumbering'].apply(sb)
     assert sb.ability_scores['STR'].value == 10
     assert sb.speed == 35
     assert sb.fly_speed == 25
     assert sb.swim_speed == 15
     assert sb.climb_speed == 5
-    assert tags.fey_physical.all_tags['lumbering'] in sb.applied_tags
-    sb = tags.fey_physical.all_tags['Wintry'].apply(sb)
+    assert tags.woc_fey_means.all_tags['lumbering'] in sb.applied_tags
+    sb = tags.woc_fey_means.all_tags['Wintry'].apply(sb)
     assert sb.alignment == 'Winter'
     assert 'cold' in sb.damage_resistances
     assert 'psychic' in sb.damage_resistances
-    assert tags.fey_physical.all_tags['Wintry'] in sb.applied_tags
-    sb = tags.fey_physical.all_tags['Summery'].apply(sb)
+    assert tags.woc_fey_means.all_tags['Wintry'] in sb.applied_tags
+    sb = tags.woc_fey_means.all_tags['Summery'].apply(sb)
     assert sb.alignment == 'Summer'
     assert 'fire' in sb.damage_resistances
     assert 'psychic' in sb.damage_resistances
     assert 'cold' not in sb.damage_resistances
-    assert tags.fey_physical.all_tags['lumbering'] in sb.applied_tags
-    assert tags.fey_physical.all_tags['Wintry'] not in sb.applied_tags
-    assert tags.fey_physical.all_tags['Summery'] in sb.applied_tags
+    assert tags.woc_fey_means.all_tags['lumbering'] in sb.applied_tags
+    assert tags.woc_fey_means.all_tags['Wintry'] not in sb.applied_tags
+    assert tags.woc_fey_means.all_tags['Summery'] in sb.applied_tags
     assert len(sb.applied_tags) == 4
-    sb = tags.fey_physical.all_tags['Wintry'].apply(sb)
-    sb = tags.fey_mental.all_tags['cold logic'].apply(sb)
+    sb = tags.woc_fey_means.all_tags['Wintry'].apply(sb)
+    sb = tags.woc_fey_mannerisms.all_tags['cold logic'].apply(sb)
     assert len(sb.applied_tags) == 5
     # open('test_statblock_applied.md', 'w').write(sb.to_markdown())
 

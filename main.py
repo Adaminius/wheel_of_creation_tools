@@ -43,7 +43,7 @@ def get_statblock():
 @app.route('/getTagList', methods=['GET'])
 def get_tag_list():
     filename = request.args.get('filename')
-    if modules[basename(filename)] is None:
+    if modules.get(basename(filename)) is None:
         load_tag_module(filename)
 
     template = Template(

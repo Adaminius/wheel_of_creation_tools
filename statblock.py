@@ -150,7 +150,7 @@ class Statblock(object):
         # self.languages = languages if languages is not None else defaults['languages']
         self.challenge = challenge if challenge is not None else ChallengeRating('1')
 
-        self.abilities = abilities
+        self.features = abilities
         self.actions = actions
         self.bonus_actions = bonus_actions
         self.reactions = reactions
@@ -159,6 +159,7 @@ class Statblock(object):
         self.num_legendary = num_legendary
         self.__proficiency = proficiency
         self.applied_tags = applied_tags if applied_tags is not None else []
+        self.base_natural_armor = 0
 
         self.original_text = original_text if original_text is not None else ''
 
@@ -171,6 +172,8 @@ class Statblock(object):
             values[skill] = skill_mod
         values['proficiency'] = self.proficiency
         values['prof'] = self.proficiency
+        values['size_mod'] = self.size_mod
+        values['size'] = size_val_to_name[self.size]
         return values
 
     def calc_challenge(self):
@@ -205,6 +208,43 @@ class Statblock(object):
     @proficiency.setter
     def proficiency(self, proficiency):
         self.__proficiency = proficiency
+
+    def add_damage_resistance(self, damage_type):
+        if damage_type in self.damage_resistances:
+            self.damage_resistances.remove(damage_type)
+            self.damage_immunities.add(damage_type)
+        elif damage_type in self.damage_vulnerabilities:
+            self.damage_vulnerabilities.discard(damage_type)
+        elif damage_type in self.damage_immunities:
+            pass
+        else:
+            self.damage_resistances.add(damage_type)
+        return self
+
+    def add_damage_vulnerability(self, damage_type):
+        if damage_type in self.damage_resistances:
+            self.damage_resistances.remove(damage_type)
+        elif damage_type in self.damage_vulnerabilities:
+            pass
+        elif damage_type in self.damage_immunities:
+            self.damage_immunities.remove(damage_type)
+            self.damage_resistances.add(damage_type)
+        else:
+            self.damage_vulnerabilities.add(damage_type)
+        return self
+
+    def size_mod(self):
+        """Can be used to calculate the number of damage dice to roll based on a creature's size."""
+        if self.size == 0:  # tiny
+            return 0
+        if self.size in {1, 2}:  # small or medium
+            return 1
+        if self.size == 3:  # large
+            return 2
+        if self.size == 4:  # huge
+            return 3
+        if self.size == 5:  # gargantuan
+            return 4
 
     @classmethod
     def from_markdown(cls, text: str = '', filename=''):
@@ -323,6 +363,10 @@ class Statblock(object):
                 sb.ability_scores[ab_score.short_name] = ab_score
             logging.debug(f'Parsed ability scores "{sb.ability_scores}"')
 
+            if 'natural armor' in sb.armor_class_type:
+                sb.base_natural_armor = sb.armor_class - sb.ability_scores['DEX'].modifier
+                logging.debug(f'Parsed base natural armor "{sb.base_natural_armor}"')
+
             if lines[0].rstrip('>').strip().startswith('_'):
                 lines.pop(0)
 
@@ -415,7 +459,7 @@ class Statblock(object):
                 if not lines:
                     return sb
 
-            sb.abilities, lines = parse_actions(lines)
+            sb.features, lines = parse_actions(lines)
             while lines:
                 curr_line = lines.pop(0)
                 if '## Actions' in curr_line:
@@ -430,7 +474,7 @@ class Statblock(object):
                         if num_leg:
                             sb.num_legendary = int(num_leg.groups()[0])
                     sb.legendary_actions, lines = parse_actions(lines, is_legendary=True)
-            logging.debug(f'Parsed abilities={sb.abilities}, actions={sb.actions}, bonus actions={sb.bonus_actions},'
+            logging.debug(f'Parsed features={sb.features}, actions={sb.actions}, bonus actions={sb.bonus_actions},'
                           f'legendary actions={sb.legendary_actions}, num legendary={sb.num_legendary}')
 
         except Exception as e:
@@ -454,7 +498,10 @@ class Statblock(object):
 
         lines.append('___')
 
-        ac_line = '- **Armor Class** {}'.format(self.armor_class)
+        if 'natural armor' in self.armor_class_type:
+            ac_line = '- **Armor Class** {}'.format(self.base_natural_armor + self.ability_scores['DEX'].modifier)
+        else:
+            ac_line = '- **Armor Class** {}'.format(self.armor_class)
         if self.armor_class_type:
             ac_line += ' ({})'.format(self.armor_class_type)
         lines.append(ac_line)
@@ -588,8 +635,8 @@ class Statblock(object):
 
         lines.append('___')
 
-        if self.abilities:
-            for action in self.abilities:
+        if self.features:
+            for action in self.features:
                 # These might get a little more complicated in future, so we will let the Action class do formatting
                 action.update_description(self.get_substitutable_values())
                 lines.append(str(action))
@@ -600,7 +647,8 @@ class Statblock(object):
             lines.append('### Actions')
             for action in self.actions:
                 action.update_description(self.get_substitutable_values())
-                lines.append(str(action))
+                for line in str(action).splitlines():
+                    lines.append(line)
                 if lines[-1].strip() != '':
                     lines.append('')
 
@@ -608,7 +656,8 @@ class Statblock(object):
             lines.append('### Bonus Actions')
             for action in self.bonus_actions:
                 action.update_description(self.get_substitutable_values())
-                lines.append(str(action))
+                for line in str(action).splitlines():
+                    lines.append(line)
                 if lines[-1].strip() != '':
                     lines.append('')
 
@@ -616,7 +665,8 @@ class Statblock(object):
             lines.append('### Reactions')
             for action in self.reactions:
                 action.update_description(self.get_substitutable_values())
-                lines.append(str(action))
+                for line in str(action).splitlines():
+                    lines.append(line)
                 if lines[-1].strip() != '':
                     lines.append('')
 
@@ -631,7 +681,8 @@ class Statblock(object):
                 lines.append('')
             for action in self.legendary_actions:
                 action.update_description(self.get_substitutable_values())
-                lines.append(str(action))
+                for line in str(action).splitlines():
+                    lines.append(line)
                 lines.append('')
 
         return '\n'.join(['___', '___'] + ['> ' + line for line in lines])
