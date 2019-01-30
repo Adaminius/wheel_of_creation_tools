@@ -9,9 +9,16 @@
 * Pretty horizontal rule similar to official books in preview
 * In the preview: click to roll dice, form-fill HP (so you could use this to track HP if you were only using the site)
 * Save preview PNG
+* Max AC for each type of armor?
+* Make copy a button instead of clicking on the box
+* Add table descriptionis
+* Random names by type e.g. drekavats for a Winter fey
+* Maybe do something like size sets die size, hit dice set # of dice
+* Size tags -- spritely?
 * Write tags!
 * Write a real README/License
 * Add OGL info from WotC?
+* Optimize for mobile
 * Add burrow speed
 * Need to infer skills/ability score to use in actions?
 * Handle spells

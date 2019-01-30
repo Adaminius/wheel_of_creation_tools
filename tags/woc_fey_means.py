@@ -24,7 +24,7 @@ all_tags.append(Tag('beautiful', '+2 to Charisma', on_apply=apply))
 def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CHA'].value += 2
     beckon = Action(name='Beckon', description_template=
-                    'This creature targets one humanoid, beast, or giant it can see within 30 ft. of it, and performs '
+                    'This creature targets one humanoid, beast, or giant it can see within 30 ft. of it and performs '
                     'a beckoning gesture. If the target can see this creature, the target must make succeed on a DC '
                     '{CHA + prof + 8} Wisdom saving throw or be charmed for 1 minute.\nWhile charmed, the target '
                     'is incapacitated. If the charmed target is more than 5 ft. away from this creature, the target '
@@ -153,7 +153,7 @@ def apply(sb: Statblock) -> Statblock:
         sb.add_damage_resistance('psychic')
     sb.features.append(common_actions['Bound to the Courts'])
     return sb
-all_tags.append(Tag('Springy', 'Spring alignment; poison and psychic resistance; advantage on saving throws against being '
+all_tags.append(Tag('Vernal', 'Spring alignment; poison and psychic resistance; advantage on saving throws against being '
                                'charmed or put to sleep',
                     on_apply=apply,
                     overwrites={'alignment'}, overwritten_by={'alignment'}

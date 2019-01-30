@@ -103,7 +103,7 @@ $('document').ready(function () {
         $(this).attr('title', message)
             .tooltip('_fixTitle')
             .tooltip('show')
-            .attr('title', "Copy to Clipboard")
+            .attr('title', "Copy modified statblock to clipboard")
             .tooltip('_fixTitle');
     });
 });

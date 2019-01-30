@@ -35,7 +35,7 @@
               <li>Tables named <strong>WoC</strong> draw from the <em>Wheel of Creation</em> campaign setting. Other tables refer to
                 a more typical western fantasy setting in D&D, such as the <em>Forgotten Realms</em>, although you are free to mix tags from both.</li>
             <li><strong>Tag</strong> and <strong>Effect</strong> describe how the tag will change the basic Statblock. <strong>Weight</strong> is the chance a tag will be
-            selected by Add Random. <strong>Requirements</strong> are other tags that must be satisfied in order for a tag to be applied,</li>
+            selected by Add Random. <strong>Requirements</strong> are other tags that must be satisfied in order for a tag to be applied.</li>
             </ul>
           </li>
           <li>Click on tags in the table to add them, or hit <strong>Add Random</strong>. They'll show up below.</li>
@@ -56,7 +56,7 @@
   </div>
   <hr>
   <div class="row">
-    <div class="col-sm-6">
+    <div class="col-lg-6">
       <div class="dropdown">
         <button class="btn btn-success dropdown-toggle" type="button" id="tagListDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Choose a Tag Table
@@ -65,7 +65,7 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-6">
+    <div class="col-lg-6">
       <div class="dropdown">
         <button class="btn btn-info dropdown-toggle" type="button" id="statblockDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Choose a Statblock
@@ -75,7 +75,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-6 pre-scrollable" id="tagTableDiv">
+    <div class="col-lg-6 pre-scrollable" id="tagTableDiv">
       <table class="table table-bordered table-striped tag-table table-hover">
         <thead>
           <tr>
@@ -89,7 +89,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col-sm-6">
+    <div class="col-lg-6">
       <div class="form-group">
         <!--<label for="baseStatblockTextArea">Statblock to be Modified</label>-->
         <textarea class="form-control" id="baseStatblockTextArea" title="Statblock to be Modified">{{ prefill_md }}</textarea>
@@ -114,11 +114,11 @@
     <!--</div>-->
   </div>
   <div class="row justify-content-md-center">
-    <div class="col-md-6">
-        <textarea class="form-control" title="Copy modified statblock to keyboard" id="modifiedStatblockTextArea"
+    <div class="col-lg-6">
+        <textarea class="form-control" title="Copy modified statblock to clipboard" id="modifiedStatblockTextArea"
           data-toggle="tooltip" data-placement="top">{{ prefill_md }}</textarea>
     </div>
-    <div class="col-md-6">
+    <div class="col-lg-6">
         <div title="Preview" class="md-preview" id="mdPreview">{{ prefill_preview }}</div>
     </div>
   </div>
