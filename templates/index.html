@@ -75,23 +75,48 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-lg-6 pre-scrollable" id="tagTableDiv">
-      <table class="table table-bordered table-striped tag-table table-hover">
-        <thead>
-          <tr>
-            <th>Weight</th>
-            <th>Tag</th>
-            <th>Effect</th>
-            <th>Requires</th>
-          </tr>
-        </thead>
-        <tbody id="availableTagTable" style="cursor: pointer;">
-        </tbody>
-      </table>
+    <div class="col-lg-6">
+      <div id="tagTableDescription" style="margin-top: 0"></div>
+      <div class="pre-scrollable"  id="tagTableDiv">
+        <table class="table table-bordered table-striped tag-table table-hover">
+          <thead>
+            <tr>
+              <th>Weight</th>
+              <th>Tag</th>
+              <th>Effect</th>
+              <th>Requires</th>
+            </tr>
+          </thead>
+          <tbody id="availableTagTable" style="cursor: pointer;">
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="col-lg-6">
       <div class="form-group">
-        <!--<label for="baseStatblockTextArea">Statblock to be Modified</label>-->
+        <div class="card"  style="margin-top: 1rem; margin-bottom: 1rem;">
+          <div class="card-header" id="headingStatblock">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseStatblock" aria-expanded="false" aria-controls="collapseStatblock">
+                Notes on Statblocks
+              </button>
+            </h5>
+          </div>
+
+          <div id="collapseStatblock" class="collapse hide" aria-labelledby="headingStatblock">
+            <div class="card-body">
+              <p>Choose a statblock from the dropdown above. These are markdown files that can be rendered like the
+              NPC/monster stats in 5th Edition Dungeons & Dragons. This site parses these files and allows you to
+              modify them using tags, chosen deliberately or randomly.</p>
+              <p>You can edit this text directly to affect the output,
+              but the parser is somewhat fragile. You can use curly brackets "{}" for simple addition and subtraction of
+              numbers, "prof" (proficiency bonus, calculated based on # of hit dice), "STR", "DEX", "CON", "INT", "WIS",
+              "CHA", and "size_mod" (a value determined by a creature's size). Both average damage values (calculated from
+              the dice rolls in parentheses and ability score modifiers are recalculated in the output.</p>
+            </div>
+          </div>
+        </div>
+
         <textarea class="form-control" id="baseStatblockTextArea" title="Statblock to be Modified">{{ prefill_md }}</textarea>
       </div>
     </div>

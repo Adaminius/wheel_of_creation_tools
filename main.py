@@ -68,7 +68,25 @@ def get_tag_list():
         requires = ','.join(tag_dict['requires']) if tag_dict['requires'] else '-'
         out += template.render(filename=filename, tag_name=name, weight=tag_dict['weight'], effect=tag_dict['effect'],
                                stacks=tag_dict['stacks'], requires=requires)
-    return out
+
+    description_template = """<div class="card"  style="margin-top: 1rem; margin-bottom: 1rem;">
+          <div class="card-header" id="headingTagDesc">
+            <h5 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTagDesc" aria-expanded="false" aria-controls="collapseTagDesc">
+                {{ table_name }}
+              </button>
+            </h5>
+          </div>
+
+          <div id="collapseTagDesc" class="collapse hide" aria-labelledby="headingTagDesc">
+            <div class="card-body">{{ description }}</p>
+            </div>
+          </div>
+        </div>"""
+    description_template = Template(description_template)
+    description = description_template.render(table_name=modules[basename(filename)].table_name,  # todo set a variable to the module instead of looking it up 3 times, setup default values
+                                              description=modules[basename(filename)].table_description)
+    return json.dumps({'tags': out, 'description': description})
 
 
 @app.route('/getAllTagLists', methods=['GET'])

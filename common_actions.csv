@@ -15,5 +15,7 @@ name,is_legendary,description_template
 "Aversion to Fire",False,"If this creature takes fire damage, it can't use its Regeneration feature on its next turn."
 "Aversion to Acid",False,"If this creature takes acid damage, it can't use its Regeneration feature on its next turn."
 "Relentless",False,"If this creature would be reduced to 0 hit points, it makes a DC {8 + prof} Constitution saving throw. On a successful saving throw, it survives with 1 hp instead."
+"Undead Fortitude",False,"If damage reduces this creature to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a successful saving throw, it drops to 1 hp instead."
 "Stench",False,"Any other creature that starts its turn within 5 ft. of this creature must succeed on a DC"
 "Sunlight Sensitivity",False,"While in sunlight, this creature has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
+"Command Undead",False,"({prof - 1}/day) This creature targets one undead creature it can see. If the target has a CR of 1 or lower and has no class levels, this creature immediately assumes control over the target. The target obeys the verbal commands of this creature to the best of its ability for the next 24 hours."

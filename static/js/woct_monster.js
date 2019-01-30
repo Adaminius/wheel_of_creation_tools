@@ -135,8 +135,9 @@ function selectTagList(filename) {
     console.log('selectTagList ' + filename);
     $.get("/getTagList", {'filename': filename}, function (data) {
         // console.log(data);
-        $('#availableTagTable').html(data);
-    })
+        $('#availableTagTable').empty().append(data['tags']);
+        $('#tagTableDescription').empty().append(data['description']);
+    }, 'json')
 }
 
 function selectStatblock(filename) {

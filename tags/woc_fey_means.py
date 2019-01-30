@@ -5,11 +5,20 @@ from statblock import Tag
 
 all_tags = []
 table_name = 'WoC: Fey Means'
+table_description = 'Fey in the Wheel of Creation come from the Ring of Seasons, a world just outside the one humans ' \
+                    'reside in. It is ruled by four courts, one for each season, and inhabitants either receive a ' \
+                    'strong benefit for their allegiance with a particular court, or suffer weakness as the price for ' \
+                    'freedom. The fey themselves are inspired by various mythological creatures, such as fairies, ' \
+                    'jinn, or yaksha. None are so individually powerful as to be considered god-like, and they are ' \
+                    'neither so virtuous as the Emperors of Heaven nor so vile as the demons inhabiting the Void and ' \
+                    'the Grease Between the Rings. Their world is in many ways similar that to the Ring of Earth, ' \
+                    'though twisted and exaggerated.'
+
 
 def apply(sb: Statblock) -> Statblock:
     sb.primary_type = 'fey'
-    sb.damage_resistances.add('bludgeoning, piercing, and slashing damage from weapons not made of thokcha')
-    sb.damage_vulnerabilities.add('psychic')
+    sb.add_damage_resistance('bludgeoning, piercing, and slashing damage from weapons not made of thokcha')
+    sb.add_damage_vulnerability('psychic')
     sb.languages.append('Sylvan')
     return sb
 all_tags.append(Tag('fey', 'Fey type; resistance to bludgeoning, piercing, and slashing damage from weapons not made '

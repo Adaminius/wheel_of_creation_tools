@@ -3,6 +3,8 @@ from statblock import Tag
 
 all_tags = []
 table_name = 'Basic Operations'
+table_description = 'Very basic operations, just in case you want randomness or if you don\'t want to mess with the ' \
+                    'input statblock directly.'
 
 def basic_add_apply(ability_score):
     def apply(sb: Statblock) -> Statblock:

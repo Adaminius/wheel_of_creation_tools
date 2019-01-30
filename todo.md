@@ -1,10 +1,10 @@
 ## Something need doing?
 
-* Change "springy" to "vernal"
-* Header fonts in preview need to be flipped?
-* Fix result tooltip to say "copy to clipboard" instead of "copy to keyboard", make updated tooltip match this text
+* Need something that's vulnerable to poison damage and the various types of damage in general
 * Hit dice slider
 * CR calculation
+* Need to rework multiattack
+* Necrin should most of the time wear armor instead of having natural armor? maybe handle that with a humanoidish statblock?
 * Export to Roll20
 * Pretty horizontal rule similar to official books in preview
 * In the preview: click to roll dice, form-fill HP (so you could use this to track HP if you were only using the site)
@@ -48,3 +48,6 @@
 * Markdown preview
 * Prefill input markdown, output markdown, and preview
 * Copy markdown on click
+* Change "springy" to "vernal"
+* Header fonts in preview need to be flipped?
+* Fix result tooltip to say "copy to clipboard" instead of "copy to keyboard", make updated tooltip match this text
