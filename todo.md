@@ -1,5 +1,10 @@
 ## Something need doing?
 
+* Use pyparsing to implement multiplication, basic functions, operator precedence in the curly bracket stuff
+* Reconfigure proficiency bonus calculation to `1 + math.ceil(n / 4.)`
+* Set minimum stats for different types?
+* fix immunity to bps output, still getting extra semicolon
+* fix Necrin output languages it knew **IN** life
 * Need something that's vulnerable to poison damage and the various types of damage in general
 * Hit dice slider
 * CR calculation
