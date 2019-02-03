@@ -1,5 +1,17 @@
 ## Something need doing?
 
+* A 'create lesser minions' or 'create lesser undead' action that does something like
+   * Create d4 Undead Minions. They have:
+      * Die if they take damage
+      * AC 12 (armor scraps)
+      * speed 30 ft.
+      * +2 to hit, d6 damage, range 80/320 ft. (shortsword/shortbow)
+      * +2 on STR/DEX/CON saves and skills
+      * -2 on INT/WIS/CHA saves and skills
+      * immunity to poison and necrotic damage
+      * immunity to the poisoned condition
+* Similar 'create greater undead' that have + 2 to all that, and die if they take damage twice, take radiant damage, or take a critical hit
+* Necrin shouldn't have magic resistance, that's for Constructs. Need to give them something else defining?
 * Use pyparsing to implement multiplication, basic functions, operator precedence in the curly bracket stuff
 * Reconfigure proficiency bonus calculation to `1 + math.ceil(n / 4.)`
 * Set minimum stats for different types?
