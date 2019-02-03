@@ -1,5 +1,8 @@
 ## Something need doing?
 
+* Split templates into external files instead of inline in flask code
+* Add documentation/cleanup for flask + js code
+* Move styling over into CSS
 * A 'create lesser minions' or 'create lesser undead' action that does something like
    * Create d4 Undead Minions. They have:
       * Die if they take damage
