@@ -2,7 +2,7 @@
 
 https://wheelofcreation.net
 
-I am developing a supplement for 5th Edition Dungeons and Dragons, *the Wheel of Creation*. 
+I am developing a supplement for 5th Edition Dungeons & Dragons, *the Wheel of Creation*. 
 This project provides is intended to provide tools with a web interface to 
 make the lives of gamemasters running my supplement easier.
 
@@ -12,7 +12,7 @@ This first (and currently, only) tool is for the most rules-heavy portion of the
 random monster generation. 
 It parses D&D monster statistics in the form of markdown, which is used on sites like 
 [GM Binder](https://www.gmbinder.com/) and [the Homebrewery](https://homebrewery.naturalcrit.com/) 
-to format statistics and abilities for non-player characters (NPCs) in official D&D books 
+to format statistics and abilities for non-player characters (NPCs) in the style of official D&D books 
 (***statblocks***).
 
 You can then add different ***tags*** of your choice or at random which modify these statblocks
