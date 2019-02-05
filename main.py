@@ -7,6 +7,7 @@ import utils
 import markdown as md
 import re
 import json
+import argparse
 from os.path import basename
 from glob import glob
 from flask import Flask
@@ -22,6 +23,7 @@ CORS(app)
 
 
 def load_tag_module(filename):
+    """(Re)imports a tag table module."""
     filename = basename(filename)
     spec = importlib.util.spec_from_file_location(filename.split('.')[0], 'tags/{}'.format(filename))
     module = importlib.util.module_from_spec(spec)
@@ -32,6 +34,7 @@ def load_tag_module(filename):
 
 @app.route('/')
 def home():
+    """Serves homepage"""
     with open('templates/index.html') as file_handle:
         template = Template(file_handle.read())
     with open('statblocks/quadruped_predator.md') as file_handle:
@@ -39,20 +42,26 @@ def home():
     preview_html = md.markdown(prepare_markdown(markdown_text), extensions=['tables'])
     return template.render(prefill_preview=preview_html, prefill_md=markdown_text)
 
+
 @app.route('/getStatblock', methods=['GET'])
 def get_statblock():
+    """Return the text of a statblock markdown file to the client when user chooses an item from 'Choose a Statblock'"""
     filename = request.args.get('filename')
     with open('statblocks/{}'.format(filename)) as file_handle:
         text = file_handle.read()
     return text
 
+
 @app.route('/getTagList', methods=['GET'])
 def get_tag_list():
+    """Returns an HTML table of names, descriptions, and basic info about every tag in one of the modules in tags/ when
+    a user chooses an item from 'Choose a Tag Table'
+    """
     filename = request.args.get('filename')
     if modules.get(basename(filename)) is None:
         load_tag_module(filename)
 
-    template = Template(
+    template = Template(  # todo move these templates to external files
         """<tr onclick="selectTag('{{ filename }}', '{{ tag_name }}', '{{ stacks }}')" 
         data-toggle="tooltip" title="stacks={{ stacks }}" data-name="{{ tag_name }}" data-filename="{{ filename }}"
         data-weight="{{ weight }}" data-stacks="{{ stacks }}" data-requires="{{ requires }}">
@@ -113,6 +122,7 @@ def get_all_tag_lists() -> str:
         out += template.render(filename=basename(filename), table_name=module.table_name)
     return out
 
+
 @app.route('/getAllStatblocks', methods=['GET'])
 def get_all_statblocks():
     """Returns filename for each statblock in statblocks/ as HTML"""
@@ -134,8 +144,10 @@ def prepare_markdown(text: str) -> str:
     text = text.replace('>  ', '> ')
     return text
 
+
 @app.route('/modifyStatblock', methods=['POST', 'GET'])
 def get_modified_statblock():
+    """Applies all the tags a user has selected to a statblock and prepares a preview of the result"""
     data = request.get_json()
     sb = statblock.Statblock.from_markdown(text=data['statblock'])
     for tag in data['tags[]']:
@@ -149,5 +161,17 @@ def get_modified_statblock():
 
     return json.dumps({'markdown': markdown_text, 'html': preview_html})
 
+
+def parse_args(args):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--debug', action='store_true')
+
+    args = parser.parse_args(args)
+    # if not args.debug:  # Todo: turn this on
+    #     DEBUG = False
+
+    return args
+
 if __name__ == '__main__':
+    args = parse_args(sys.argv[1:])
     app.run()

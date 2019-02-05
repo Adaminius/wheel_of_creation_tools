@@ -1,18 +1,31 @@
 $('document').ready(function () {
+    /**
+     * Request the list of tag tables to choose from
+     */
     $.get("/getAllTagLists", function (data) {
         // console.log(data);
         $('#tagListDropdown').html(data);
     });
 
+    /**
+     * Request the list of statblocks to choose from
+     */
     $.get("/getAllStatblocks", function (data) {
         console.log(data);
         $('#statblockDropdown').html(data);
     });
 
+    /**
+     * Click on a tag in the list of tags to be applied to remove it
+     */
     $('#tagsToApplyDiv').on('click', '.tag-button', function () {
         $(this).closest('button').remove();
     });
 
+    /**
+     * Send the base statblock and list of tags to be applied to the server, receive the modified statblock and preview,
+     * update page to show modified statblock and preview
+     */
     $('#applyTagsButton').on('click', function () {
         let tags = [];
         $('#tagsToApplyDiv').children().each(function () {
@@ -40,10 +53,17 @@ $('document').ready(function () {
         });
     });
 
+    /**
+     * Clear all tags to be applied
+     */
     $('#clearButton').on('click', function () {
         $('#tagsToApplyDiv').children().remove();
     });
 
+    /**
+     * This button adds a random tag based on whether the tag has already been applied, its weight, and whether its
+     * required tags are present.
+     */
     $('#addRandomButton').on('click', function () {
         // remove stuff that we already have that doesn't stack
         let existingNonstackingTags = [];
@@ -77,8 +97,11 @@ $('document').ready(function () {
         selectTag(tag.attr('data-filename'), tag.attr('data-name'), tag.attr('data-stacks'));
     });
 
-    // From David Z. Chen's blog
-    // http://davidzchen.com/tech/2016/01/19/bootstrap-copy-to-clipboard.html
+    /**
+     * Copy textarea on click
+     * Based on David Z. Chen's blog
+     * http://davidzchen.com/tech/2016/01/19/bootstrap-copy-to-clipboard.html
+     */
     let modifiedTextArea = $('#modifiedStatblockTextArea');
     modifiedTextArea.tooltip();
 
@@ -108,6 +131,13 @@ $('document').ready(function () {
     });
 });
 
+/**
+ * Return a weighted random choice from a list
+ * @param choices - list of objects/values to choose from
+ * @param weights - probability each element in choices will be chosen (should be same length as choices). Probability
+ * will be recalculated over 1
+ * @returns {*} - an element from choices
+ */
 function chooseWeighted(choices, weights) {
     // recalculate weights to total up to 1
     let total = 0;
@@ -131,15 +161,22 @@ function chooseWeighted(choices, weights) {
     return choices[0];
 }
 
+/**
+ * When the user chooses a tag table, requests info on all tags in the table.
+ * @param filename
+ */
 function selectTagList(filename) {
     console.log('selectTagList ' + filename);
     $.get("/getTagList", {'filename': filename}, function (data) {
-        // console.log(data);
         $('#availableTagTable').empty().append(data['tags']);
         $('#tagTableDescription').empty().append(data['description']);
     }, 'json')
 }
 
+/**
+ * When the user chooses a statblock filename, requests the contents of the corresponding markdown file on the server
+ * @param filename
+ */
 function selectStatblock(filename) {
     console.log('selectStatblock ' + filename);
     $.get("/getStatblock", {'filename': filename}, function (data) {
@@ -148,16 +185,23 @@ function selectStatblock(filename) {
     })
 }
 
-// <div class="col-md-6" id="tagsToApplyDiv"
-//      style="border-left: solid 1px rgba(0,0,0,.1); margin-left: 1rem; padding-left: 1rem; min-width: 6rem">
-//   <button class="btn btn-danger"><strong>&times</strong> lumbering</button>
-// </div>
-
+/**
+ * When the user clicks to add a tag or adds a random tag, requests add it to the list of tags to be applied
+ * @param filename - filename of the tag table module to look in (shown on mouseover, future mouseover should include more info)
+ * @param tagName
+ * @param stacks - whether the tag stacks (can be applied multiple times)
+ */
 function selectTag(filename, tagName, stacks) {
     console.log('selectTag ' + filename + ' ' + tagName);
     $('#tagsToApplyDiv').append(`<button class="btn btn-danger tag-button" data-stacks="${stacks}" data-filename="${filename}" data-name="${tagName}" title="${filename}"><strong>&times</strong> ${tagName}</button>`)
 }
 
+/**
+ * If a tag has other tags in its Requirements column, check to see if all required tags are already present
+ * @param tagNode - DOM node of the tag we want to check requirements on
+ * @param existingTags - names of the tags we've already applied
+ * @returns {boolean}
+ */
 function hasRequiredTags(tagNode, existingTags) {
     console.log('hasRequiredTags ' + tagNode.attr('data-requires').split(',') + ' ' + existingTags);
     if (tagNode.attr('data-requires') === '-')

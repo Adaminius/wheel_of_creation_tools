@@ -32,6 +32,7 @@ def setup_logging(debug=True, filename=''):
     else:
         logging.basicConfig(stream=sys.stderr, level=log_level, format=log_format)
 
+
 class RollableTable(object):
     def __init__(self, df: pd.DataFrame):
         self.df = df
@@ -56,8 +57,9 @@ class RollableTable(object):
 
 
 class Dice(object):
+    """This class represents groups of dice, e.g. '4d6'"""
     def __init__(self, count: int, size: int):
-        # FIXME should go back and change this class to support e.g. '3d6 + 2d4 + 1' as one 'Dice' object
+        # FIXME should go back and change this class to support e.g. '3d6 + 2d4 + 1' as one 'Dice' object?
         self.count = count
         self.size = size
 
@@ -71,7 +73,7 @@ class Dice(object):
         return cls(count=int(s[0]), size=int(s[1]))
 
     def upper_average(self):
-        """This should be the average given in WotC manuals"""
+        """This is the "average" given in D&D books"""
         return math.ceil((self.size * self.count + self.count) / 2)
 
     def roll(self):
@@ -82,6 +84,9 @@ class Dice(object):
 
 
 class AbilityScore(object):
+    """In D&D, ability scores like Strength have a value and a modifier determined by that value.
+    The modifier is what's actually added to your dice rolls. We typically refer to the modifier as
+    a short name like 'STR' and the value as e.g. 'Strength'"""
     def __init__(self, name: str='Foobar', value: int=10, short_name: str=''):
         self.name = name
         if short_name == '':
@@ -105,6 +110,7 @@ class AbilityScore(object):
 
 
 class ChallengeRating(object):
+    """How powerful a monster is determines how much experience it's worth."""
     rating_to_xp = json.load(open(path.join(package_directory, 'challenge_rating_to_xp.json'), 'r'))
 
     def __init__(self, rating: str):
@@ -121,7 +127,13 @@ class ChallengeRating(object):
         return 'ChallengeRating<rating="{}", xp="{}">'.format(self.rating, self.xp)
 
 
-class Action(object):
+class Action(object):  # todo rename to Feature
+    """The special features and abilities a monster has, including features, actions, bonus actions, reactions,
+    and legendary actions. This class substitutes values into its description template when updated in-between
+    pairs of curly braces, e.g. '***Smite.*** Deal {STR + 2} damage' will substitute in a statblock's strength
+    modifier and add 2 to it. This recalculated value is what is actually shown in the __repr__ of the object.
+    Expressions in parentheses '()' are also recalculated here. Both the value and the expression for an expression
+    in parentheses are in the final __repr__."""
     def __init__(self, name: str, description_template: str, is_legendary: bool = False, **kwargs):
         self.name = name
         self.description_template = description_template
@@ -165,6 +177,7 @@ class Action(object):
         return 'Action<name="{}", description="{}">'.format(self.name, self.description)
 
 
+# Loads in some frequently referenced actions for tag tables to make use of
 common_actions = {}
 with open(path.join(package_directory, 'common_actions.csv')) as file_handle:
     reader = csv.DictReader(file_handle)
@@ -197,6 +210,7 @@ def parse_table(lines: list) -> OrderedDict:
 
 
 def format_modifier(modifier: int) -> str:
+    """Add a plus sign '+' in front of a modifier if it's positive."""
     modifier = int(modifier)
     if modifier >= 0:
         return '+' + str(modifier)
@@ -204,6 +218,7 @@ def format_modifier(modifier: int) -> str:
 
 
 def process_operands(operands: list, values: dict):
+    """Basic arithmetic and variable substitution"""
     total = 0
     next_mul = 1
     for operand in operands:

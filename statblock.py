@@ -29,7 +29,6 @@ def parse_resist_or_immunity(text: str) -> set:
     if bps_resistance != '':
         resistances += [bps_resistance]
 
-    # logging.debug(f'parse_resist_or_immunity({text}) -> {resistances}')
     return set(resistances)
 
 
@@ -62,13 +61,15 @@ def parse_actions(lines: list, is_legendary=False):
     return actions, lines
 
 
-def random_name() -> str:
+def random_name() -> str:  # to be used in the future?
     first_name = random.choice(['Mike', 'Adam', 'Luke', 'Kevin', 'Gary'])
     last_name = random.choice(['Mearls', 'Koebel', 'Crane', 'Crawford', 'Gygax'])
     return '{} {}'.format(first_name, last_name)
 
 
 class Statblock(object):
+    """Representation of a D&D creature's statistics."""
+
     # FIXME Might be better to redo this as just a dictionary. Could load in defaults from external json.
     #   Type-hinting is kind of fun, though.
     def __init__(self, name: str = None, size: int = 2, primary_type: str = 'Humanoid',
@@ -210,6 +211,8 @@ class Statblock(object):
         self.__proficiency = proficiency
 
     def add_damage_resistance(self, damage_type):
+        """A common behavior I use in applying tags. For the given damage_type, upgrade the creature's
+        vulnerability to nothing, nothing to resistance, and resistance to immunity."""
         if damage_type in self.damage_resistances:
             self.damage_resistances.remove(damage_type)
             self.damage_immunities.add(damage_type)
@@ -222,6 +225,8 @@ class Statblock(object):
         return self
 
     def add_damage_vulnerability(self, damage_type):
+        """A common behavior I use in applying tags. For the given damage_type, downgrade the creature's
+        immunity to resistance, resistance to nothing, and nothing to vulnerability."""
         if damage_type in self.damage_resistances:
             self.damage_resistances.remove(damage_type)
         elif damage_type in self.damage_vulnerabilities:
@@ -248,6 +253,7 @@ class Statblock(object):
 
     @classmethod
     def from_markdown(cls, text: str = '', filename=''):
+        """Primary way objects of this class should be constructed. Parses a markdown file into a statblock."""
         if filename:
             logging.debug(f'New Statblock from file f{filename}.')
             with open(filename) as file_handle:
@@ -488,6 +494,7 @@ class Statblock(object):
         return sb
 
     def to_markdown(self) -> str:
+        """Returns markdown text for this statblock with variables filled in and expressions calculated."""
         lines = ['## {}'.format(self.name)]
 
         type_line = '*{} {}'.format(size_val_to_name.get(self.size, 'Medium'), self.primary_type)
@@ -689,10 +696,15 @@ class Statblock(object):
 
 
 def default_on_overwrite(tag, other_tag, statblock: Statblock):
-    # When I'm overwritten, remove me!
+    """Default callback for when a Tag is overwritten. I can imagine desinging some complex behaviour where two tags
+    combine their effects into a new tag when both are present, but most of the time, we just want to remove the old
+    tag."""
     return default_remove(tag, statblock), True
 
+
 def default_remove(tag, statblock: Statblock) -> Statblock:
+    """Default callback for removing a tag from a Statblock. A new Statblock is remade, then all tags but the tag to be
+    removed are applied to it."""
     if statblock.original_text is None:
         logging.warning('Cannot remove tag, no original text for this Statblock.')
         return statblock
