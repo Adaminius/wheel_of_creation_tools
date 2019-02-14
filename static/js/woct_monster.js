@@ -36,6 +36,11 @@ $('document').ready(function () {
         console.log(tags);
 
         let payload = {'tags[]': tags, 'statblock': $('#baseStatblockTextArea').val()};
+
+        let numHitDice = parseInt($('#hitDiceRange').val());
+        if (numHitDice > 0)
+            payload['hitdice'] = numHitDice;
+
         $.ajax({
             type: 'POST',
             url: '/modifyStatblock',
@@ -95,6 +100,29 @@ $('document').ready(function () {
         let tag = chooseWeighted(choices, weights);
         console.log('addRandom ' + tag.attr('data-filename') + ' ' + tag.attr('data-name'));
         selectTag(tag.attr('data-filename'), tag.attr('data-name'), tag.attr('data-stacks'));
+    });
+
+    let similarMonsters = defaultDict = new Proxy({}, {
+            get: (target, name) => name in target ? target[name] : ''
+        });
+    similarMonsters[1] = '(Goat)';
+    similarMonsters[2] = '(Wolf)';
+    for (let i = 3; i < 6; i++) similarMonsters[i] = '(Lion)';
+    for (let i = 6; i < 9; i++) similarMonsters[i] = '(Ogre)';
+    for (let i = 9; i < 13; i++) similarMonsters[i] = '(Fire Elemental)';
+    for (let i = 13; i < 16; i++) similarMonsters[i] = '(Young Dragon)';
+    for (let i = 16; i < 18; i++) similarMonsters[i] = '(Vampire)';
+    for (let i = 18; i < 20; i++) similarMonsters[i] = '(Lich)';
+    for (let i = 20; i < 24; i++) similarMonsters[i] = '(Storm Giant)';
+    for (let i = 24; i < 32; i++) similarMonsters[i] = '(Ancient Dragon)';
+    for (let i = 32; i < 34; i++) similarMonsters[i] = '(Tarrasque)';
+
+    $('#hitDiceRange').change(function() {
+        let newVal = parseInt(this.value);
+        if (newVal === 0)
+            $('#hitDiceDisplay').html('Use dice in input statblock');
+        else
+            $('#hitDiceDisplay').html('<strong>' + newVal + '</strong>' + ' ' + similarMonsters[newVal]);
     });
 
     /**

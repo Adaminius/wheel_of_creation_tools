@@ -105,6 +105,12 @@ class AbilityScore(object):
     def __radd__(self, other):
         return self.modifier + other
 
+    def __mul__(self, other):
+        return self.modifier * other
+
+    def __rmul__(self, other):
+        return self.modifier * other
+
     def __repr__(self):
         return 'AbilityScore<name="{}", value="{}", short_name="{}">'.format(self.name, self.value, self.short_name)
 

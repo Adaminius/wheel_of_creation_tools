@@ -156,6 +156,9 @@ def get_modified_statblock():
             load_tag_module(tag['filename'])
         sb = modules[basename(tag['filename'])].all_tags[tag['name']].apply(sb)
 
+    if data.get('hitdice'):
+        sb.hit_dice.count = int(data.get('hitdice'))
+
     markdown_text = sb.to_markdown()
     preview_html = md.markdown(prepare_markdown(markdown_text), extensions=['tables'])
 

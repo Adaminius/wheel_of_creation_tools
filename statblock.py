@@ -75,7 +75,7 @@ class Statblock(object):
     def __init__(self, name: str = None, size: int = 2, primary_type: str = 'Humanoid',
                  secondary_type: str = '',
                  alignment: str = 'unaligned', armor_class: int = 10, armor_class_type: str = '',
-                 hit_points: int = None, hit_point_bonus: int = 0, hit_dice: Dice = None, speed: int = 30,
+                 hit_point_bonus: int = 0, hit_dice: Dice = None, speed: int = 30,
                  climb_speed: int = 0,
                  fly_speed: int = 0, swim_speed: int = 0, ability_scores: dict = None,
                  damage_vulnerabilities: set = None, damage_resistances: set = None,
@@ -115,11 +115,6 @@ class Statblock(object):
             self.ability_scores['INT'] = AbilityScore('Intelligence', 10)
             self.ability_scores['WIS'] = AbilityScore('Wisdom', 10)
             self.ability_scores['CHA'] = AbilityScore('Charisma', 10)
-
-        if hit_points is None:
-            self.calc_hit_points()
-        else:
-            self.hit_points = hit_points
 
         self.saving_throws = defaultdict(int)
         if saving_throws is not None:
@@ -181,19 +176,6 @@ class Statblock(object):
         # TODO
         self.challenge = self.challenge
 
-    def calc_hit_points(self):
-        """Sets hit points using hit dice and either hit point bonus or constitution modifier."""
-        try:
-            original_hp = self.hit_points
-        except AttributeError:
-            original_hp = '<unset>'
-        self.hit_points = self.hit_dice.upper_average()
-        if self.hit_point_bonus != 0:
-            self.hit_points += self.hit_point_bonus
-        elif self.ability_scores.get('CON') is not None:
-            self.hit_points += self.ability_scores['CON']
-        logging.debug(f'calc_hit_points() updated hp from {original_hp} to {self.hit_points}')
-
     @property
     def passive_perception(self):
         if self.__passive_perception is None:
@@ -201,10 +183,18 @@ class Statblock(object):
         return self.__passive_perception
 
     @property
+    def hit_points(self):
+        con_bonus = 0
+        if self.ability_scores.get('CON') is not None:
+            con_bonus = self.ability_scores.get('CON') * self.hit_dice.count
+        return self.hit_dice.upper_average() + con_bonus + int(self.hit_point_bonus * self.hit_dice.count)
+
+    @property
     def proficiency(self):
         """If proficiency wasn't set explicitly, calculates based on # of hit dice."""
         if not self.__proficiency:
-            return 2 + int(max(math.floor(self.hit_dice.count - 1 / 4), 0))
+            return 1 + int(max(math.ceil(self.hit_dice.count / 4), 0))
+        return self.__proficiency
 
     @proficiency.setter
     def proficiency(self, proficiency):
@@ -250,6 +240,19 @@ class Statblock(object):
             return 3
         if self.size == 5:  # gargantuan
             return 4
+
+    def size_die_size(self):
+        """Can be used to calculate the size of a die to roll based on a creature's size."""
+        if self.size == 0:  # tiny
+            return 4
+        if self.size in {1, 2}:  # small or medium
+            return 6
+        if self.size == 3:  # large
+            return 8
+        if self.size == 4:  # huge
+            return 10
+        if self.size == 5:  # gargantuan
+            return 12
 
     @classmethod
     def from_markdown(cls, text: str = '', filename=''):
@@ -313,17 +316,20 @@ class Statblock(object):
 
             curr_line = lines.pop(0)
             curr_line = curr_line.replace('> - **Hit Points** ', '').strip().split()
+            hit_points = 0  # For now, we just ignore and recalculate later; todo: autocalc hitdie from CON and hp
             if len(curr_line) >= 2:
-                sb.hit_points = int(curr_line[0])
+                hit_points = int(curr_line[0])
                 if len(curr_line) >= 4:
                     sb.hit_dice = Dice.from_string(curr_line[1].lstrip('('))
-                    sb.hit_point_bonus = int(curr_line[3].rstrip(')'))
                 else:
                     sb.hit_dice = Dice.from_string(curr_line[1].lstrip('(').rstrip(')'))
             elif len(curr_line) == 1:
-                sb.hit_points = int(curr_line[0])
+                hit_points = int(curr_line[0])
+
+            if sb.hit_dice is None:
+                sb.hit_dice = Dice(1, sb.size_die_size())
+
             logging.debug(f'Parsed HP "{sb.hit_points}"')
-            logging.debug(f'Parsed HP bonus "{sb.hit_point_bonus}"')
             logging.debug(f'Parsed hit dice "{sb.hit_dice}"')
 
             curr_line = lines.pop(0)
@@ -516,11 +522,13 @@ class Statblock(object):
         hp_line = '- **Hit Points** {}'.format(self.hit_points)
         if self.hit_dice:
             hp_line += ' ({}'.format(self.hit_dice)
-            if self.hit_point_bonus:
-                if self.hit_point_bonus > 0:
-                    hp_line += ' + {})'.format(self.hit_point_bonus)
+            total_hp_bonus = int(self.hit_dice.count * (self.hit_point_bonus
+                                                        + self.ability_scores.get('CON', 0)))
+            if total_hp_bonus != 0:
+                if total_hp_bonus > 0:
+                    hp_line += ' + {})'.format(total_hp_bonus)
                 else:
-                    hp_line += ' - {})'.format(self.hit_point_bonus)
+                    hp_line += ' - {})'.format(total_hp_bonus)
             else:
                 hp_line += ')'
         lines.append(hp_line)

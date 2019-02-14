@@ -23,10 +23,10 @@ def test_statblock_md_parser(setup_statblock: statblock.Statblock):
     assert sb.alignment == 'Unaligned'
     assert sb.armor_class == 12
     assert sb.armor_class_type == 'natural armor'
-    assert sb.hit_points == 10
+    assert sb.hit_points == 11
     assert sb.hit_dice.count == 2
     assert sb.hit_dice.size == 8
-    assert sb.hit_point_bonus == 1
+    assert sb.hit_point_bonus == 0
     assert sb.speed == 40
     assert sb.fly_speed == 30
     assert sb.swim_speed == 20
