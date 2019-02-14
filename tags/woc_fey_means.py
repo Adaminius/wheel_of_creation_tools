@@ -33,15 +33,16 @@ all_tags.append(Tag('beautiful', '+2 to Charisma', on_apply=apply))
 def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CHA'].value += 2
     beckon = Feature(name='Beckon', description_template=
-                    'This creature targets one humanoid, beast, or giant it can see within 30 ft. of it and performs '
-                    'a beckoning gesture. If the target can see this creature, the target must make succeed on a DC '
-                    '{CHA + prof + 8} Wisdom saving throw or be charmed for 1 minute.\nWhile charmed, the target '
-                    'is incapacitated. If the charmed target is more than 5 ft. away from this creature, the target '
-                    'must move on its turn toward this creature by the most direct route. It doesn\'t avoid '
-                    'opportunity attacks, but before moving into damaging terrain, such as lava or a pit, and whenever '
-                    'it takes damage, the target can repeat the saving throw. The target can also repeat the saving '
-                    'throw at the end of each of its turns. If a creature\'s saving throw is successful, the effect '
-                    'ends on it.\nA target that successfully saves is immune to Beckon for the next 24 hours.')
+                     'This creature targets one humanoid, beast, or giant it can see within 30 ft. of it and performs '
+                     'a beckoning gesture. If the target can see this creature, the target must make succeed on a DC '
+                     '{CHA + prof + 8} Wisdom saving throw or be charmed for 1 minute.\nWhile charmed, the target '
+                     'is incapacitated. If the charmed target is more than 5 ft. away from this creature, the target '
+                     'must move on its turn toward this creature by the most direct route. It doesn\'t avoid '
+                     'opportunity attacks, but before moving into damaging terrain, such as lava or a pit, and whenever '
+                     'it takes damage, the target can repeat the saving throw. The target can also repeat the saving '
+                     't hrow at the end of each of its turns. If a creature\'s saving throw is successful, the effect '
+                     'ends on it.\nA target that successfully saves is immune to Beckon for the next 24 hours.',
+                     can_multiattack=True)
     sb.actions.append(beckon)
     return sb
 all_tags.append(Tag('alluring', '+1 to Charisma; add the Beckon action', on_apply=apply))
