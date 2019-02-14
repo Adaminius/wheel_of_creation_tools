@@ -1,9 +1,7 @@
 ## Something need doing?
 
 * Features
-    * Hit dice slider
     * Use pyparsing to implement multiplication, basic functions, operator precedence in the curly bracket stuff
-    * CR calculation
     * Need to rework multiattack -- could add can_multiattack attribute to Actions, then set # by hit dice/desired DPR?
     * CR calculation
     * Export to Roll20
@@ -51,7 +49,7 @@
 ## Job's done!
 
 * Update Stablock.from_markdown() to create a new class first instead of building from dictionary
-* Fix Action descriptions
+* Fix Feature descriptions
 * Update applying tags to modify a copy of class
 * Use deep copies and Statblock.applied_tags to remove tags e.g.:
     * You've got a statblock with two tags: *Dumb*, *Nice Jacket*
@@ -77,3 +75,4 @@
 * fix Necrin output languages it knew **IN** life
 * Reconfigure proficiency bonus calculation to `1 + math.ceil(n / 4.)` # actually 1 + int(max(math.ceil(self.hit_dice.count / 4), 0))
 * Add table descriptions
+* Hit dice slider

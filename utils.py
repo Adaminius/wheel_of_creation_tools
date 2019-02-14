@@ -133,7 +133,7 @@ class ChallengeRating(object):
         return 'ChallengeRating<rating="{}", xp="{}">'.format(self.rating, self.xp)
 
 
-class Action(object):  # todo rename to Feature
+class Feature(object):  # todo rename to Feature
     """The special features and abilities a monster has, including features, actions, bonus actions, reactions,
     and legendary actions. This class substitutes values into its description template when updated in-between
     pairs of curly braces, e.g. '***Smite.*** Deal {STR + 2} damage' will substitute in a statblock's strength
@@ -180,7 +180,7 @@ class Action(object):  # todo rename to Feature
         return '***{}.*** {}'.format(self.name, self.description)
 
     def __repr__(self):
-        return 'Action<name="{}", description="{}">'.format(self.name, self.description)
+        return 'Feature<name="{}", description="{}">'.format(self.name, self.description)
 
 
 # Loads in some frequently referenced actions for tag tables to make use of
@@ -194,7 +194,7 @@ with open(path.join(package_directory, 'common_actions.csv')) as file_handle:
             is_legendary = row['is_legendary']
         else:
             is_legendary = 'alse' not in row['is_legendary']
-        common_actions[name] = Action(name=name, description_template=description_template, is_legendary=is_legendary)
+        common_actions[name] = Feature(name=name, description_template=description_template, is_legendary=is_legendary)
 
 
 def parse_table(lines: list) -> OrderedDict:

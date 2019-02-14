@@ -1,5 +1,5 @@
 from utils import common_actions
-from utils import Action
+from utils import Feature
 from statblock import Statblock
 from statblock import Tag
 
@@ -32,7 +32,7 @@ all_tags.append(Tag('beautiful', '+2 to Charisma', on_apply=apply))
 
 def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CHA'].value += 2
-    beckon = Action(name='Beckon', description_template=
+    beckon = Feature(name='Beckon', description_template=
                     'This creature targets one humanoid, beast, or giant it can see within 30 ft. of it and performs '
                     'a beckoning gesture. If the target can see this creature, the target must make succeed on a DC '
                     '{CHA + prof + 8} Wisdom saving throw or be charmed for 1 minute.\nWhile charmed, the target '

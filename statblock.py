@@ -8,7 +8,7 @@ from typing import Callable  # don't remove, used in docstrings
 from utils import Dice
 from utils import AbilityScore
 from utils import ChallengeRating
-from utils import Action
+from utils import Feature
 from utils import parse_table
 from utils import format_modifier
 from utils import size_min, size_max, size_name_to_val, size_val_to_name
@@ -55,7 +55,7 @@ def parse_actions(lines: list, is_legendary=False):
         action_name, action_description = curr_line.split(name_sym)
         action_name = action_name.strip().strip('.')
         action_description = action_description.strip()
-        actions.append(Action(action_name, action_description, is_legendary))
+        actions.append(Feature(action_name, action_description, is_legendary))
 
     logging.debug(f'parse_actions(lines={lines},\n is_legendary={is_legendary}) -> {actions}, {lines}')
     return actions, lines
@@ -652,7 +652,7 @@ class Statblock(object):
 
         if self.features:
             for action in self.features:
-                # These might get a little more complicated in future, so we will let the Action class do formatting
+                # These might get a little more complicated in future, so we will let the Feature class do formatting
                 action.update_description(self.get_substitutable_values())
                 lines.append(str(action))
                 if lines[-1].strip() != '':

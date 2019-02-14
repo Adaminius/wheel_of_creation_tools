@@ -44,7 +44,7 @@ and applies tags as requested by the client
 * **statblock.py** Code for parsing, modifying, and outputting Statblocks. Includes the Tag and
 Stablock classes and supporting functions.
 * **utils.py** Misc utility functions and building blocks of lower-level D&D, including the 
-RollableTable, Dice, AbilityScore, and ChallengeRating classes. Of note is the Action 
+RollableTable, Dice, AbilityScore, and ChallengeRating classes. Of note is the Feature 
 (to be renamed Feature) class: objects of this class represent special abilities and the
 actions a creature can take, and this includes the code for parsing the variables and
 operators in curly braces '{}' as described above.
