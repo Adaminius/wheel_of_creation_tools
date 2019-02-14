@@ -51,12 +51,12 @@ textarea {
 .md-preview blockquote h4, .md-preview blockquote h3, .md-preview blockquote h2, .md-preview blockquote h1 {
     color: rgb(50, 163, 0);
     font-weight: normal;
-    font-family: Calibri, serif;
+    font-family: Calibri, Helvetica, sans-serif;
     border-bottom: solid 1px black;
 }
 
 .md-preview blockquote h2 {
-    font-family: Cambria, sans-serif;
+    font-family: Cambria, serif;
     border-bottom: none;
     margin-bottom: 0;
 }

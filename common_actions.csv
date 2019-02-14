@@ -1,21 +1,19 @@
-name,is_legendary,description_template
-"Amphibious",False,"This creature can breathe air and water."
-"Bound to the Courts",False,"This creature has advantage on saving throws against being charmed, and magic can't put it to sleep."
-"Aggressive",False,"As a bonus action, this creature can move up to its speed toward a hostile feature it can see."
-"Ambusher",False,"This creature has advantage on attack rolls against any creature it has surprised."
-"Avoidance",False,"If this creature is subjected to an effect that allows it to make a saving throw to only take half damage, it instead takes no damage if it succeeds on the saving throw, and only half damage if it fails."
-"Blood Frenzy",False,"This creature has advantage on melee attack rolls against any creature that doesn't have all its hit points."
-"Constrict",False,"*Melee Weapon Atack:* +{prof + STR} to hit, reach 5 ft., one target. *Hit:* 7 ({size_mod}d4 + {STR}) bludgeoning damage. On a hit, if the target is {size} or smaller, it must make a DC {8 + prof + STR} Strength saving throw or be grappled."
-"Frightful Presence",False,"Each creature of this creature's choice within 120 ft. that can hear or see it must make a DC {8 + prof + CHA} Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success. If a creature's saving throw is successful or the effect ends for it, the creature is immune to the dragon's Frightful Presence for the next 24 hours."
-"Magic Resistance",False,"This creature has advantage on saving throws against spells and other magical effects."
-"Nimble Escape",False,"This creature can take the Disengage or Hide action as a bonus action on each of its turns."
-"Pack Tactics",False,"This creature has advantage on attack rolls against a target creature if at least one of the creature's allies is within 5 ft. of the target and the ally is not incapacitated."
-"Parry",False,"This creature adds {prof} to its AC against one melee attack that would hit it."
-"Regeneration",False,"At the beginning of this creature's turn, it regains {prof + CON} hit points."
-"Aversion to Fire",False,"If this creature takes fire damage, it can't use its Regeneration feature on its next turn."
-"Aversion to Acid",False,"If this creature takes acid damage, it can't use its Regeneration feature on its next turn."
-"Relentless",False,"If this creature would be reduced to 0 hit points, it makes a DC {8 + prof} Constitution saving throw. On a successful saving throw, it survives with 1 hp instead."
-"Undead Fortitude",False,"If damage reduces this creature to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a successful saving throw, it drops to 1 hp instead."
-"Stench",False,"Any other creature that starts its turn within 5 ft. of this creature must succeed on a DC"
-"Sunlight Sensitivity",False,"While in sunlight, this creature has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight."
-"Command Undead",False,"({prof - 1}/day) This creature targets one undead creature it can see. If the target has a CR of 1 or lower and has no class levels, this creature immediately assumes control over the target. The target obeys the verbal commands of this creature to the best of its ability for the next 24 hours."
+name,is_legendary,description_template,can_multiattack
+"Amphibious",False,"This creature can breathe air and water.",False
+"Bound to the Courts",False,"This creature has advantage on saving throws against being charmed, and magic can't put it to sleep.",False
+"Aggressive",False,"As a bonus action, this creature can move up to its speed toward a hostile feature it can see.",False
+"Ambusher",False,"This creature has advantage on attack rolls against any creature it has surprised.",False
+"Constrict",False,"*Melee Weapon Atack:* +{prof + STR} to hit, reach 5 ft., one target. *Hit:* 7 ({size_mod}d4 + {STR}) bludgeoning damage. On a hit, if the target is {size} or smaller, it must make a DC {8 + prof + STR} Strength saving throw or be grappled.",True
+"Frightful Presence",False,"Each creature of this creature's choice within 120 ft. that can hear or see it must make a DC {8 + prof + CHA} Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success. If a creature's saving throw is successful or the effect ends for it, the creature is immune to this creature's Frightful Presence for the next 24 hours.",True
+"Magic Resistance",False,"This creature has advantage on saving throws against spells and other magical effects.",False
+"Nimble Escape",False,"This creature can take the Disengage or Hide action as a bonus action on each of its turns.",False
+"Pack Tactics",False,"This creature has advantage on attack rolls against a target creature if at least one of the creature's allies is within 5 ft. of the target and the ally is not incapacitated.",False
+"Parry",False,"This creature adds {prof} to its AC against one melee attack that would hit it.",False
+"Regeneration",False,"At the beginning of this creature's turn, it regains {prof + CON} hit points.",False
+"Aversion to Fire",False,"If this creature takes fire damage, it can't use its Regeneration feature on its next turn.",False
+"Aversion to Acid",False,"If this creature takes acid damage, it can't use its Regeneration feature on its next turn.",False
+"Relentless",False,"If this creature would be reduced to 0 hit points, it makes a DC {8 + prof} Constitution saving throw. On a successful saving throw, it survives with 1 hp instead.",False
+"Undead Fortitude",False,"If damage reduces this creature to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a successful saving throw, it drops to 1 hp instead.",False
+"Stench",False,"Any other creature that starts its turn within 5 ft. of this creature must succeed on a DC {8 + CON + prof} saving throw or be poisoned until the start of that creature's next turn. On a successful saving throw, the creature is immune to the stench of creatures of this kind for 1 hour.",False
+"Sunlight Sensitivity",False,"While in sunlight, this creature has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight.",False
+"Command Undead",False,"({prof - 1}/day) This creature targets one undead creature it can see. If the target has a CR of 1 or lower and has no class levels, this creature immediately assumes control over the target. The target obeys the verbal commands of this creature to the best of its ability for the next 24 hours.",False

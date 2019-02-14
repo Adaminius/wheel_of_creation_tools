@@ -120,7 +120,7 @@ $('document').ready(function () {
     $('#hitDiceRange').change(function() {
         let newVal = parseInt(this.value);
         if (newVal === 0)
-            $('#hitDiceDisplay').html('Use dice in input statblock');
+            $('#hitDiceDisplay').html('[Use dice in input statblock]');
         else
             $('#hitDiceDisplay').html('<strong>' + newVal + '</strong>' + ' ' + similarMonsters[newVal]);
     });

@@ -3,7 +3,21 @@ from statblock import Tag
 
 all_tags = []
 table_name = 'Misc'
-table_description = 'Simple operations'
+table_description = 'Simple or unflavored operations'
+
+def apply(sb: Statblock) -> Statblock:
+    sb.bonus_multiattacks += 1
+    return sb
+all_tags.append(Tag('+Multiattack', effect_text='can make 1 additional attack with its multiattack action', weight=10,
+                    stacks=True, on_apply=apply))
+
+
+def apply(sb: Statblock) -> Statblock:
+    sb.bonus_multiattacks -= 1
+    return sb
+all_tags.append(Tag('-Multiattack', effect_text='can make 1 additional attack with its multiattack action', weight=10,
+                    stacks=True, on_apply=apply))
+
 
 def basic_add_apply(ability_score):
     def apply(sb: Statblock) -> Statblock:

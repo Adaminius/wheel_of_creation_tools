@@ -5,12 +5,13 @@ import logging
 from collections import defaultdict
 from copy import deepcopy
 from typing import Callable  # don't remove, used in docstrings
-from utils import Dice
+from utils import Dice, num_to_english
 from utils import AbilityScore
 from utils import ChallengeRating
 from utils import Feature
 from utils import parse_table
 from utils import format_modifier
+from utils import process_operands
 from utils import size_min, size_max, size_name_to_val, size_val_to_name
 
 
@@ -32,7 +33,7 @@ def parse_resist_or_immunity(text: str) -> set:
     return set(resistances)
 
 
-def parse_actions(lines: list, is_legendary=False):
+def parse_features(lines: list, is_legendary=False):
     name_sym = '***'
     if is_legendary:
         name_sym = '**'
@@ -156,6 +157,7 @@ class Statblock(object):
         self.__proficiency = proficiency
         self.applied_tags = applied_tags if applied_tags is not None else []
         self.base_natural_armor = 0
+        self.bonus_multiattacks = 0
 
         self.original_text = original_text if original_text is not None else ''
 
@@ -200,6 +202,17 @@ class Statblock(object):
     def proficiency(self, proficiency):
         self.__proficiency = proficiency
 
+    @property
+    def num_multiattacks(self):
+        base = 1
+        if self.hit_dice.count in range(3, 11):
+            base = 2
+        if self.hit_dice.count in range(11, 20):
+            base = 3
+        if self.hit_dice.count >= 20:
+            base = 4
+        return base + self.bonus_multiattacks
+
     def add_damage_resistance(self, damage_type):
         """A common behavior I use in applying tags. For the given damage_type, upgrade the creature's
         vulnerability to nothing, nothing to resistance, and resistance to immunity."""
@@ -240,19 +253,23 @@ class Statblock(object):
             return 3
         if self.size == 5:  # gargantuan
             return 4
+        return 1
 
     def size_die_size(self):
         """Can be used to calculate the size of a die to roll based on a creature's size."""
         if self.size == 0:  # tiny
             return 4
-        if self.size in {1, 2}:  # small or medium
+        if self.size == 1:  # small
             return 6
-        if self.size == 3:  # large
+        if self.size == 2:  # medium
             return 8
-        if self.size == 4:  # huge
+        if self.size == 3:  # large
             return 10
-        if self.size == 5:  # gargantuan
+        if self.size == 4:  # huge
             return 12
+        if self.size == 5:  # gargantuan
+            return 20
+        return 8
 
     @classmethod
     def from_markdown(cls, text: str = '', filename=''):
@@ -471,21 +488,21 @@ class Statblock(object):
                 if not lines:
                     return sb
 
-            sb.features, lines = parse_actions(lines)
+            sb.features, lines = parse_features(lines)
             while lines:
                 curr_line = lines.pop(0)
                 if '## Actions' in curr_line:
-                    sb.actions, lines = parse_actions(lines)
+                    sb.actions, lines = parse_features(lines)
                 elif '## Bonus Actions' in curr_line:
-                    sb.bonus_actions, lines = parse_actions(lines)
+                    sb.bonus_actions, lines = parse_features(lines)
                 elif '## Reactions' in curr_line:
-                    sb.reactions, lines = parse_actions(lines)
+                    sb.reactions, lines = parse_features(lines)
                 elif '## Legendary Actions' in curr_line:
                     while not lines[0].strip('>').strip().startswith('*'):
                         num_leg = re.search(r'can take (\d+) legendary actions', lines.pop(0))
                         if num_leg:
                             sb.num_legendary = int(num_leg.groups()[0])
-                    sb.legendary_actions, lines = parse_actions(lines, is_legendary=True)
+                    sb.legendary_actions, lines = parse_features(lines, is_legendary=True)
             logging.debug(f'Parsed features={sb.features}, actions={sb.actions}, bonus actions={sb.bonus_actions},'
                           f'legendary actions={sb.legendary_actions}, num legendary={sb.num_legendary}')
 
@@ -658,14 +675,42 @@ class Statblock(object):
                 if lines[-1].strip() != '':
                     lines.append('')
 
-        if self.actions:
+        if self.actions or self.num_multiattacks > 1:
             lines.append('### Actions')
-            for action in self.actions:
-                action.update_description(self.get_substitutable_values())
-                for line in str(action).splitlines():
-                    lines.append(line)
-                if lines[-1].strip() != '':
-                    lines.append('')
+
+        multiattack_actions = []  # not weapon attacks
+        for action in self.actions:
+            if not action.is_attack and action.can_multiattack:
+                multiattack_actions.append(action.name)
+
+        num_multiattacks = self.num_multiattacks
+        if multiattack_actions:
+            num_multiattacks -= 1
+            if len(multiattack_actions) == 1:
+                ma_action_desc = multiattack_actions[0]
+            elif len(multiattack_actions) == 2:
+                ma_action_desc = f'{multiattack_actions[0]} or {multiattack_actions[1]}'
+            else:
+                ma_action_desc = f"{', '.join(multiattack_actions[:-1])}, or {multiattack_actions[-1]}"
+            lines.append(f'**Multiattack.** This creature makes {num_to_english.get(num_multiattacks, num_multiattacks)} '
+                         f'weapon attack{"s" if num_multiattacks != 1 else ""} '
+                         f'and can use {ma_action_desc}.'
+                         )
+            lines.append('')
+        elif num_multiattacks > 1:
+            lines.append(f'**Multiattack.** This creature makes {num_to_english.get(num_multiattacks, num_multiattacks)} '
+                         f'weapon attack{"s" if num_multiattacks != 1 else ""}.'
+                         )
+            lines.append('')
+
+        for action in self.actions:
+            if 'multiattack' in action.name.lower():
+                continue  # just skip over parsed multiattacks entirely
+            action.update_description(self.get_substitutable_values())
+            for line in str(action).splitlines():
+                lines.append(line)
+            if lines[-1].strip() != '':
+                lines.append('')
 
         if self.bonus_actions:
             lines.append('### Bonus Actions')
@@ -701,6 +746,28 @@ class Statblock(object):
                 lines.append('')
 
         return '\n'.join(['___', '___'] + ['> ' + line for line in lines])
+
+    def calc_challenge(self):
+        cr_weights = {  # final Challenge Rating is a weighted average of individual component Challenge Ratings
+            'damage': 1,  # estimated damage per round
+            'save_dc': 1,  # highest save difficulty class
+            'attack_bonus': 1,  # highest attack bonus
+            'ac': 1,  # armor class
+            'hp': 1,  # hitpoints
+        }
+        total = sum(cr_weights.values())
+        for key in cr_weights.keys():
+            cr_weights[key] = cr_weights[key] / total
+
+
+
+
+        eff_damage = 1
+        eff_save_dc = 1
+        eff_attack_bonus = 1
+        eff_ac = 1
+        eff_hp = 1
+
 
 
 def default_on_overwrite(tag, other_tag, statblock: Statblock):

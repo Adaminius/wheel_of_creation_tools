@@ -23,6 +23,18 @@ size_name_to_val = dict([(val, key) for key, val in size_val_to_name.items()])
 size_min = 0
 size_max = 5
 
+num_to_english = {0: 'zero',
+                  1: 'one',
+                  2: 'two',
+                  3: 'three',
+                  4: 'four',
+                  5: 'five',
+                  6: 'six',
+                  7: 'seven',
+                  8: 'eight',
+                  9: 'nine',
+                  }
+
 
 def setup_logging(debug=True, filename=''):
     log_level = logging.DEBUG if debug else logging.INFO
@@ -118,6 +130,7 @@ class AbilityScore(object):
 class ChallengeRating(object):
     """How powerful a monster is determines how much experience it's worth."""
     rating_to_xp = json.load(open(path.join(package_directory, 'challenge_rating_to_xp.json'), 'r'))
+    # rating_by_stat = json.load(open(path.join(package_directory, 'challenge_rating_by_stat.json'), 'r'))
 
     def __init__(self, rating: str):
         self.rating = str(rating)
@@ -133,18 +146,30 @@ class ChallengeRating(object):
         return 'ChallengeRating<rating="{}", xp="{}">'.format(self.rating, self.xp)
 
 
-class Feature(object):  # todo rename to Feature
+class Feature(object):
     """The special features and abilities a monster has, including features, actions, bonus actions, reactions,
     and legendary actions. This class substitutes values into its description template when updated in-between
     pairs of curly braces, e.g. '***Smite.*** Deal {STR + 2} damage' will substitute in a statblock's strength
     modifier and add 2 to it. This recalculated value is what is actually shown in the __repr__ of the object.
     Expressions in parentheses '()' are also recalculated here. Both the value and the expression for an expression
     in parentheses are in the final __repr__."""
-    def __init__(self, name: str, description_template: str, is_legendary: bool = False, **kwargs):
+    def __init__(self, name: str, description_template: str, is_legendary: bool = False, can_multiattack: bool = False):
         self.name = name
         self.description_template = description_template
         self.description = ''
         self.is_legendary = is_legendary
+        self.can_multiattack = can_multiattack  # i.e., should this be included in the multiattack action?
+
+        self.is_attack = False
+        if 'weapon attack' in self.description_template.lower():
+            self.is_attack = True
+
+        # just grab the first one we see
+        self.damage_formula = re.search(r'[+\-]?\d+\s+\(([A-z0-9+\-\s{}]+)\)[A-z0-9 ]+damage', self.description_template)
+        if self.damage_formula is None:
+            self.damage_formula = 0
+        else:
+            self.damage_formula = self.damage_formula.group(1)
 
     def update_description(self, values: dict):
         description = self.description_template
