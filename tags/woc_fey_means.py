@@ -1,4 +1,4 @@
-from utils import common_actions
+from utils import common_features
 from utils import Feature
 from statblock import Statblock
 from statblock import Tag
@@ -87,7 +87,7 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('lumbering', '+2 to Strength; subtract 10 ft. from all speeds', on_apply=apply))
 
 def apply(sb: Statblock) -> Statblock:
-    sb.features.append(common_actions['Amphibious'])
+    sb.features.append(common_features['Amphibious'])
     if sb.swim_speed > 0:
         sb.swim_speed += 10
     sb.add_damage_resistance('poison')
@@ -97,7 +97,7 @@ all_tags.append(Tag('swamp-dweller', 'can breathe both air and water; if it has 
                     on_apply=apply, overwrites={'dweller'}, overwritten_by={'dweller'}, weight=2))
 
 def apply(sb: Statblock) -> Statblock:
-    sb.features.append(common_actions['Amphibious'])
+    sb.features.append(common_features['Amphibious'])
     sb.swim_speed = max(20, sb.speed)
     return sb
 all_tags.append(Tag('sea-dweller', 'can breathe both air and water; gain a swim speed of 20 ft. or equal to its '
@@ -115,7 +115,7 @@ all_tags.append(Tag('forest-dweller', '+1 to Dexterity; proficiency in the Steal
 
 def apply(sb: Statblock) -> Statblock:
     sb.climb_speed = max(20, sb.speed)
-    sb.features.append(common_actions['Ambusher'])
+    sb.features.append(common_features['Ambusher'])
     return sb
 all_tags.append(Tag('jungle-dweller', 'add the Ambusher feature; gain a climb speed of 20 ft. or equal to its '
                                       'walking speed, whichever is greater',
@@ -123,8 +123,8 @@ all_tags.append(Tag('jungle-dweller', 'add the Ambusher feature; gain a climb sp
 
 def apply(sb: Statblock) -> Statblock:
     sb.climb_speed = max(20, sb.speed)
-    sb.features.append(common_actions['Nimble Escape'])
-    sb.features.append(common_actions['Sunlight Sensitivity'])
+    sb.features.append(common_features['Nimble Escape'])
+    sb.features.append(common_features['Sunlight Sensitivity'])
     return sb
 all_tags.append(Tag('cave-dweller', 'add the Nimble Escape feature; add the Sunlight Sensitivity feature; '
                                     '+60 ft. darkvision',
@@ -147,7 +147,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.add_damage_resistance('psychic')
     if sb.primary_type == 'fey':
         sb.add_damage_resistance('psychic')
-    sb.features.append(common_actions['Bound to the Courts'])
+    sb.features.append(common_features['Bound to the Courts'])
     return sb
 all_tags.append(Tag('Wintry', 'Winter alignment; cold and psychic resistance; advantage on saving throws against being '
                               'charmed or put to sleep',
@@ -161,7 +161,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.add_damage_resistance('psychic')
     if sb.primary_type == 'fey':
         sb.add_damage_resistance('psychic')
-    sb.features.append(common_actions['Bound to the Courts'])
+    sb.features.append(common_features['Bound to the Courts'])
     return sb
 all_tags.append(Tag('Vernal', 'Spring alignment; poison and psychic resistance; advantage on saving throws against being '
                                'charmed or put to sleep',
@@ -175,7 +175,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.add_damage_resistance('psychic')
     if sb.primary_type == 'fey':
         sb.add_damage_resistance('psychic')
-    sb.features.append(common_actions['Bound to the Courts'])
+    sb.features.append(common_features['Bound to the Courts'])
     return sb
 all_tags.append(Tag('Summery', 'Summer alignment; fire and psychic resistance; advantage on saving throws against being '
                                'charmed or put to sleep',
@@ -189,7 +189,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.add_damage_resistance('psychic')
     if sb.primary_type == 'fey':
         sb.add_damage_resistance('psychic')
-    sb.features.append(common_actions['Bound to the Courts'])
+    sb.features.append(common_features['Bound to the Courts'])
     return sb
 all_tags.append(Tag('Autumnal', 'Autumn alignment; necrotic and psychic resistance; advantage on saving throws against being '
                                'charmed or put to sleep',

@@ -130,12 +130,12 @@
       <button class="btn btn-secondary" style="margin: .25rem;" id="clearButton">Clear</button>
     </div>
     <div class="slidecontainer" style="border-left: solid 1px rgba(0,0,0,.1); margin-left: 1rem; padding-left: 1rem; min-width: 6rem">
-      <label for="hitDiceRange" title="If set to 0 Also sets proficiency bonus to 1 + num_hit_dice / 4 and determines number of multiattacks.">
+      <label for="hitDiceRange" title="Also sets proficiency bonus to 1 + num_hit_dice / 4 and determines number of multiattacks.">
         Number of hit dice:
       </label>
       <div id="hitDiceDisplay" style="font-family: 'Arial Black', sans-serif">[Use dice in input statblock]</div>
       <br>
-      <input type="range" min="0" max="33" value="0" class="slider" id="hitDiceRange">
+      <input autocomplete="off" type="range" min="0" max="33" value="0" class="slider" id="hitDiceRange">
     </div>
 
     <div class="col-md" id="tagsToApplyDiv"

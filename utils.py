@@ -35,6 +35,9 @@ num_to_english = {0: 'zero',
                   9: 'nine',
                   }
 
+# doesn't include bludgeoning, piercing, and slashing
+damage_types = ['acid', 'cold', 'fire', 'force', 'lightning', 'necrotic', 'poison', 'psychic', 'radiant', 'thunder']
+
 
 def setup_logging(debug=True, filename=''):
     log_level = logging.DEBUG if debug else logging.INFO
@@ -130,7 +133,165 @@ class AbilityScore(object):
 class ChallengeRating(object):
     """How powerful a monster is determines how much experience it's worth."""
     rating_to_xp = json.load(open(path.join(package_directory, 'challenge_rating_to_xp.json'), 'r'))
-    # rating_by_stat = json.load(open(path.join(package_directory, 'challenge_rating_by_stat.json'), 'r'))
+
+    @classmethod
+    def float_cr_to_cr(cls, cr: int):
+        """Convert [0, -1, -2, -3]-style CRs to [1/2, 1/4, 1/8, 0]-style Challenge Rating class objects."""
+        if cr < -2:
+            cr = '0'
+        elif cr < -1:
+            cr = '1/8'
+        elif cr < 0:
+            cr = '1/4'
+        elif cr < 1:
+            cr = '1/2'
+        else:
+            cr = str(int(math.floor(cr)))
+        return cls(cr)
+
+    @staticmethod
+    def damage_to_cr(damage: int) -> float:
+        """Returns the expected CR based on the damage-per-round a creature can do. Uses "float cr",
+        [0, -1, -2, -3] represent CRs of [1/2, 1/4, 1/8, 0] respectively. Better for averaging.
+        Args:
+            damage
+
+        Returns:
+            Float representing CR (NOT a Challenge Rating object)
+        """
+        bounds = [1, 3, 5, 8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74, 80, 86, 92, 98, 104, 116, 122, 140, 158, 176,
+                  194, 212, 230, 248, 266, 284, 302, 320, 336, 352, 400, 500, 600]
+        for i, bound in enumerate(bounds):
+            if damage <= bound:
+                return i - 3
+        return len(bounds) - 3
+
+    @staticmethod
+    def attack_to_cr(attack: int) -> float:
+        """Returns the expected CR based on creature's attack. Uses "float cr",
+        [0, -1, -2, -3] represent CRs of [1/2, 1/4, 1/8, 0] respectively. Better for averaging.
+        Args:
+            attack
+
+        Returns:
+            Float representing CR (NOT a Challenge Rating object)
+        """
+        if attack < 3:
+            return -3
+        if attack == 3:
+            return 0
+        if attack == 4:
+            return 3
+        if attack == 5:
+            return 4
+        if attack == 6:
+            return 6
+        if attack == 7:
+            return 9
+        if attack == 8:
+            return 13
+        if attack == 9:
+            return 16
+        if attack == 10:
+            return 18.5
+        if attack == 11:
+            return 23
+        if attack == 12:
+            return 25
+        if attack == 13:
+            return 28
+        if attack == 14:
+            return 31
+        return 34
+
+    @staticmethod
+    def save_dc_to_cr(save_dc: int) -> float:
+        """Returns the expected CR based on creature's save_dc. Uses "float cr",
+        [0, -1, -2, -3] represent CRs of [1/2, 1/4, 1/8, 0] respectively. Better for averaging.
+        Args:
+            save_dc
+
+        Returns:
+            Float representing CR (NOT a Challenge Rating object)
+        """
+        if save_dc < 13:
+            return -3
+        if save_dc == 13:
+            return 0
+        if save_dc == 14:
+            return 4
+        if save_dc == 15:
+            return 6
+        if save_dc == 16:
+            return 9
+        if save_dc == 17:
+            return 11.5
+        if save_dc == 18:
+            return 14.5
+        if save_dc == 19:
+            return 18.5
+        if save_dc == 20:
+            return 22
+        if save_dc == 21:
+            return 25
+        if save_dc == 22:
+            return 28
+        if save_dc == 23:
+            return 30
+        return 34
+
+    @staticmethod
+    def hp_to_cr(hp: int) -> float:
+        """Returns the expected CR based on creature's hit points. Uses "float cr",
+        [0, -1, -2, -3] represent CRs of [1/2, 1/4, 1/8, 0] respectively. Better for averaging.
+        Args:
+            hp
+
+        Returns:
+            Float representing CR (NOT a Challenge Rating object)
+        """
+        bounds = [6, 12, 24, 48, 85, 100, 115, 130, 145, 160, 175, 190, 205, 220, 235, 250, 265, 280, 295, 310, 325,
+                  340, 355, 400, 445, 490, 535, 580, 625, 670, 715, 760, 805, 850, 900, 1000, 1100, 1200, 1300]
+        for i, bound in enumerate(bounds):
+            if hp <= bound:
+                return i - 3
+        return len(bounds) - 3
+
+    @staticmethod
+    def ac_to_cr(ac: int) -> float:
+        """Returns the expected CR based on creature's armor class. Uses "float cr",
+        [0, -1, -2, -3] represent CRs of [1/2, 1/4, 1/8, 0] respectively. Better for averaging.
+        Args:
+            ac
+
+        Returns:
+            Float representing CR (NOT a Challenge Rating object)
+        """
+        if ac < 13:
+            return -3
+        if ac == 13:
+            r = range(-2, 4)
+            return sum(r) / len(r)
+        if ac == 14:
+            r = range(4, 5)
+            return sum(r) / len(r)
+        if ac == 15:
+            r = range(5, 8)
+            return sum(r) / len(r)
+        if ac == 16:
+            r = range(8, 10)
+            return sum(r) / len(r)
+        if ac == 17:
+            r = range(10, 13)
+            return sum(r) / len(r)
+        if ac == 18:
+            r = range(13, 17)
+            return sum(r) / len(r)
+        if ac == 19:
+            r = range(17, 22)
+            return sum(r) / len(r)
+        if ac > 19:
+            return 25
 
     def __init__(self, rating: str):
         self.rating = str(rating)
@@ -138,7 +299,7 @@ class ChallengeRating(object):
 
     def __str__(self):
         if self.xp != 0:
-            '{} ({:,} XP)'.format(self.rating, self.xp)
+            return '{} ({:,} XP)'.format(self.rating, self.xp)
         else:
             return self.rating
 
@@ -152,13 +313,29 @@ class Feature(object):
     pairs of curly braces, e.g. '***Smite.*** Deal {STR + 2} damage' will substitute in a statblock's strength
     modifier and add 2 to it. This recalculated value is what is actually shown in the __repr__ of the object.
     Expressions in parentheses '()' are also recalculated here. Both the value and the expression for an expression
-    in parentheses are in the final __repr__."""
-    def __init__(self, name: str, description_template: str, is_legendary: bool = False, can_multiattack: bool = False):
+    in parentheses are in the final __repr__.
+    Args:
+        name:   Appears bolded and italicized at the start of an action/feature description.
+        description_template:   Describes what the action does. Can have substitutable values in '{}'
+        is_legendary:   Is this a Legendary Action? They are formatted slightly differently
+        can_multiattack:    Should this be included in the multiattack action?
+        effect_ac:  when calculating CR (see Statblock.challenge), this value is added to effective AC
+        effect_hp:  when calculating CR, effective hp is recalculated as (1 + effect_hp) * hp
+        effect_damage:  when calculating CR, effective damage is recalculated as (1 + effect_damage) * damage
+        effect_attack:  when calculating CR, this value is added to effective attack bonus
+    """
+    def __init__(self, name: str, description_template: str, is_legendary: bool = False, can_multiattack: bool = False,
+                 effect_ac=0, effect_hp=0, effect_damage=0, effect_attack=0):
         self.name = name
         self.description_template = description_template
         self.description = ''
         self.is_legendary = is_legendary
         self.can_multiattack = can_multiattack  # i.e., should this be included in the multiattack action?
+
+        self.effect_ac = effect_ac
+        self.effect_hp = effect_hp
+        self.effect_damage = effect_damage
+        self.effect_attack = effect_attack
 
         self.is_attack = False
         if 'weapon attack' in self.description_template.lower():
@@ -167,29 +344,32 @@ class Feature(object):
         # just grab the first one we see
         self.damage_formula = re.search(r'[+\-]?\d+\s+\(([A-z0-9+\-\s{}]+)\)[A-z0-9 ]+damage', self.description_template)
         if self.damage_formula is None:
-            self.damage_formula = 0
+            self.damage_formula = '-1'
         else:
             self.damage_formula = self.damage_formula.group(1)
 
+        self.attack_bonus_formula = re.search(r'([+\-]\d+) to hit', self.description_template)
+        if self.attack_bonus_formula is not None:
+            self.attack_bonus_formula = self.attack_bonus_formula.group(1)
+        else:
+            self.attack_bonus_formula = re.search(r'({[^{}]+}) to hit', self.description_template)
+            if self.attack_bonus_formula is not None:
+                self.attack_bonus_formula = str(self.attack_bonus_formula.group(1))
+            else:
+                self.attack_bonus_formula = '-1'
+
+        self.dc_formula = re.search(r'DC (\d+)', self.description_template)
+        if self.dc_formula is not None:
+            self.dc_formula = int(self.dc_formula.group(1))
+        else:
+            self.dc_formula = re.search(r'DC ({[^{}]+})', self.description_template)
+            if self.dc_formula is not None:
+                self.dc_formula = self.dc_formula.group(1)
+            else:
+                self.dc_formula = '-1'
+
     def update_description(self, values: dict):
-        description = self.description_template
-
-        try:
-            operand_groups = re.findall(r'{([^{}]+)}', self.description_template)
-            totals = []
-            for operands in operand_groups:
-                operands = [op.strip() for op in operands.split() if op.strip()]
-                totals.append(process_operands(operands, values))
-
-            match = re.search(r'{([^{}]+)}', description)
-            while match:
-                description = description.replace(match.group(0), str(totals.pop(0)))
-                match = re.search(r'{([^{}]+)}', description)
-
-        except KeyError as e:
-            print('Missing values for updating action description template.')
-            print(e)
-
+        description = substitute_values(self.description_template, values)
         matches = re.findall(r'([+\-]?\d+\s+\(([A-z0-9+\-\s]+)\))', description)
         for match in matches:
             total = process_operands([op.strip() for op in match[1].split()], values)
@@ -209,8 +389,8 @@ class Feature(object):
 
 
 # Loads in some frequently referenced actions for tag tables to make use of
-common_actions = {}
-with open(path.join(package_directory, 'common_actions.csv')) as file_handle:
+common_features = {}
+with open(path.join(package_directory, 'common_features.csv')) as file_handle:
     reader = csv.DictReader(file_handle)
     for row in reader:
         name = str(row['name'])
@@ -219,7 +399,9 @@ with open(path.join(package_directory, 'common_actions.csv')) as file_handle:
             is_legendary = row['is_legendary']
         else:
             is_legendary = 'alse' not in row['is_legendary']
-        common_actions[name] = Feature(name=name, description_template=description_template, is_legendary=is_legendary)
+        common_features[name] = Feature(name=name, description_template=description_template, is_legendary=is_legendary,
+                                        effect_ac=row['effect_ac'], effect_hp=row['effect_hp'],
+                                        effect_damage=row['effect_damage'], effect_attack=row['effect_attack'])
 
 
 def parse_table(lines: list) -> OrderedDict:
@@ -306,3 +488,26 @@ def process_operands(operands: list, values: dict):
         raise RuntimeError('Couldn\'t parse operand {} of operands {}'.format(operand, operands))
 
     return total
+
+
+def substitute_values(template, values):
+    """Fill in things in '{}', e.g. '{prof + STR + 8}'"""
+    out_str = template
+    operand_groups = re.findall(r'{([^{}]+)}',  template)
+    totals = []
+    for operands in operand_groups:
+        operands = [op.strip() for op in operands.split() if op.strip()]
+        totals.append(process_operands(operands, values))
+
+    match = re.search(r'{([^{}]+)}', template)
+
+    try:
+        while match:
+            out_str = out_str.replace(match.group(0), str(totals.pop(0)))
+            match = re.search(r'{([^{}]+)}', out_str)
+
+    except KeyError as e:
+        print('Missing substitutable values for updating statblock template (e.g. {prof + STR}).')
+        print(e)
+
+    return out_str

@@ -5,13 +5,14 @@ import logging
 from collections import defaultdict
 from copy import deepcopy
 from typing import Callable  # don't remove, used in docstrings
-from utils import Dice, num_to_english
+from utils import Dice, num_to_english, substitute_values
 from utils import AbilityScore
 from utils import ChallengeRating
 from utils import Feature
 from utils import parse_table
 from utils import format_modifier
 from utils import process_operands
+from utils import damage_types
 from utils import size_min, size_max, size_name_to_val, size_val_to_name
 
 
@@ -84,7 +85,6 @@ class Statblock(object):
                  skills: dict = None, blindsight: int = 0, darkvision: int = 0, tremorsense: int = 0,
                  truesight: int = 0,
                  passive_perception: int = None, languages: list = None, telepathy: int = 0,
-                 challenge: ChallengeRating = None,
                  abilities: list = None, actions: list = None, bonus_actions: list = None,
                  reactions: list = None, legendary_actions: list = None, num_legendary: int = 3, proficiency=0,
                  applied_tags: list = None,
@@ -145,7 +145,6 @@ class Statblock(object):
         self.languages = languages if languages is not None else ['Common']
         self.telepathy = telepathy
         # self.languages = languages if languages is not None else defaults['languages']
-        self.challenge = challenge if challenge is not None else ChallengeRating('1')
 
         self.features = abilities
         self.actions = actions
@@ -173,10 +172,6 @@ class Statblock(object):
         values['size_mod'] = self.size_mod
         values['size'] = size_val_to_name[self.size]
         return values
-
-    def calc_challenge(self):
-        # TODO
-        self.challenge = self.challenge
 
     @property
     def passive_perception(self):
@@ -472,8 +467,8 @@ class Statblock(object):
             if 'Challenge' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Challenge** ', '')
                 challenge = curr_line.strip().split()[0]
-                sb.challenge = ChallengeRating(challenge)
-            logging.debug(f'Parsed CR "{sb.challenge.rating}"')
+                # sb.challenge = ChallengeRating(challenge)  # for now, we just evaluate at the end
+            # logging.debug(f'Parsed CR "{sb.challenge.rating}"')
 
             if 'Tags' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Tags** ', '')
@@ -683,23 +678,21 @@ class Statblock(object):
             if not action.is_attack and action.can_multiattack:
                 multiattack_actions.append(action.name)
 
-        num_multiattacks = self.num_multiattacks
         if multiattack_actions:
-            num_multiattacks -= 1
             if len(multiattack_actions) == 1:
                 ma_action_desc = multiattack_actions[0]
             elif len(multiattack_actions) == 2:
                 ma_action_desc = f'{multiattack_actions[0]} or {multiattack_actions[1]}'
             else:
                 ma_action_desc = f"{', '.join(multiattack_actions[:-1])}, or {multiattack_actions[-1]}"
-            lines.append(f'**Multiattack.** This creature makes {num_to_english.get(num_multiattacks, num_multiattacks)} '
-                         f'weapon attack{"s" if num_multiattacks != 1 else ""} '
-                         f'and can use {ma_action_desc}.'
+            lines.append(f'***Multiattack.*** This creature makes {num_to_english.get(self.num_multiattacks, self.num_multiattacks)} '
+                         f'weapon attack{"s" if self.num_multiattacks != 1 else ""}. '
+                         f'Once per turn, it can forfeit one of these attacks to use {ma_action_desc}.'
                          )
             lines.append('')
-        elif num_multiattacks > 1:
-            lines.append(f'**Multiattack.** This creature makes {num_to_english.get(num_multiattacks, num_multiattacks)} '
-                         f'weapon attack{"s" if num_multiattacks != 1 else ""}.'
+        elif self.num_multiattacks > 1:
+            lines.append(f'***Multiattack.*** This creature makes {num_to_english.get(self.num_multiattacks, self.num_multiattacks)} '
+                         f'weapon attack{"s" if self.num_multiattacks != 1 else ""}.'
                          )
             lines.append('')
 
@@ -747,27 +740,90 @@ class Statblock(object):
 
         return '\n'.join(['___', '___'] + ['> ' + line for line in lines])
 
-    def calc_challenge(self):
+    @property
+    def challenge(self):
         cr_weights = {  # final Challenge Rating is a weighted average of individual component Challenge Ratings
-            'damage': 1,  # estimated damage per round
-            'save_dc': 1,  # highest save difficulty class
-            'attack_bonus': 1,  # highest attack bonus
-            'ac': 1,  # armor class
+            'damage': 2,  # estimated damage per round
+            'save_dc': .1,  # highest save difficulty class
+            'attack_bonus': .05,  # highest attack bonus
+            'ac': .3,  # armor class
             'hp': 1,  # hitpoints
         }
         total = sum(cr_weights.values())
         for key in cr_weights.keys():
             cr_weights[key] = cr_weights[key] / total
 
+        damages, attack_bonuses, dcs = [0], [0], [0]
+        values = self.get_substitutable_values()
+        for action in self.actions:
+            dam = process_operands(substitute_values(action.damage_formula, values).split(), values)
+            att = process_operands(substitute_values(action.attack_bonus_formula, values).split(), values)
+            dc = process_operands(substitute_values(action.dc_formula, values).split(), values)
+            damages.append(dam)
+            attack_bonuses.append(att)
+            dcs.append(dc)
+        damage = max(max(damages), 1) * max(self.num_multiattacks, 1)
+        attack_bonus = max(max(attack_bonuses), self.proficiency + min(self.ability_scores['DEX'].modifier,
+                                                                       self.ability_scores['STR'].modifier))
+        save_dc = max(max(dcs), 8 + self.proficiency)
 
+        # We model some creature features and traits as bonuses and multipliers
+        # to their damage, attack, saves DCs, AC, and HP ('effective damage', etc.)
+        eff_damage = damage
+        eff_attack_bonus = attack_bonus
+        eff_save_dc = save_dc
+        eff_ac = self.armor_class
+        eff_hp = self.hit_points
 
+        for features in [self.actions, self.bonus_actions, self.reactions, self.legendary_actions]:
+            if features is None:
+                continue
+            for feature in features:
+                eff_damage *= 1 + feature.effect_damage
+                eff_attack_bonus += feature.effect_attack
+                eff_ac += feature.effect_ac
+                eff_hp *= 1 + feature.effect_hp
 
-        eff_damage = 1
-        eff_save_dc = 1
-        eff_attack_bonus = 1
-        eff_ac = 1
-        eff_hp = 1
+        if len(self.damage_immunities) >= 2:
+            if self.hit_dice.count < 11:
+                eff_hp *= 2
+            else:
+                eff_hp *= 1.5
 
+        if len(self.damage_resistances) >= 2:
+            if self.hit_dice.count < 11:
+                eff_hp *= 1.5
+            else:
+                eff_hp *= 1.25
+
+        damage_cr = ChallengeRating.damage_to_cr(eff_damage) * cr_weights['damage']
+        save_dc_cr = ChallengeRating.save_dc_to_cr(eff_save_dc) * cr_weights['save_dc']
+        attack_cr = ChallengeRating.attack_to_cr(eff_attack_bonus) * cr_weights['attack_bonus']
+        ac_cr = ChallengeRating.ac_to_cr(eff_ac) * cr_weights['ac']
+        hp_cr = ChallengeRating.hp_to_cr(eff_hp) * cr_weights['hp']
+        avg_cr = sum([damage_cr, save_dc_cr, attack_cr, ac_cr, hp_cr])
+
+        # For debugging/examining the CR model:
+        labels = '\t'.join(['damage', 'save_dc', 'attack_bonus', 'self.armor_class', 'self.hit_points'])
+        estimates = '\t'.join(map(str, [damage, save_dc, attack_bonus, str(self.armor_class), str(self.hit_points)]))
+        effectives = '\t'.join(map(str, [eff_damage, eff_save_dc, eff_attack_bonus, eff_ac, eff_hp]))
+        weighted_challenges = '\t'.join(map(lambda x: '{:.1f}'.format(x), [damage_cr, save_dc_cr, attack_cr, ac_cr, hp_cr]))
+        challenges = '\t'.join(map(lambda x: '{:.1f}'.format(x), [ChallengeRating.damage_to_cr(eff_damage),
+                                                                  ChallengeRating.save_dc_to_cr(eff_save_dc),
+                                                                  ChallengeRating.attack_to_cr(eff_attack_bonus),
+                                                                  ChallengeRating.ac_to_cr(eff_ac),
+                                                                  ChallengeRating.hp_to_cr(eff_hp)]))
+        print(
+            f'{self.name}, Hit Dice {self.hit_dice}, Prof Bonus {self.proficiency}\n'
+            f'labels             :\t{labels}\n'
+            f'estimates          :\t{estimates}\n'
+            f'effectives         :\t{effectives}\n'
+            f'challenges         :\t{challenges}\n'
+            f'weighted challenges:\t{weighted_challenges}\n'
+            f'Final CR: {avg_cr:.1f} ({ChallengeRating.float_cr_to_cr(avg_cr)})'
+        )
+
+        return ChallengeRating.float_cr_to_cr(avg_cr)
 
 
 def default_on_overwrite(tag, other_tag, statblock: Statblock):

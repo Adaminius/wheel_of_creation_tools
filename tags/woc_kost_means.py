@@ -1,4 +1,4 @@
-from utils import common_actions
+from utils import common_features
 from utils import Feature
 from statblock import Statblock
 from statblock import Tag
@@ -28,7 +28,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.add_damage_resistance('poison')
     sb.add_damage_vulnerability('radiant')
     sb.darkvision += 60
-    sb.actions.append(common_actions['Command Undead'])
+    sb.actions.append(common_features['Command Undead'])
     return sb
 all_tags.append(Tag('Kostlyavets',
                     'undead type; Kostlyavets subtype; immunity to necrotic and poison damage; speaks Kostki and '
@@ -45,7 +45,7 @@ all_tags.append(Tag('foul cunning', '+2 to Intelligence', on_apply=apply, stacks
 
 
 def apply(sb: Statblock) -> Statblock:
-    sb.features.append(common_actions['Undead Fortitude'])
+    sb.features.append(common_features['Undead Fortitude'])
     sb.ability_scores['STR'].value += 4
     sb.ability_scores['CON'].value += 2
     return sb
