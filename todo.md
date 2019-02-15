@@ -1,9 +1,10 @@
 ## Something need doing?
 
 * Features
+    * Use an int like 'num_can_multiattack' for actions instead of 'can_multiattack', might allow us to do stuff like claw-claw-bite
+    * Open preview in new window
     * Use pyparsing to implement multiplication, basic functions, operator precedence in the curly bracket stuff
     * Need to rework multiattack -- could add can_multiattack attribute to Actions, then set # by hit dice/desired DPR?
-    * CR calculation
     * Export to Roll20
     * Pretty horizontal rule similar to official books in preview
     * In the preview: click to roll dice, form-fill HP (so you could use this to track HP if you were only using the site)
@@ -14,13 +15,12 @@
     * Improve layout for mobile users
     * on_to_markdown Callback
     * Add burrow speed
-    * Rename "Action" class to "Feature"
     * Handle spells?
     * Add to_json() and flatten_json() methods for Statblock? 
 * Design/Mechanics
     * A 'create lesser minions' or 'create lesser undead' action that does something like
        * Create d4 Undead Minions. They have:
-          * Die if they take damage
+          * Die if they take > 2 damage
           * AC 12 (armor scraps)
           * speed 30 ft.
           * +2 to hit, d6 damage, range 80/320 ft. (shortsword/shortbow)
@@ -76,3 +76,5 @@
 * Reconfigure proficiency bonus calculation to `1 + math.ceil(n / 4.)` # actually 1 + int(max(math.ceil(self.hit_dice.count / 4), 0))
 * Add table descriptions
 * Hit dice slider
+* CR calculation
+* Rename "Action" class to "Feature"
