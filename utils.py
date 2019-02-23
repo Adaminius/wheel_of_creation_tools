@@ -325,7 +325,7 @@ class Feature(object):
         effect_attack:  when calculating CR, this value is added to effective attack bonus
     """
     def __init__(self, name: str, description_template: str, is_legendary: bool = False, can_multiattack: bool = False,
-                 effect_ac=0, effect_hp=0, effect_damage=0, effect_attack=0):
+                 effect_ac: float=0, effect_hp: float=0, effect_damage: float=0, effect_attack: float=0):
         self.name = name
         self.description_template = description_template
         self.description = ''
@@ -399,9 +399,19 @@ with open(path.join(package_directory, 'common_features.csv')) as file_handle:
             is_legendary = row['is_legendary']
         else:
             is_legendary = 'alse' not in row['is_legendary']
-        common_features[name] = Feature(name=name, description_template=description_template, is_legendary=is_legendary,
-                                        effect_ac=row['effect_ac'], effect_hp=row['effect_hp'],
-                                        effect_damage=row['effect_damage'], effect_attack=row['effect_attack'])
+
+        effect_ac = float(row['effect_ac']) if row['effect_ac'] else 0
+        effect_hp = float(row['effect_hp']) if row['effect_hp'] else 0
+        effect_damage = float(row['effect_damage']) if row['effect_damage'] else 0
+        effect_attack = float(row['effect_attack']) if row['effect_attack'] else 0
+        common_features[name] = Feature(name=name,
+                                        description_template=description_template,
+                                        is_legendary=is_legendary,
+                                        effect_ac=effect_ac,
+                                        effect_hp=effect_hp,
+                                        effect_damage=effect_damage,
+                                        effect_attack=effect_attack
+                                        )
 
 
 def parse_table(lines: list) -> OrderedDict:
