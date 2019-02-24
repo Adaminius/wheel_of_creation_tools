@@ -57,6 +57,8 @@ def parse_features(lines: list, is_legendary=False):
         action_name, action_description = curr_line.split(name_sym)
         action_name = action_name.strip().strip('.')
         action_description = action_description.strip()
+        if action_name.lower().strip() == 'multiattack':
+            continue
         actions.append(Feature(action_name, action_description, is_legendary))
 
     logging.debug(f'parse_actions(lines={lines},\n is_legendary={is_legendary}) -> {actions}, {lines}')
@@ -687,9 +689,22 @@ class Statblock(object):
             lines.append('### Actions')
 
         multiattack_actions = []  # not weapon attacks
+        multiattack_attacks = []
         for action in self.actions:
-            if not action.is_attack and action.can_multiattack:
+            if not action.can_multiattack:
+                continue
+            if action.is_attack:
+                multiattack_attacks.append(action.name)
+            else:
                 multiattack_actions.append(action.name)
+
+        ma_attack_desc = ''
+        if len(multiattack_attacks) == 1:
+            ma_attack_desc = f' using its {multiattack_attacks[0]}'
+        elif len(multiattack_attacks) == 2:
+            ma_attack_desc = f' using its {multiattack_attacks[0]} or {multiattack_attacks[1]}'
+        elif len(multiattack_attacks) >= 3:
+            ma_attack_desc = f" using its {', '.join(multiattack_attacks[:-1])}, or {multiattack_attacks[-1]}"
 
         if multiattack_actions and self.num_multiattacks > 1:
             if len(multiattack_actions) == 1:
@@ -699,13 +714,13 @@ class Statblock(object):
             else:
                 ma_action_desc = f"{', '.join(multiattack_actions[:-1])}, or {multiattack_actions[-1]}"
             lines.append(f'***Multiattack.*** This creature makes {num_to_english.get(self.num_multiattacks, self.num_multiattacks)} '
-                         f'weapon attack{"s" if self.num_multiattacks != 1 else ""}. '
+                         f'weapon attack{"s" if self.num_multiattacks != 1 else ""}{ma_attack_desc}. '
                          f'Once per turn, it can forfeit one of these attacks to use {ma_action_desc}.'
                          )
             lines.append('')
         elif self.num_multiattacks > 1:
             lines.append(f'***Multiattack.*** This creature makes {num_to_english.get(self.num_multiattacks, self.num_multiattacks)} '
-                         f'weapon attack{"s" if self.num_multiattacks != 1 else ""}.'
+                         f'weapon attack{"s" if self.num_multiattacks != 1 else ""}{ma_attack_desc}.'
                          )
             lines.append('')
 
@@ -797,13 +812,21 @@ class Statblock(object):
                 eff_ac += feature.effect_ac
                 eff_hp *= 1 + feature.effect_hp
 
-        if len(self.damage_immunities) >= 2:
+        has_bps_immun = False
+        for immun in self.damage_immunities:
+            if 'slash' in immun.lower() and 'pier' in immun.lower():
+                has_bps_immun = True
+        if len(self.damage_immunities) >= 2 or has_bps_immun:
             if self.hit_dice.count < 11:
                 eff_hp *= 2
             else:
                 eff_hp *= 1.5
 
-        if len(self.damage_resistances) >= 2:
+        has_bps_resist = False
+        for resist in self.damage_resistances:
+            if 'slash' in resist.lower() and 'pier' in resist.lower():
+                has_bps_resist = True
+        if len(self.damage_resistances) >= 2 or has_bps_resist:
             if self.hit_dice.count < 11:
                 eff_hp *= 1.5
             else:

@@ -307,7 +307,7 @@ all_tags.append(Tag('venomous fangs',
 def apply(sb: Statblock) -> Statblock:
     attack = Feature(name='Spit Acid',
                      description_template='*Ranged Weapon Attack:* +{prof + DEX} to hit, range 30/120 ft., one target. '
-                                          '*Hit:* 7 ({prof - 1}d10 + {DEX}) acid damage.',
+                                          '*Hit:* 7 ({prof - 1}d8 + {DEX}) acid damage.',
                      can_multiattack=False
                      )
     sb.actions.append(attack)
@@ -319,7 +319,7 @@ all_tags.append(Tag('acidic spittle',
 def apply(sb: Statblock) -> Statblock:
     attack = Feature(name='Spit Frost',
                      description_template='*Ranged Weapon Attack:* +{prof + DEX} to hit, range 30/120 ft., one target. '
-                                          '*Hit:* 7 ({prof - 1}d8 + {DEX}) cold damage. On a hit, the target\'s speed'
+                                          '*Hit:* 7 ({prof - 1}d6 + {DEX}) cold damage. On a hit, the target\'s speed'
                                           'is halved until the start of this creature\'s next turn.',
                      can_multiattack=False
                      )
@@ -332,7 +332,7 @@ all_tags.append(Tag('freezing spittle',
 def apply(sb: Statblock) -> Statblock:
     attack = Feature(name='Spit Fire',
                      description_template='*Ranged Weapon Attack:* +{prof + DEX} to hit, range 30/120 ft., one target. '
-                                          '*Hit:* 7 ({prof - 1}d12 + {DEX}) fire damage. The GM should refer the '
+                                          '*Hit:* 7 ({prof - 1}d10 + {DEX}) fire damage. The GM should refer the '
                                           'target to the following webpage: '
                                           'https://en.wikipedia.org/wiki/List_of_burn_centers_in_the_Wheel_of_Creation',
                      can_multiattack=False
@@ -346,7 +346,7 @@ all_tags.append(Tag('scorching spittle',
 def apply(sb: Statblock) -> Statblock:
     attack = Feature(name='Putrid Spit',
                      description_template='*Ranged Weapon Attack:* +{prof + DEX} to hit, range 30/120 ft., one target. '
-                                          '*Hit:* 7 ({prof - 1}d8 + {DEX}) necrotic damage, and the target can\'t '
+                                          '*Hit:* 7 ({prof - 1}d6 + {DEX}) necrotic damage, and the target can\'t '
                                           'regain hit points until the start of your next turn.',
                      can_multiattack=False
                      )
@@ -361,7 +361,7 @@ all_tags.append(Tag('putrid spittle',
 def apply(sb: Statblock) -> Statblock:
     attack = Feature(name='Toxic Spit',
                      description_template='*Ranged Weapon Attack:* +{prof + DEX} to hit, range 30/120 ft., one target. '
-                                          '*Hit:* 7 ({prof - 1}d8 + {DEX}) poison damage, and the target must make a '
+                                          '*Hit:* 7 ({prof - 1}d6 + {DEX}) poison damage, and the target must make a '
                                           'DC {8 + CHA + prof} Constitution saving throw or become poisoned for 1 '
                                           'minute. It can repeat this saving throw at the end of each its turns.',
                      can_multiattack=False
@@ -403,7 +403,7 @@ all_tags.append(Tag('sweeping tail',
                     on_apply=apply, overwrites={'tail'}, overwritten_by={'tail'}, weight=10))
 
 def apply(sb: Statblock) -> Statblock:
-    sb.ability_scores['CHA'] += 1
+    sb.ability_scores['CHA'].value += 1
     if sb.armor_class_type.lower().strip() == 'natural armor':
         sb.base_natural_armor += 2
     else:
@@ -415,7 +415,7 @@ all_tags.append(Tag('twitching tail',
 
 
 def apply(sb: Statblock) -> Statblock:
-    sb.ability_scores['CHA'] += 1
+    sb.ability_scores['CHA'].value += 1
     feature = Feature(name='Foul Omens',
                       description_template='This creature can\'t be surprised, and it always knows if there are '
                                            'any creatures with hostile intentions towards it within 1 mile, but it'
@@ -435,7 +435,7 @@ all_tags.append(Tag('tails without number',
 # horns
 # goring horn
 # charge
-# fangs
+# fangs (removed bite from predator SB so need something to fill in)
 # claws
 # hide/armor/skin/fur
 # parry
@@ -471,7 +471,7 @@ def apply(sb: Statblock) -> Statblock:
     if sb.primary_type == 'fey':
         sb.add_damage_resistance('psychic')
     sb.features.append(common_features['Bound to the Courts'])
-    sb.features.append(common_features['Court Cordiality'])
+    sb.features.append(common_features['Courtship'])
     return sb
 all_tags.append(Tag('Wintry', 'Winter alignment; cold and psychic resistance; advantage on saving throws against being '
                               'charmed or put to sleep',
@@ -486,7 +486,7 @@ def apply(sb: Statblock) -> Statblock:
     if sb.primary_type == 'fey':
         sb.add_damage_resistance('psychic')
     sb.features.append(common_features['Bound to the Courts'])
-    sb.features.append(common_features['Court Cordiality'])
+    sb.features.append(common_features['Courtship'])
     return sb
 all_tags.append(Tag('Vernal', 'Spring alignment; poison and psychic resistance; advantage on saving throws against being '
                                'charmed or put to sleep',
@@ -501,7 +501,7 @@ def apply(sb: Statblock) -> Statblock:
     if sb.primary_type == 'fey':
         sb.add_damage_resistance('psychic')
     sb.features.append(common_features['Bound to the Courts'])
-    sb.features.append(common_features['Court Cordiality'])
+    sb.features.append(common_features['Courtship'])
     return sb
 all_tags.append(Tag('Summery', 'Summer alignment; fire and psychic resistance; advantage on saving throws against being '
                                'charmed or put to sleep',
@@ -516,7 +516,7 @@ def apply(sb: Statblock) -> Statblock:
     if sb.primary_type == 'fey':
         sb.add_damage_resistance('psychic')
     sb.features.append(common_features['Bound to the Courts'])
-    sb.features.append(common_features['Court Cordiality'])
+    sb.features.append(common_features['Courtship'])
     return sb
 all_tags.append(Tag('Autumnal', 'Autumn alignment; necrotic and psychic resistance; advantage on saving throws against being '
                                'charmed or put to sleep',

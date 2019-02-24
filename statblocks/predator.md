@@ -18,6 +18,4 @@ ___
 > ### Actions
 > ***Multiattack.*** The creature makes two melee weapon attacks.
 >
-> ***Bite.*** *Melee Weapon Attack:* +{prof + DEX} to hit, reach 5 ft., one target. *Hit:* 7 ({size_mod + size_mod}d4 + {DEX}) piercing damage.
->
-> ***Tackle.*** *Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. *Hit:* 7 ({size_mod}d{size_die_size} + {STR}) bludgeoning damage. If the target is a creature, it must succeed on a DC {8 + prof + STR} Strength saving throw or be knocked prone.
+> ***Tackle.*** *Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. *Hit:* 7 ({size_mod}d6 + {STR}) bludgeoning damage. If the target is a creature, it must succeed on a DC {8 + prof + STR} Strength saving throw or be knocked prone.

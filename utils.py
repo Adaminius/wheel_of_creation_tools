@@ -319,28 +319,35 @@ class Feature(object):
         name:   Appears bolded and italicized at the start of an action/feature description.
         description_template:   Describes what the action does. Can have substitutable values in '{}'
         is_legendary:   Is this a Legendary Action? They are formatted slightly differently
-        can_multiattack:    Should this be included in the multiattack action?
+        can_multiattack:    Should this be included in the multiattack action? Default for attacks True, other False
         effect_ac:  when calculating CR (see Statblock.challenge), this value is added to effective AC
         effect_hp:  when calculating CR, effective hp is recalculated as (1 + effect_hp) * hp
         effect_damage:  when calculating CR, effective damage is recalculated as (1 + effect_damage) * damage
         effect_attack:  when calculating CR, this value is added to effective attack bonus
     """
-    def __init__(self, name: str, description_template: str, is_legendary: bool = False, can_multiattack: bool = False,
+    def __init__(self, name: str, description_template: str, is_legendary: bool = False, can_multiattack: bool = None,
                  effect_ac: float=0, effect_hp: float=0, effect_damage: float=0, effect_attack: float=0):
         self.name = name
         self.description_template = description_template
         self.description = ''
         self.is_legendary = is_legendary
+
+        self.is_attack = False
+        if 'weapon attack' in self.description_template.lower():
+            self.is_attack = True
+
         self.can_multiattack = can_multiattack  # i.e., should this be included in the multiattack action?
+        if can_multiattack is None:
+            if self.is_attack:
+                self.can_multiattack = True
+            else:
+                self.can_multiattack = False
 
         self.effect_ac = effect_ac
         self.effect_hp = effect_hp
         self.effect_damage = effect_damage
         self.effect_attack = effect_attack
 
-        self.is_attack = False
-        if 'weapon attack' in self.description_template.lower():
-            self.is_attack = True
 
         # just grab the first one we see
         self.damage_formula = re.search(r'[+\-]?\d+\s+\(([A-z0-9+\-\s{}]+)\)[A-z0-9 ]+damage', self.description_template)
