@@ -6,6 +6,18 @@ table_name = 'Misc'
 table_description = 'Simple or unflavored operations'
 
 def apply(sb: Statblock) -> Statblock:
+    sb.size += 1
+    return sb
+all_tags.append(Tag('+Size', effect_text='increase size by 1 step', weight=10,
+                    stacks=True, on_apply=apply))
+
+def apply(sb: Statblock) -> Statblock:
+    sb.size -= 1
+    return sb
+all_tags.append(Tag('-Size', effect_text='decrease size by 1 step', weight=10,
+                    stacks=True, on_apply=apply))
+
+def apply(sb: Statblock) -> Statblock:
     sb.bonus_multiattacks += 1
     return sb
 all_tags.append(Tag('+Multiattack', effect_text='can make 1 additional attack with its multiattack action', weight=10,
@@ -15,7 +27,7 @@ all_tags.append(Tag('+Multiattack', effect_text='can make 1 additional attack wi
 def apply(sb: Statblock) -> Statblock:
     sb.bonus_multiattacks -= 1
     return sb
-all_tags.append(Tag('-Multiattack', effect_text='can make 1 additional attack with its multiattack action', weight=10,
+all_tags.append(Tag('-Multiattack', effect_text='can make 1 less attack with its multiattack action', weight=10,
                     stacks=True, on_apply=apply))
 
 

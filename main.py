@@ -37,7 +37,7 @@ def home():
     """Serves homepage"""
     with open('templates/index.html') as file_handle:
         template = Template(file_handle.read())
-    with open('statblocks/quadruped_predator.md') as file_handle:
+    with open('statblocks/predator.md') as file_handle:
         markdown_text = file_handle.read()
     preview_html = md.markdown(prepare_markdown(markdown_text), extensions=['tables'])
     return template.render(prefill_preview=preview_html, prefill_md=markdown_text)

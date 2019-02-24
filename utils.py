@@ -136,7 +136,8 @@ class ChallengeRating(object):
 
     @classmethod
     def float_cr_to_cr(cls, cr: int):
-        """Convert [0, -1, -2, -3]-style CRs to [1/2, 1/4, 1/8, 0]-style Challenge Rating class objects."""
+        """Convert int-style CRs to [1/2, 1/4, 1/8, 0]-style Challenge Rating class objects."""
+        cr -= 4
         if cr < -2:
             cr = '0'
         elif cr < -1:
@@ -163,8 +164,8 @@ class ChallengeRating(object):
                   194, 212, 230, 248, 266, 284, 302, 320, 336, 352, 400, 500, 600]
         for i, bound in enumerate(bounds):
             if damage <= bound:
-                return i - 3
-        return len(bounds) - 3
+                return i + 1
+        return len(bounds) + 1
 
     @staticmethod
     def attack_to_cr(attack: int) -> float:
@@ -177,32 +178,32 @@ class ChallengeRating(object):
             Float representing CR (NOT a Challenge Rating object)
         """
         if attack < 3:
-            return -3
+            return 1
         if attack == 3:
-            return 0
-        if attack == 4:
-            return 3
-        if attack == 5:
             return 4
+        if attack == 4:
+            return 7
+        if attack == 5:
+            return 8
         if attack == 6:
-            return 6
+            return 10
         if attack == 7:
-            return 9
-        if attack == 8:
             return 13
+        if attack == 8:
+            return 17
         if attack == 9:
-            return 16
+            return 20
         if attack == 10:
-            return 18.5
+            return 12.5
         if attack == 11:
-            return 23
+            return 27
         if attack == 12:
-            return 25
+            return 29
         if attack == 13:
-            return 28
+            return 32
         if attack == 14:
-            return 31
-        return 34
+            return 35
+        return 38
 
     @staticmethod
     def save_dc_to_cr(save_dc: int) -> float:
@@ -215,30 +216,30 @@ class ChallengeRating(object):
             Float representing CR (NOT a Challenge Rating object)
         """
         if save_dc < 13:
-            return -3
+            return 1
         if save_dc == 13:
-            return 0
-        if save_dc == 14:
             return 4
+        if save_dc == 14:
+            return 8
         if save_dc == 15:
-            return 6
+            return 10
         if save_dc == 16:
-            return 9
+            return 13
         if save_dc == 17:
-            return 11.5
+            return 15.5
         if save_dc == 18:
-            return 14.5
+            return 19.5
         if save_dc == 19:
-            return 18.5
+            return 22.5
         if save_dc == 20:
-            return 22
+            return 26
         if save_dc == 21:
-            return 25
+            return 29
         if save_dc == 22:
-            return 28
+            return 32
         if save_dc == 23:
-            return 30
-        return 34
+            return 34
+        return 38
 
     @staticmethod
     def hp_to_cr(hp: int) -> float:
@@ -254,8 +255,8 @@ class ChallengeRating(object):
                   340, 355, 400, 445, 490, 535, 580, 625, 670, 715, 760, 805, 850, 900, 1000, 1100, 1200, 1300]
         for i, bound in enumerate(bounds):
             if hp <= bound:
-                return i - 3
-        return len(bounds) - 3
+                return i + 1
+        return len(bounds) + 1
 
     @staticmethod
     def ac_to_cr(ac: int) -> float:
@@ -268,30 +269,30 @@ class ChallengeRating(object):
             Float representing CR (NOT a Challenge Rating object)
         """
         if ac < 13:
-            return -3
+            return 1
         if ac == 13:
-            r = range(-2, 4)
+            r = range(2, 8)
             return sum(r) / len(r)
         if ac == 14:
-            r = range(4, 5)
+            r = range(8, 9)
             return sum(r) / len(r)
         if ac == 15:
-            r = range(5, 8)
+            r = range(9, 12)
             return sum(r) / len(r)
         if ac == 16:
-            r = range(8, 10)
+            r = range(12, 14)
             return sum(r) / len(r)
         if ac == 17:
-            r = range(10, 13)
+            r = range(14, 17)
             return sum(r) / len(r)
         if ac == 18:
-            r = range(13, 17)
+            r = range(17, 21)
             return sum(r) / len(r)
         if ac == 19:
-            r = range(17, 22)
+            r = range(21, 26)
             return sum(r) / len(r)
         if ac > 19:
-            return 25
+            return 29
 
     def __init__(self, rating: str):
         self.rating = str(rating)
@@ -372,7 +373,7 @@ class Feature(object):
         description = substitute_values(self.description_template, values)
         matches = re.findall(r'([+\-]?\d+\s+\(([A-z0-9+\-\s]+)\))', description)
         for match in matches:
-            total = process_operands([op.strip() for op in match[1].split()], values)
+            total = max(1, process_operands([op.strip() for op in match[1].split()], values))
             pretty = match[1].replace('+ -', '- ')  # turn adding negative numbers into subtracting positive
             pretty = pretty.replace('- -', '+ ')  # turn subtracting negative numbers into adding positive
             description = description.replace(match[0], '{} ({})'.format(total, pretty))

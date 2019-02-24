@@ -92,7 +92,7 @@ class Statblock(object):
                  **additional_skills):
 
         self.name = name if name is not None else random_name()
-        self.size = size
+        self.__size = size
         self.primary_type = primary_type
         self.secondary_type = secondary_type
         self.alignment = alignment
@@ -169,12 +169,25 @@ class Statblock(object):
             values[skill] = skill_mod
         values['proficiency'] = self.proficiency
         values['prof'] = self.proficiency
-        values['size_mod'] = self.size_mod
+        values['size_die_size'] = self.size_die_size()
+        values['size_mod'] = self.size_mod()
         values['size'] = size_val_to_name[self.size]
         return values
 
     @property
-    def passive_perception(self):
+    def size(self) -> int:
+        return min(size_max, max(size_min, self.__size))
+
+    @size.setter
+    def size(self, size):
+        if isinstance(size, str):
+            size = size.strip().lower()
+            size = size[0].upper() + size[1:]
+            size = size_name_to_val.get(size, 2)
+        self.__size = min(size_max, max(size_min, size))
+
+    @property
+    def passive_perception(self) -> int:
         if self.__passive_perception is None:
             return 10 + self.ability_scores['WIS'] + self.skills.get('Perception', 0)
         return self.__passive_perception
@@ -303,15 +316,15 @@ class Statblock(object):
             logging.debug(f'Parsed alignment "{sb.alignment}"')
 
             size_and_types = size_and_types.split()
+            size = 'Medium'
             if len(size_and_types) == 2:
-                sb.size, sb.primary_type = size_and_types
+                size, sb.primary_type = size_and_types
             elif len(size_and_types) == 3:
-                sb.size, sb.primary_type, sb.secondary_type = size_and_types
+                size, sb.primary_type, sb.secondary_type = size_and_types
                 sb.secondary_type = sb.secondary_type.replace('(', '').replace(')', '').strip()
             logging.debug(f'Parsed types "{sb.primary_type}", "{sb.secondary_type}""')
 
-            sb.size = max(size_name_to_val.get(sb.size, -1), size_min)
-            sb.size = min(sb.size, size_max)
+            sb.size = size
             logging.debug(f'Parsed size "{size_val_to_name[sb.size]}"')
 
             lines.pop(0)
@@ -678,7 +691,7 @@ class Statblock(object):
             if not action.is_attack and action.can_multiattack:
                 multiattack_actions.append(action.name)
 
-        if multiattack_actions:
+        if multiattack_actions and self.num_multiattacks > 1:
             if len(multiattack_actions) == 1:
                 ma_action_desc = multiattack_actions[0]
             elif len(multiattack_actions) == 2:
@@ -743,7 +756,7 @@ class Statblock(object):
     @property
     def challenge(self):
         cr_weights = {  # final Challenge Rating is a weighted average of individual component Challenge Ratings
-            'damage': 2,  # estimated damage per round
+            'damage': 1,  # estimated damage per round
             'save_dc': .1,  # highest save difficulty class
             'attack_bonus': .05,  # highest attack bonus
             'ac': .3,  # armor class
