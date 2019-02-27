@@ -5,7 +5,7 @@ all_tags = []
 table_name = 'WoC: Fey Mannerisms'
 table_description = 'If there is one unifying quality among the fey that inhabit the Ring of Seasons, it is that ' \
                     'none of them operate with the same morality or instincts that resemble those of humanity. Their ' \
-                    'minds and bodies are not so separated, and they are bound to pacts and principles of reality ' \
+                    'minds and bodies are not so separated, and they are bound to pacts and laws ' \
                     'ultimately incomprehensible to inhabitants of the Ring of Earth.'
 
 all_tags.append(Tag('cannot break a promise', effect_text='-', weight=40))

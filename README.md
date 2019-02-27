@@ -2,9 +2,10 @@
 
 https://wheelofcreation.net
 
-I am developing a supplement for 5th Edition Dungeons & Dragons, *the Wheel of Creation*. 
+*The Wheel of Creation* is my upcoming supplement for the 5th Edition of the world's 
+most popular roleplaying game, using the Open Gaming License (see OpenGameLicense.txt). 
 This project provides is intended to provide tools with a web interface to 
-make the lives of gamemasters running my supplement easier.
+make the lives of gamemasters running the Wheel of Creation easier.
 
 ## Monster Generator
 

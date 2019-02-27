@@ -10,8 +10,8 @@ table_description = 'Fey in the Wheel of Creation come from the Ring of Seasons,
                     'strong benefit for their allegiance with a particular court, or suffer weakness as the price for ' \
                     'freedom. The fey themselves are inspired by various mythological creatures, such as fairies, ' \
                     'jinn, or yaksha. None are so individually powerful as to be considered god-like, and they are ' \
-                    'neither so virtuous as the Emperors of Heaven nor so vile as the demons inhabiting the Void and ' \
-                    'the Grease Between the Rings. Their world is in many ways similar that to the Ring of Earth, ' \
+                    'neither so virtuous as the Emperors of Heaven nor so vile as the Void or the demons in haunting the ' \
+                    'the space between the rings. Their world is in many ways similar that to the Ring of Earth, ' \
                     'though twisted and exaggerated.'
 
 
