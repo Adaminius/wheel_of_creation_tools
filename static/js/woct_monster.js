@@ -119,10 +119,11 @@ $('document').ready(function () {
 
     $('#hitDiceRange').change(function() {
         let newVal = parseInt(this.value);
+
         if (newVal === 0)
-            $('#hitDiceDisplay').html('[Use dice in input statblock]');
+            $('#hitDiceDisplay').html('[Use statblock]');
         else
-            $('#hitDiceDisplay').html('<strong>' + newVal + '</strong>' + ' ' + similarMonsters[newVal]);
+            $('#hitDiceDisplay').html(similarMonsters[newVal]);
     });
 
     /**
@@ -209,7 +210,7 @@ function selectStatblock(filename) {
     console.log('selectStatblock ' + filename);
     $.get("/getStatblock", {'filename': filename}, function (data) {
         // console.log(data);
-        $('#baseStatblockTextArea').text(data);
+        $('#baseStatblockTextArea').val(data);
     })
 }
 

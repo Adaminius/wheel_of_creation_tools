@@ -148,11 +148,11 @@ class Statblock(object):
         self.telepathy = telepathy
         # self.languages = languages if languages is not None else defaults['languages']
 
-        self.features = abilities
-        self.actions = actions
-        self.bonus_actions = bonus_actions
-        self.reactions = reactions
-        self.legendary_actions = legendary_actions
+        self.features = abilities if abilities is not None else []
+        self.actions = actions if actions is not None else []
+        self.bonus_actions = bonus_actions if bonus_actions is not None else []
+        self.reactions = reactions if reactions is not None else []
+        self.legendary_actions = legendary_actions if legendary_actions is not None else []
 
         self.num_legendary = num_legendary
         self.__proficiency = proficiency
@@ -172,6 +172,7 @@ class Statblock(object):
         values['proficiency'] = self.proficiency
         values['prof'] = self.proficiency
         values['size_die_size'] = self.size_die_size()
+        values['size_dice_size'] = self.size_die_size()
         values['size_mod'] = self.size_mod()
         values['size'] = size_val_to_name[self.size]
         return values
@@ -606,7 +607,7 @@ class Statblock(object):
             vulns = self.damage_vulnerabilities.copy()
             has_bps = False
             for vuln in list(vulns):
-                if 'bludg' in vuln or 'pierc' in vuln or 'slash' in vuln and len(self.damage_vulnerabilities) > 1:
+                if ('bludg' in vuln or 'pierc' in vuln or 'slash' in vuln) and len(self.damage_vulnerabilities) > 1:
                     vulns.remove(vuln)
                     dv_line += ', '.join(sorted(vulns))
                     dv_line += '; {}'.format(vuln)
@@ -620,7 +621,7 @@ class Statblock(object):
             vulns = self.damage_resistances.copy()
             has_bps = False
             for vuln in list(vulns):
-                if 'bludg' in vuln or 'pierc' in vuln or 'slash' in vuln and len(self.damage_resistances) > 1:
+                if ('bludg' in vuln or 'pierc' in vuln or 'slash' in vuln) and len(self.damage_resistances) > 1:
                     vulns.remove(vuln)
                     dr_line += ', '.join(sorted(vulns))
                     dr_line += '; {}'.format(vuln)

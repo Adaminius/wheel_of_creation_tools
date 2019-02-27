@@ -4,15 +4,16 @@ from statblock import Statblock
 from statblock import Tag
 
 all_tags = []
-table_name = 'WoC: Fey Means'
-table_description = ''
+table_name = 'WoC: Tuguai Means'
+table_description = 'Coming Soon!'
 
 
 def apply(sb: Statblock) -> Statblock:
-    sb.primary_type = 'fey'
+    sb.primary_type = 'construct'
+    sb.secondary_type = 'tuguai'
     sb.add_damage_resistance('bludgeoning, piercing, and slashing damage from weapons not made of thokcha')
     sb.add_damage_vulnerability('psychic')
-    sb.languages.append('Sylvan')
+    sb.languages.append('understands Leitian but can\'t speak (or really be reasoned with)')
     min_scores = {
         'STR': 6,
         'DEX': 12,

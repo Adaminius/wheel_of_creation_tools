@@ -467,7 +467,7 @@ def process_operands(operands: list, values: dict):
             continue
 
         try:
-            total += int(operand)
+            total += int(operand) * next_mul
             continue
         except ValueError:
             pass

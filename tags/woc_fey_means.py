@@ -116,8 +116,11 @@ all_tags.append(Tag('sea-dweller', 'can breathe both air and water; gain a swim 
 
 def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['DEX'].value += 1
-    sb.skills['Stealth'] = min(2 * sb.proficiency + sb.ability_scores['DEX'].modifier,
-                               sb.skills.get('Stealth', 0) + sb.proficiency + sb.ability_scores['DEX'])
+    base_stealth = sb.ability_scores['DEX'] + sb.proficiency
+    if sb.skills.get('Stealth', 0) >= base_stealth:
+        sb.skills['Stealth'] = base_stealth + sb.proficiency
+    else:
+        sb.skills['Stealth'] = base_stealth
     return sb
 all_tags.append(Tag('forest-dweller', '+1 to Dexterity; proficiency in the Stealth skill or expertise if it already '
                                       'has proficiency',
@@ -278,7 +281,7 @@ all_tags.append(Tag('poison claws',
 def apply(sb: Statblock) -> Statblock:
     attack = Feature(name='Paralyzing Bite',
                      description_template='*Melee Weapon Attack:* +{prof + DEX} to hit, reach 5 ft., one target. '
-                                          '*Hit:* 7 ({size_mod + size_mod}d4 + {DEX}) piercing damage. The '
+                                          '*Hit:* 7 ({prof - 1}d6 + {DEX}) piercing damage. The '
                                           'target must succeed a DC {8 + prof + CHA} Constitution saving throw or '
                                           'become poisoned for one minute. If its saving throw result is 5 or lower, '
                                           'the poisoned target falls unconscious for the same duration, or until it '
@@ -294,9 +297,9 @@ all_tags.append(Tag('paralyzing fangs',
 def apply(sb: Statblock) -> Statblock:
     attack = Feature(name='Venomous Bite',
                      description_template='*Melee Weapon Attack:* +{prof + DEX} to hit, reach 5 ft., one target. '
-                                          '*Hit:* 7 (1d{size_dice_size} + {CHA}) poison damage and 7 ({size_mod}d4 + '
+                                          '*Hit:* 7 ({size_mod}d4 + {CHA}) poison damage and 7 ({size_mod}d4 + '
                                           '{DEX}) piercing damage.',
-                     can_multiattack=False
+                     can_multiattack=True
                      )
     sb.actions.append(attack)
     return sb
@@ -396,7 +399,7 @@ def apply(sb: Statblock) -> Statblock:
                                            'throw or be knocked prone.',
                       can_multiattack=False,
                       effect_damage=.25)
-    sb.features.append(feature)
+    sb.actions.append(feature)
     return sb
 all_tags.append(Tag('sweeping tail',
                     'add a Tail Sweep melee attack which hits all nearby targets',

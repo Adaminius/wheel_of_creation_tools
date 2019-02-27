@@ -3,11 +3,15 @@
 
 <head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+          integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+          integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+          crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+          integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+          crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
         integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
   <link rel="stylesheet" href="../static/css/style.css">
@@ -22,44 +26,94 @@
       <h3 style="text-align: center">The Wheel of Creation:</h3>
       <h1 style="text-align: center">Monster Generator</h1>
       <hr>
-      This is a tool for generating monsters for 5th Edition, themed around my upcoming setting supplement, <em>the Wheel of Creation</em>.
-        It produces markdown files that you can copy and paste into tools like
-        <a href="https://homebrewery.naturalcrit.com/" target="_blank">the Homebrewery</a> or <a href="https://www.gmbinder.com/" target="_blank">GM Binder</a>
-          to produce beautiful statblocks, styled like those in the official books.<br><br>
-        <ol>
-          <li>Select a Statblock to start with.</li>
-          <li>Choose a tag table.
+      This is a tool for generating monsters for 5th Edition, themed around my upcoming setting supplement, <em>the
+      Wheel of Creation</em>.
+      It produces markdown files that you can copy and paste into tools like
+      <a href="https://homebrewery.naturalcrit.com/" target="_blank">the Homebrewery</a> or <a
+        href="https://www.gmbinder.com/" target="_blank">GM Binder</a>
+      to produce beautiful statblocks, styled like those in the official books.<br><br>
+
+      <div class="card" style="margin-top: 0; margin-bottom: 1rem;">
+        <div class="card-header" id="headingInstructions">
+          <h5 class="mb-0">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseInstructions"
+                    aria-expanded="false" aria-controls="collapseInstructions">
+              Instructions
+            </button>
+          </h5>
+        </div>
+        <div id="collapseInstructions" class="collapse hide" aria-labelledby="headingInstructions">
+          <div class="card-body">
+            <ol>
+              <li>Select a Statblock to start with.</li>
+              <li>Choose a tag table (I recommend <strong>WoC: Fey Means</strong>, it's the most complete).
+                <ul>
+                  <li>Tag tables named "means" typically change a monster's statistics and abilities, while "mannerisms"
+                    tags are usually
+                    only to help the GM determine how it might behave.
+                  </li>
+                  <li><strong>Tag</strong> and <strong>Effect</strong> describe how the tag will change the basic
+                    Statblock. <strong>Weight</strong> is the chance a tag will be
+                    selected by Add Random. <strong>Requirements</strong> are other tags that must be satisfied in order
+                    for a tag to be applied.
+                  </li>
+                  <li>The first tag in a "means" table (e.g. <em>fey</em> in <em>WoC: Fey Means</em>) usually has a
+                    weight
+                    of 0 and sets a creature's type. The monster creation rules from <em>the Wheel of Creation</em>
+                    suggest
+                    that you add this tag first before adding other tags or adding random tags.
+                  </li>
+                </ul>
+              </li>
+              <li>Click on tags in the table to add them, or hit <strong>Add Random</strong>. They'll show up below.
+              </li>
+              <li>Click apply.</li>
+              <li>Use the result as is, or click to copy the markdown text in the bottom-left and paste it into a
+                document on <a href="https://www.gmbinder.com/" target="_blank">GM Binder</a> or <a
+                    href="https://homebrewery.naturalcrit.com/" target="_blank">the Homebrewery</a>.
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 1rem; margin-bottom: 1rem;">
+        <div class="card-header" id="headingNotes">
+          <h5 class="mb-0">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseNotes"
+                    aria-expanded="false" aria-controls="collapseNotes">
+              Notes
+            </button>
+          </h5>
+        </div>
+        <div id="collapseNotes" class="collapse hide" aria-labelledby="headingNotes">
+          <div class="card-body">
             <ul>
-              <li>Tag tables named "means" typically change a monster's statistics and abilities, while "mannerisms" tags are usually
-            only to help the GM determine how it might behave.</li>
-            <li><strong>Tag</strong> and <strong>Effect</strong> describe how the tag will change the basic Statblock. <strong>Weight</strong> is the chance a tag will be
-            selected by Add Random. <strong>Requirements</strong> are other tags that must be satisfied in order for a tag to be applied.</li>
+              <li>You can use the slider below to scale the difficulty of the monster. A monster's proficiency bonus and
+                number of multiattacks are based on its number of hit dice.
+              </li>
+              <li>You can select tags from multiple tables.</li>
+              <li>You can select tags from multiple tables.</li>
+              <li>Tags are applied left-to-right.</li>
+              <li>Most tags don't stack (that is, they have no effect when applied more than once). These won't be added
+                by the Add Random button.
+              </li>
+              <li>Some tags are mutually exclusive, like 'Wintry' and 'Vernal' in 'Fey Physical'. Only the last tag to
+                be applied will have any effect.
+              </li>
             </ul>
-          </li>
-          <li>Click on tags in the table to add them, or hit <strong>Add Random</strong>. They'll show up below.</li>
-          <li>Click apply.</li>
-          <li>Use the result as is, or click to copy the markdown text in the bottom-left and paste it into a document on <a href="https://www.gmbinder.com/" target="_blank">GM Binder</a> or <a href="https://homebrewery.naturalcrit.com/" target="_blank">the Homebrewery</a>.</li>
-        </ol>
-        Notes:
-        <ul>
-          <li>You can use the slider below to scale the difficulty of the monster. A monster's proficiency bonus and
-            number of multiattacks are based on its number of hit dice.</li>
-          <li>You can select tags from multiple tables.</li>
-          <li>You can select tags from multiple tables.</li>
-          <li>Tags are applied left-to-right.</li>
-          <li>Most tags don't stack (that is, they have no effect when applied more than once). These won't be added by the Add Random button.</li>
-          <li>Some tags are mutually exclusive, like 'Wintry' and 'Vernal' in 'Fey Physical'. Only the last tag to be applied will have any effect.</li>
-          <li>The first tag in a "means" table (e.g. <em>fey</em> in <em>WoC: Fey Means</em>) usually has a weight
-            of 0 and sets a creature's type. The monster creation rules from <em>the Wheel of Creation</em> suggest
-            that you add this tag first before adding other tags or adding random tags.</li>
-        </ul>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
   <hr>
   <div class="row">
     <div class="col-lg-6">
       <div class="dropdown">
-        <button class="btn btn-success dropdown-toggle" type="button" id="tagListDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-success dropdown-toggle" type="button" id="tagListDropdownButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
           Choose a Tag Table
         </button>
         <div class="dropdown-menu" aria-labelledby="tagListDropdownButton" id="tagListDropdown">
@@ -68,7 +122,8 @@
     </div>
     <div class="col-lg-6">
       <div class="dropdown">
-        <button class="btn btn-info dropdown-toggle" type="button" id="statblockDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-success dropdown-toggle" type="button" id="statblockDropdownButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Choose a Statblock
         </button>
         <div class="dropdown-menu" aria-labelledby="statblockDropdownButton" id="statblockDropdown"></div>
@@ -78,15 +133,15 @@
   <div class="row">
     <div class="col-lg-6">
       <div id="tagTableDescription" style="margin-top: 0"></div>
-      <div class="pre-scrollable"  id="tagTableDiv">
+      <div class="pre-scrollable" id="tagTableDiv">
         <table class="table table-bordered table-striped tag-table table-hover">
           <thead>
-            <tr>
-              <th>Weight</th>
-              <th>Tag</th>
-              <th>Effect</th>
-              <th>Requires</th>
-            </tr>
+          <tr>
+            <th>Weight</th>
+            <th>Tag</th>
+            <th>Effect</th>
+            <th>Requires</th>
+          </tr>
           </thead>
           <tbody id="availableTagTable" style="cursor: pointer;">
           </tbody>
@@ -95,10 +150,11 @@
     </div>
     <div class="col-lg-6">
       <div class="form-group">
-        <div class="card"  style="margin-top: 1rem; margin-bottom: 1rem;">
+        <div class="card" style="margin-top: 1rem; margin-bottom: 1rem;">
           <div class="card-header" id="headingStatblock">
             <h5 class="mb-0">
-              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseStatblock" aria-expanded="false" aria-controls="collapseStatblock">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseStatblock"
+                      aria-expanded="false" aria-controls="collapseStatblock">
                 Notes on Statblocks
               </button>
             </h5>
@@ -107,18 +163,22 @@
           <div id="collapseStatblock" class="collapse hide" aria-labelledby="headingStatblock">
             <div class="card-body">
               <p>Choose a statblock from the dropdown above. These are markdown files that can be rendered like the
-              NPC/monster stats in 5th Edition. This site parses these files and allows you to
-              modify them using tags, chosen deliberately or randomly.</p>
+                NPC/monster stats in 5th Edition. This site parses these files and allows you to
+                modify them using tags, chosen deliberately or randomly.</p>
               <p>You can edit this text directly to affect the output,
-              but the parser is somewhat fragile. You can use curly brackets "{}" for simple addition and subtraction of
-              numbers, "prof" (proficiency bonus, calculated based on # of hit dice), "STR", "DEX", "CON", "INT", "WIS",
-              "CHA", and "size_mod" (a value determined by a creature's size). Both average damage values (calculated from
-              the dice rolls in parentheses and ability score modifiers are recalculated in the output.</p>
+                but the parser is somewhat fragile. You can use curly brackets "{}" for simple addition and subtraction
+                of
+                numbers, "prof" (proficiency bonus, calculated based on # of hit dice), "STR", "DEX", "CON", "INT",
+                "WIS",
+                "CHA", and "size_mod" (a value determined by a creature's size). Both average damage values (calculated
+                from
+                the dice rolls in parentheses and ability score modifiers are recalculated in the output.</p>
             </div>
           </div>
         </div>
 
-        <textarea class="form-control" id="baseStatblockTextArea" title="Statblock to be Modified">{{ prefill_md }}</textarea>
+        <textarea class="form-control" id="baseStatblockTextArea"
+                  title="Statblock to be Modified">{{ prefill_md }}</textarea>
       </div>
     </div>
   </div>
@@ -129,51 +189,78 @@
     <div class="col-md-pull-4">
       <button class="btn btn-warning" style="margin: .25rem;" id="addRandomButton">Add Random</button>
       <button class="btn btn-secondary" style="margin: .25rem;" id="clearButton">Clear</button>
-    </div>
-    <div class="slidecontainer" style="border-left: solid 1px rgba(0,0,0,.1); margin-left: 1rem; padding-left: 1rem; min-width: 6rem">
-      <label for="hitDiceRange" title="Also sets proficiency bonus to 1 + num_hit_dice / 4 and determines number of multiattacks.">
-        Number of hit dice:
+    <div class="slidecontainer"
+         style="margin: .5rem; min-width: 17rem">
+      <label for="hitDiceRange"
+             title="Also sets proficiency bonus to 1 + num_hit_dice / 4 and determines number of multiattacks.">
+        Hit dice:
       </label>
-      <div id="hitDiceDisplay" style="font-family: 'Arial Black', sans-serif">[Use dice in input statblock]</div>
-      <br>
-      <input autocomplete="off" type="range" min="0" max="33" value="0" class="slider" id="hitDiceRange">
+      <input autocomplete="off" type="number" min=0 max=33 value=0 id="hitDiceRange" step=1>
+      <span id="hitDiceDisplay" style="font-family: 'Arial Black', sans-serif">&nbsp;[Use statblock]</span>
+    </div>
     </div>
 
     <div class="col-md" id="tagsToApplyDiv"
          style="border-left: solid 1px rgba(0,0,0,.1); margin-left: 1rem; padding-left: 1rem; min-width: 6rem">
     </div>
   </div>
+  <hr>
   <div class="row" style="margin-top: 1rem;">
     <!--<div class="col-md-1" style="border-left: solid 1px gray; margin-left: 1rem; padding-left: 1rem">-->
-      <button class="btn btn-success btn-block" id="applyTagsButton">Apply</button>
+    <button class="btn btn-success btn-block" id="applyTagsButton">Apply</button>
     <!--</div>-->
   </div>
   <div class="row justify-content-md-center">
     <div class="col-lg-6">
         <textarea class="form-control" title="Copy modified statblock to clipboard" id="modifiedStatblockTextArea"
-          data-toggle="tooltip" data-placement="top">{{ prefill_md }}</textarea>
+                  data-toggle="tooltip" data-placement="top">{{ prefill_md }}</textarea>
     </div>
     <div class="col-lg-6">
-        <div title="Preview" class="md-preview" id="mdPreview">{{ prefill_preview }}</div>
+      <div title="Preview" class="md-preview" id="mdPreview">{{ prefill_preview }}</div>
     </div>
   </div>
-<hr>
-  <div class="container">
-    <div class="row justify-content-sm-center">
-      <div class="col-sm-12" style="text-align: center">
-        <nav class="navbar navbar-expand-sm ">
-          <ul class="navbar-nav">
-            <li class="nav-item" style="border-left: none;">
-              Copyright &copy; 2019 Adam "Attenius" Mansfield
-            </li>
-            <li class="nav-item">
-              View the source on <a href="https://github.com/Adaminius/wheel_of_creation_tools" target="_blank"><i class="fab fa-github" style="color: black"></i> Github</a>
-            </li>
-            <li class="nav-item">
-              Find me on <a href="https://www.reddit.com/user/Attenius" target="_blank"><i class="fab fa-reddit" style="color: orangered"></i> Reddit</a>
-            </li>
-          </ul>
-        </nav>
+  <hr>
+  <div class="row">
+    <div class="col-12">
+      <div class="card-header" id="headingWhatIsWoC" style="margin-bottom: 1rem">
+        <h5 class="mb-0">
+          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseWhatIsWoC"
+                  aria-expanded="false" aria-controls="collapseWhatIsWoC">
+            What is the Wheel of Creation?
+          </button>
+        </h5>
+      </div>
+
+      <div id="collapseWhatIsWoC" class="collapse hide" aria-labelledby="headingWhatIsWoC">
+        <div class="card-body">
+           {{ what_is_woc }}
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row justify-content-sm-center">
+        <div class="col-sm-12" style="text-align: center">
+          <nav class="navbar navbar-expand-sm ">
+            <ul class="navbar-nav">
+              <li class="nav-item" style="border-left: none">
+                <strong>Join the <a href="https://goo.gl/forms/heNTn65JcNjKm6hZ2" target="_blank">WoC Mailing List!</a></strong>
+              </li>
+              <li class="nav-item">
+                View the source on <a href="https://github.com/Adaminius/wheel_of_creation_tools" target="_blank"><i
+                  class="fab fa-github" style="color: black"></i> Github</a>
+              </li>
+              <li class="nav-item">
+                Send me your cool tag ideas on <a href="https://www.reddit.com/user/Attenius" target="_blank"><i
+                  class="fab fa-reddit" style="color: orangered"></i> Reddit</a> or <a
+                  href="mailto:atteniusdev@gmail.com?subject=MyCoolTagIdea">email</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <div class="row justify-content-sm-center">
+        <div class="col-sm-12" style="text-align: center; margin-bottom: .5rem"> &copy; 2019 Adam "Attenius" Mansfield
+        </div>
       </div>
     </div>
   </div>

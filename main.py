@@ -16,7 +16,7 @@ from flask_cors import CORS
 from jinja2 import Template
 
 
-DEBUG = True
+DEBUG = False
 modules = {}
 app = Flask(__name__)
 CORS(app)
@@ -39,8 +39,10 @@ def home():
         template = Template(file_handle.read())
     with open('statblocks/predator.md') as file_handle:
         markdown_text = file_handle.read()
+    with open('static/html/what_is_woc.html') as file_handle:
+        what_is_woc = file_handle.read()
     preview_html = md.markdown(prepare_markdown(markdown_text), extensions=['tables'])
-    return template.render(prefill_preview=preview_html, prefill_md=markdown_text)
+    return template.render(prefill_preview=preview_html, prefill_md=markdown_text, what_is_woc=what_is_woc)
 
 
 @app.route('/getStatblock', methods=['GET'])
@@ -150,14 +152,23 @@ def get_modified_statblock():
     """Applies all the tags a user has selected to a statblock and prepares a preview of the result"""
     data = request.get_json()
     sb = statblock.Statblock.from_markdown(text=data['statblock'])
+
+    if data.get('hitdice'):
+        try:
+            hitdice = int(data.get('hitdice'))
+            if hitdice < 100:
+                # re.sub(r'(>.* \*\*Hit Points\*\*.*)\((\d)d\d',)  # todo fix original text so that when we remove a tag we still keep changed hit dice? or some other solution
+                sb.original_text.replace()
+                sb.hit_dice.count = int(data.get('hitdice'))
+        except ValueError:
+            print(ValueError)
+            pass
+
     for tag in data['tags[]']:
         print(tag['name'], tag['filename'])
         if modules.get(tag['filename']) is None:
             load_tag_module(tag['filename'])
         sb = modules[basename(tag['filename'])].all_tags[tag['name']].apply(sb)
-
-    if data.get('hitdice'):
-        sb.hit_dice.count = int(data.get('hitdice'))
 
     markdown_text = sb.to_markdown()
     preview_html = md.markdown(prepare_markdown(markdown_text), extensions=['tables'])
@@ -166,12 +177,15 @@ def get_modified_statblock():
 
 
 def parse_args(args):
+    global DEBUG
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', action='store_true')
 
     args = parser.parse_args(args)
-    # if not args.debug:  # Todo: turn this on
-    #     DEBUG = False
+
+    if args.debug:
+        DEBUG = True
 
     return args
 
