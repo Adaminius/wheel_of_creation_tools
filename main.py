@@ -157,8 +157,10 @@ def get_modified_statblock():
         try:
             hitdice = int(data.get('hitdice'))
             if hitdice < 100:
-                # re.sub(r'(>.* \*\*Hit Points\*\*.*)\((\d)d\d',)  # todo fix original text so that when we remove a tag we still keep changed hit dice? or some other solution
-                sb.original_text.replace()
+                og_lines = sb.original_text.splitlines()
+                hp_line_index = [i for i, line in enumerate(og_lines) if 'hit points' in line.lower()][0]
+                og_lines[hp_line_index] = '> - **Hit Points** 11 ({}d{} + {})'.format(hitdice, sb.hit_dice.size, sb.hit_point_bonus)
+                sb.original_text = '\n'.join(og_lines)  # stupid workaround, I really need a serializable version of SBs
                 sb.hit_dice.count = int(data.get('hitdice'))
         except ValueError:
             print(ValueError)

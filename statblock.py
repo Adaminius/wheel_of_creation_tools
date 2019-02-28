@@ -334,7 +334,7 @@ class Statblock(object):
             # assert curr_line.strip().endswith('_')
 
             curr_line = lines.pop(0)
-            curr_line = curr_line.replace('> - **Armor Class** ', '').strip().split()
+            curr_line = re.sub(r'>\s*-?\s*\**\s*Armor Class\s*\**\s*', '', curr_line).strip().split()
             if len(curr_line) >= 2:
                 sb.armor_class = int(curr_line[0])
                 sb.armor_class_type = ' '.join(curr_line[1:]).lstrip('(').rstrip(')')

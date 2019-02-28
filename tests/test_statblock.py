@@ -44,7 +44,7 @@ def test_statblock_md_parser(setup_statblock: statblock.Statblock):
     assert sb.passive_perception == 8
     assert sb.languages == ['Sylvan', 'testLanguage']
     assert sb.telepathy == 100
-    assert sb.challenge.rating == '1/8'
+    assert sb.challenge.rating == '0'
     assert len(sb.features) == 2
     assert sb.features[1].name == 'testAbility'
     assert sb.features[1].description_template == 'Foos bars.'
