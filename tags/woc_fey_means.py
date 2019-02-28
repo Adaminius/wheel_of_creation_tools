@@ -80,12 +80,12 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('graceful', '+2 to Dexterity', on_apply=apply))
 
 def apply(sb: Statblock) -> Statblock:
-    sb.ability_scores['STR'].value += 2
+    sb.features.append(common_features['Reckless'])
     sb.damage_resistances.discard('bludgeoning, piercing, and slashing damage from weapons not made of thokcha')
     sb.damage_immunities.add('bludgeoning, piercing, and slashing damage from weapons not made of thokcha')
     return sb
-all_tags.append(Tag('otherwordly fury', '+2 to Strength; immunity to bludgeoning, piercing, and slashing weapons not '
-                                        'made from thokcha', on_apply=apply, weight=3))
+all_tags.append(Tag('otherwordly fury', 'add the Reckless feature; immunity to bludgeoning, piercing, and slashing '
+                                        'weapons not made from thokcha', on_apply=apply, weight=3))
 
 def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['STR'].value += 2
@@ -256,7 +256,7 @@ all_tags.append(Tag('diminutive',
 def apply(sb: Statblock) -> Statblock:
     claws = Feature(name='Claws',
                     description_template='*Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. '
-                                         '*Hit:* 7 ({size_mod + size_mod}d4 + {STR}) slashing damage.',
+                                         '*Hit:* 7 (2d{size_die_size - 2} + {STR}) slashing damage.',
                     can_multiattack=True,
 
                     )
@@ -269,7 +269,7 @@ all_tags.append(Tag('lacerating claws',
 def apply(sb: Statblock) -> Statblock:
     claws = Feature(name='Poison Claws',
                     description_template='*Melee Weapon Attack:* +{prof + DEX} to hit, reach 5 ft., one target. '
-                                         '*Hit:* 7 ({size_mod + size_mod}d4 + {DEX}) poison damage.',
+                                         '*Hit:* 7 (1d{size_die_size} + {CHA}) poison damage.',
                     can_multiattack=True
                     )
     sb.actions.append(claws)
@@ -395,7 +395,7 @@ def apply(sb: Statblock) -> Statblock:
                       description_template='*Melee Weapon Attack:* +{prof + STR} to hit, reach 10 ft., all '
                                            'targets within reach. '
                                            '*Hit:* 7 (1d{size_die_size} + {STR}) bludgeoning '
-                                           'damage. On a hit, the target must also make a DC {8 + prof + STR} saving'
+                                           'damage. On a hit, the target must also make a DC {8 + prof + STR} saving '
                                            'throw or be knocked prone.',
                       can_multiattack=False,
                       effect_damage=.25)
@@ -430,29 +430,116 @@ all_tags.append(Tag('tails without number',
                     '+1 to Charisma; add the Foul Omens feature',
                     on_apply=apply, overwrites={'tail'}, overwritten_by={'tail'}, weight=3))
 
+def apply(sb: Statblock) -> Statblock:
+    sb.ability_scores['STR'].value += 1
+    feature = Feature(name='Gore', description_template=
+                      '*Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. '
+                      '*Hit:* 7 ({size_mod}d8 + {STR}) piercing damage.',
+                      can_multiattack=True)
+    sb.actions.append(feature)
+    sb.features.append(common_features['Charge'])
+    return sb
+all_tags.append(Tag('goring horns',
+                    'add the Charge feature; add the Gore attack; +1 to Strength',
+                    on_apply=apply, overwrites={'horn'}, overwritten_by={'horn'}, weight=10))
 
+def apply(sb: Statblock) -> Statblock:
+    sb.ability_scores['CON'].value += 1
+    sb.speed += 10
+    sb.features.append(common_features['Charge'])
+    return sb
+all_tags.append(Tag('twisting antlers',
+                    'add 10 ft. to walking speed; add the Charge feature; +1 to Constitution',
+                    on_apply=apply, overwrites={'horn'}, overwritten_by={'horn'}, weight=10))
 
+def apply(sb: Statblock) -> Statblock:
+    if sb.armor_class_type.lower().strip() == 'natural armor':
+        sb.base_natural_armor += 2
+    else:
+        sb.ability_scores['STR'].value += 3
+    sb.features.append(common_features['Charge'])
+    return sb
+all_tags.append(Tag('ramming horns',
+                    'add the Charge feature; +2 to AC if has natural armor, +3 to Strength otherwise',
+                    on_apply=apply, overwrites={'horn'}, overwritten_by={'horn'}, weight=10))
+
+def apply(sb: Statblock) -> Statblock:
+    if sb.ability_scores['INT'] > 7:
+        feature = Feature('Illusory Appearance',
+                          'The creature uses its magic to take on the appearance of a humanoid, animal, or '
+                          'plant of similar '
+                          'size. This effect can be ended as a bonus action or ends automatically if the creature '
+                          'dies. '
+                          'The false appearance fails to hold up to physical inspection--if the creature actually has '
+                          'scales but appears to have soft fur, someone touching it could feel the roughness of the '
+                          'scales. Otherwise, a creature must take an action to visually inspect the illusion and '
+                          'succeed on a DC {8 + prof + CHA} Intelligence (Investigation) check to discern that '
+                          'the creature is disguised.')
+    else:
+        feature = Feature('Illusory Appearance',
+                          'The creature uses its magic to take on the appearance of an animal or plant of '
+                          'similar '
+                          'size. This effect can be ended as a bonus action or ends automatically if the creature '
+                          'dies. '
+                          'The false appearance fails to hold up to physical inspection--if the creature actually has '
+                          'scales but appears to have soft fur, someone touching it could feel the roughness of the '
+                          'scales. Otherwise, a creature must take an action to visually inspect the illusion and '
+                          'succeed on a DC {8 + prof + CHA} Intelligence (Investigation) check to discern that '
+                          'the creature is disguised.')
+    sb.actions.append(feature)
+    return sb
+all_tags.append(Tag('deceptive glamour',
+                    'add the Illusory Appearance action--if Intelligence > 7 can be humanoid, otherwise as '
+                    'animals/plants',
+                    on_apply=apply, weight=13))
+
+def apply(sb: Statblock) -> Statblock:
+    attack = Feature(name='Icy Breath (Recharge 5-6)',
+                     # todo: if we implement a better op parser, could scale the cone from 15 to 60 ft.
+                     description_template='The creature exhales a freezing gust of wind in a 30 ft. cone. Each '
+                                          'creature in that area must make a DC {8 + prof + CHA} Constitution '
+                                          'saving throw. On a failed saving throw, the creature is pushed back 15 ft. '
+                                          'and takes 5 ({prof + prof - 1}d6) cold damage. On a success, it isn\'t pushed '
+                                          'and takes half as much damage.',
+                     can_multiattack=False
+                     )
+    sb.actions.append(attack)
+    return sb
+all_tags.append(Tag('icy breath',
+                    'add an Icy Breath action',
+                    on_apply=apply, overwrites={'breath'}, overwritten_by={'breath'}, weight=10, requires={'Wintry'}))
 
 # if we're using so much charisma, need more charisma abilities like magic attacks
 # spritely
-# horns
-# goring horn
+# gouging tusks
+# scything tusks
+# reptilian eyes
+# reckless
 # charge
 # fangs (removed bite from predator SB so need something to fill in)
 # claws
 # hide/armor/skin/fur
 # parry
-# illusion/disguise as humanoid
 # detect magic
 # invisibility (see Sprite)
 # heart sight (see Sprite)
+# hooves/feet
+# snout/face
+# tunneling claws
+# tree stride
+# mimic voices
+# voice weapon
+# Change Shape (better Illusory appearance, see dragons)
 # winter
 #   icy breath
+#   paralyzing breath
 #   snow camouflage
 #   frosty hide
-#   paralyzing spores
+#   ice walk
 # summer
 #   fiery breath
+#   blinding radiance
+#   moisture drain
 #   rocky hide
 #   charred hide
 # autumn
@@ -462,6 +549,7 @@ all_tags.append(Tag('tails without number',
 # spring
 #   poisonous breath
 #   tantalizing spores
+#   paralyzing spores
 #   bark-like hide
 
 ############################
@@ -479,7 +567,8 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('Wintry', 'Winter alignment; cold and psychic resistance; advantage on saving throws against being '
                               'charmed or put to sleep',
                     on_apply=apply,
-                    overwrites={'alignment', 'jungle-dweller'}, overwritten_by={'alignment', 'Wintry'}
+                    overwrites={'alignment', 'jungle-dweller'}, overwritten_by={'alignment', 'Wintry'},
+                    weight=18
                     ))
 
 def apply(sb: Statblock) -> Statblock:
@@ -494,7 +583,8 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('Vernal', 'Spring alignment; poison and psychic resistance; advantage on saving throws against being '
                                'charmed or put to sleep',
                     on_apply=apply,
-                    overwrites={'alignment'}, overwritten_by={'alignment'}
+                    overwrites={'alignment'}, overwritten_by={'alignment'},
+                    weight=18
                     ))
 
 def apply(sb: Statblock) -> Statblock:
@@ -509,7 +599,8 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('Summery', 'Summer alignment; fire and psychic resistance; advantage on saving throws against being '
                                'charmed or put to sleep',
                     on_apply=apply,
-                    overwrites={'alignment'}, overwritten_by={'alignment'}
+                    overwrites={'alignment'}, overwritten_by={'alignment'},
+                    weight=18
                     ))
 
 def apply(sb: Statblock) -> Statblock:
@@ -524,7 +615,8 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('Autumnal', 'Autumn alignment; necrotic and psychic resistance; advantage on saving throws against being '
                                'charmed or put to sleep',
                     on_apply=apply,
-                    overwrites={'alignment'}, overwritten_by={'alignment'}
+                    overwrites={'alignment'}, overwritten_by={'alignment'},
+                    weight=18
                     ))
 
 

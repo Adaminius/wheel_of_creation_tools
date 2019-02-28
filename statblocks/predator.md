@@ -18,4 +18,4 @@ ___
 > ### Actions
 > ***Multiattack.*** The creature makes two melee weapon attacks.
 >
-> ***Tackle.*** *Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. *Hit:* 7 ({size_mod}d6 + {STR}) bludgeoning damage. If the target is a creature, it must succeed on a DC {8 + prof + STR} Strength saving throw or be knocked prone.
+> ***Strike.*** *Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. *Hit:* 7 (1d{size_die_size} + {STR}) bludgeoning damage..

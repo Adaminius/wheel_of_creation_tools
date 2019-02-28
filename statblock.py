@@ -171,6 +171,7 @@ class Statblock(object):
             values[skill] = skill_mod
         values['proficiency'] = self.proficiency
         values['prof'] = self.proficiency
+        values['hit_dice_count'] = self.hit_dice.count
         values['size_die_size'] = self.size_die_size()
         values['size_dice_size'] = self.size_die_size()
         values['size_mod'] = self.size_mod()
