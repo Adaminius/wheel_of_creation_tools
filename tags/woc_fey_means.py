@@ -464,7 +464,7 @@ all_tags.append(Tag('ramming horns',
                     on_apply=apply, overwrites={'horn'}, overwritten_by={'horn'}, weight=10))
 
 def apply(sb: Statblock) -> Statblock:
-    if sb.ability_scores['INT'] > 7:
+    if sb.ability_scores['INT'].value > 7:
         feature = Feature('Illusory Appearance',
                           'The creature uses its magic to take on the appearance of a humanoid, animal, or '
                           'plant of similar '
