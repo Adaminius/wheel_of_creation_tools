@@ -18,4 +18,4 @@ ___
 > ### Actions
 > ***Multiattack.*** The creature makes two melee weapon attacks.
 >
-> ***Strike.*** *Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. *Hit:* 7 (1d{size_die_size} + {STR}) bludgeoning damage..
+> ***Strike.*** *Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. *Hit:* 7 (1d{size_die_size} + {STR}) bludgeoning damage.

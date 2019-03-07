@@ -132,7 +132,7 @@ def apply(sb: Statblock) -> Statblock:
     return sb
 all_tags.append(Tag('jungle-dweller', 'add the Ambusher feature; gain a climb speed of 20 ft. or equal to its '
                                       'walking speed, whichever is greater',
-                    on_apply=apply, overwrites={'dweller', 'Wintry'},
+                    on_apply=apply, overwrites={'dweller', 'Brumal'},
                     overwritten_by={'dweller', 'jungle-dweller'}, weight=2))
 
 def apply(sb: Statblock) -> Statblock:
@@ -330,7 +330,7 @@ def apply(sb: Statblock) -> Statblock:
     return sb
 all_tags.append(Tag('freezing spittle',
                     'add a Spit Frost ranged attack',
-                    on_apply=apply, overwrites={'spit'}, overwritten_by={'spit'}, weight=15, requires={'Wintry'}))
+                    on_apply=apply, overwrites={'spit'}, overwritten_by={'spit'}, weight=15, requires={'Brumal'}))
 
 def apply(sb: Statblock) -> Statblock:
     attack = Feature(name='Spit Fire',
@@ -344,7 +344,7 @@ def apply(sb: Statblock) -> Statblock:
     return sb
 all_tags.append(Tag('scorching spittle',
                     'add a Spit Fire ranged attack',
-                    on_apply=apply, overwrites={'spit'}, overwritten_by={'spit'}, weight=15, requires={'Summery'}))
+                    on_apply=apply, overwrites={'spit'}, overwritten_by={'spit'}, weight=15, requires={'Aestival'}))
 
 def apply(sb: Statblock) -> Statblock:
     attack = Feature(name='Putrid Spit',
@@ -507,7 +507,7 @@ def apply(sb: Statblock) -> Statblock:
     return sb
 all_tags.append(Tag('icy breath',
                     'add an Icy Breath action',
-                    on_apply=apply, overwrites={'breath'}, overwritten_by={'breath'}, weight=10, requires={'Wintry'}))
+                    on_apply=apply, overwrites={'breath'}, overwritten_by={'breath'}, weight=10, requires={'Brumal'}))
 
 # if we're using so much charisma, need more charisma abilities like magic attacks
 # spritely
@@ -564,10 +564,10 @@ def apply(sb: Statblock) -> Statblock:
     sb.features.append(common_features['Bound to the Courts'])
     sb.features.append(common_features['Courtship'])
     return sb
-all_tags.append(Tag('Wintry', 'Winter alignment; cold and psychic resistance; advantage on saving throws against being '
+all_tags.append(Tag('Brumal', 'Winter alignment; cold and psychic resistance; advantage on saving throws against being '
                               'charmed or put to sleep',
                     on_apply=apply,
-                    overwrites={'alignment', 'jungle-dweller'}, overwritten_by={'alignment', 'Wintry'},
+                    overwrites={'alignment', 'jungle-dweller'}, overwritten_by={'alignment', 'Brumal'},
                     weight=18
                     ))
 
@@ -596,7 +596,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.features.append(common_features['Bound to the Courts'])
     sb.features.append(common_features['Courtship'])
     return sb
-all_tags.append(Tag('Summery', 'Summer alignment; fire and psychic resistance; advantage on saving throws against being '
+all_tags.append(Tag('Aestival', 'Summer alignment; fire and psychic resistance; advantage on saving throws against being '
                                'charmed or put to sleep',
                     on_apply=apply,
                     overwrites={'alignment'}, overwritten_by={'alignment'},
