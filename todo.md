@@ -1,6 +1,8 @@
 ## Something need doing?
 
 * Features
+    * Loot
+    * Include bloodied threshold in statblock to use for future mechanics
     * Use an int like 'num_can_multiattack' for actions instead of 'can_multiattack', might allow us to do stuff like claw-claw-bite
     * Open preview in new window
     * Use pyparsing to implement multiplication, basic functions, operator precedence in the curly bracket stuff

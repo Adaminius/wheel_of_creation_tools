@@ -1,7 +1,7 @@
 .header{
     background: rgba(89, 131, 102, 1) ;
     background-image:
-            linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.6)),
+            linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,.6), rgba(0,0,0,.9)),
             url("https://upload.wikimedia.org/wikipedia/commons/d/dd/Die_drei_Bogatyr.jpg");
     background-position: center 0;
     background-size: cover;

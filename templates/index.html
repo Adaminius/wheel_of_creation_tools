@@ -2,6 +2,8 @@
 <html>
 
 <head>
+  <meta name="viewport" content="width=device-width; initial-scale=1.0;">
+  <meta charset="UTF-8">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -21,9 +23,9 @@
 
 <body>
 <div class="header align-center container-fluid text-center ">
-  <div class="row" style="margin: 100px">
+  <div class="row" style="margin: 5%">
   <div class="col">
-  <img src="../static/img/monsterbuilder.png">
+  <img src="../static/img/monsterbuilder.png" style="margin: 0 auto; text-align: center; display: block; width: 100%; max-width: 700px">
   <p class="lead">A tool for the <em>Wheel of Creation</em>, a caravanning and monster-hunting supplement for <i class="fas fa-dragon" style="color: red"></i> 5th Edition.</p>
   </div>
   </div>
@@ -36,17 +38,20 @@
           <h5 class="mb-0">
             <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseInstructions"
                     aria-expanded="false" aria-controls="collapseInstructions">
-              Instructions
+              Instructions <span style="font-weight: normal"><em>(click to expand)</em></span>
             </button>
           </h5>
         </div>
         <div id="collapseInstructions" class="collapse hide" aria-labelledby="headingInstructions">
           <div class="card-body">
+            <p>This tool allows you to semirandomly create monster statblocks for 5th edition using markdown and a set
+              of premade <em>tags</em>. Tags apply various modifications, like <em>cave-dweller</em>, which gives a creature
+                the Sunlight Sensitivity feature and 60 ft. of darkvision.</p>
             <ol>
-              <li>Select a Statblock to start with.</li>
+              <li>Select a Statblock to modify.</li>
               <li>Choose a tag table (I recommend <strong>WoC: Fey Means</strong>, it's the most complete).
                 <ul>
-                  <li>Tag tables named "means" typically change a monster's statistics and abilities, while "mannerisms"
+                  <li>Tag tables named <em>means</em> change a monster's statistics and abilities, while <em>mannerisms</em>
                     tags are usually
                     only to help the GM determine how it might behave.
                   </li>
@@ -57,7 +62,7 @@
                   </li>
                   <li>The first tag in a "means" table (e.g. <em>fey</em> in <em>WoC: Fey Means</em>) usually has a
                     weight
-                    of 0 and sets a creature's type. The monster creation rules from <em>the Wheel of Creation</em>
+                    of 0 and sets a creature's type. The monster creation rules from the <em>Wheel of Creation</em>
                     suggest
                     that you add this tag first before adding other tags or adding random tags.
                   </li>
@@ -105,12 +110,12 @@
 
     </div>
   </div>
-  <hr>
+  <hr style="margin-bottom: 0">
   <div class="row">
     <div class="col-lg-6">
       <div class="dropdown">
         <button class="btn btn-warning dropdown-toggle" type="button" id="tagListDropdownButton" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
+                aria-haspopup="true" aria-expanded="false" style="margin-top: 1rem">
           Choose a Tag Table
         </button>
         <div class="dropdown-menu" aria-labelledby="tagListDropdownButton" id="tagListDropdown">
@@ -120,7 +125,7 @@
     <div class="col-lg-6">
       <div class="dropdown">
         <button class="btn btn-warning dropdown-toggle" type="button" id="statblockDropdownButton"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 1rem">
           Choose a Statblock
         </button>
         <div class="dropdown-menu" aria-labelledby="statblockDropdownButton" id="statblockDropdown"></div>
@@ -186,7 +191,7 @@
     <div class="col-md-pull-4">
       <div style="margin-left: 1rem">
         <button class="btn btn-warning" id="addRandomButton">Add Random</button>
-        <button class="btn btn-secondary" id="clearButton">Clear</button>
+        <button class="btn btn-warning" id="clearButton">Clear</button>
         <div style="margin-top: 1rem; min-width: 17rem; font-family: 'Droid Sans', sans-serif" >
           <label for="hitDiceRange"
                  title="Also sets proficiency bonus to 1 + num_hit_dice / 4 and determines number of multiattacks.">

@@ -137,14 +137,13 @@ class ChallengeRating(object):
     @classmethod
     def float_cr_to_cr(cls, cr: int):
         """Convert int-style CRs to [1/2, 1/4, 1/8, 0]-style Challenge Rating class objects."""
-        cr -= 4
-        if cr < -2:
+        if cr < 2:
             cr = '0'
-        elif cr < -1:
+        elif cr < 3:
             cr = '1/8'
-        elif cr < 0:
+        elif cr < 4:
             cr = '1/4'
-        elif cr < 1:
+        elif cr < 5:
             cr = '1/2'
         else:
             cr = str(int(math.floor(cr)))
