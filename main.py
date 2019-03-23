@@ -65,8 +65,9 @@ def get_tag_list():
 
     template = Template(  # todo move these templates to external files
         """<tr onclick="selectTag('{{ filename }}', '{{ tag_name }}', '{{ stacks }}')" 
-        data-toggle="tooltip" title="stacks={{ stacks }}" data-name="{{ tag_name }}" data-filename="{{ filename }}"
-        data-weight="{{ weight }}" data-stacks="{{ stacks }}" data-requires="{{ requires }}">
+        data-toggle="tooltip" title="stacks={{ title }}" data-name="{{ tag_name }}" data-filename="{{ filename }}"
+        data-weight="{{ weight }}" data-stacks="{{ stacks }}" data-requires="{{ requires }}" 
+        data-overwrites="{{ overwrites }}" data-overwritten="{{ overwritten }}">
              <td>{{ weight }}</td>
              <td><strong>{{ tag_name }}</strong></td>
              <td>{{ effect }}</td>
@@ -77,8 +78,14 @@ def get_tag_list():
     out = ''
     for name, tag_dict in statblock.Tag.get_dict_table(modules[basename(filename)].all_tags).items():
         requires = ','.join(tag_dict['requires']) if tag_dict['requires'] else '-'
+        title = f'filename={filename}; tag={name}; stacks={tag_dict["stacks"]}; ' \
+                f'overwrites={",".join(tag_dict["overwrites"])}; ' \
+                f'overwritten={",".join(tag_dict["overwritten_by"])}'
         out += template.render(filename=filename, tag_name=name, weight=tag_dict['weight'], effect=tag_dict['effect'],
-                               stacks=tag_dict['stacks'], requires=requires)
+                               stacks=tag_dict['stacks'], requires=requires, title=title,
+                               overwrites=';'.join(tag_dict['overwrites']),
+                               overwritten=';'.join(tag_dict['overwrites'])
+                               )
 
     description_template = """<div class="card"  style="margin-top: 1rem; margin-bottom: 1rem;">
           <div class="card-header" id="headingTagDesc">

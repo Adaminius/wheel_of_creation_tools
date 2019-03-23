@@ -509,6 +509,31 @@ all_tags.append(Tag('icy breath',
                     'add an Icy Breath action',
                     on_apply=apply, overwrites={'breath'}, overwritten_by={'breath'}, weight=10, requires={'Brumal'}))
 
+def apply(sb: Statblock) -> Statblock:
+    sb.add_damage_resistance('cold')
+    sb.add_damage_resistance('cold')
+    sb.add_damage_vulnerability('fire')
+    if sb.armor_class_type.lower().strip() == 'natural armor':
+        sb.base_natural_armor += 2
+    else:
+        sb.ability_scores['CON'].value += 3
+    return sb
+all_tags.append(Tag('frozen hide',
+                    'add cold immunity; add fire vulnerability; +2 to AC if has natural armor, '
+                    '+3 to Constitution otherwise',
+                    on_apply=apply, overwrites={'hide'}, overwritten_by={'hide'}, weight=10, requires={'Brumal'}))
+
+def apply(sb: Statblock) -> Statblock:
+    sb.add_damage_resistance('fire')
+    sb.add_damage_resistance('fire')
+    sb.add_damage_vulnerability('cold')
+    sb.features.append(Feature('Scorching Hide', 'When a creature makes a melee weapon attack against this creature,'
+                                                 'they take {hit_dice_count} fire damage.'))
+    return sb
+all_tags.append(Tag('scorching hide',
+                    'add fire immunity; add cold vulnerability; deals fire damage to attackers',
+                    on_apply=apply, overwrites={'hide'}, overwritten_by={'hide'}, weight=10, requires={'Aestival'}))
+
 # if we're using so much charisma, need more charisma abilities like magic attacks
 # spritely
 # gouging tusks
@@ -534,7 +559,6 @@ all_tags.append(Tag('icy breath',
 #   icy breath
 #   paralyzing breath
 #   snow camouflage
-#   frosty hide
 #   ice walk
 # summer
 #   fiery breath

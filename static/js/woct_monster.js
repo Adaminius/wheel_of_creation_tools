@@ -3,7 +3,6 @@ $('document').ready(function () {
      * Request the list of tag tables to choose from
      */
     $.get("/getAllTagLists", function (data) {
-        // console.log(data);
         $('#tagListDropdown').html(data);
     });
 
@@ -73,8 +72,15 @@ $('document').ready(function () {
         // remove stuff that we already have that doesn't stack
         let existingNonstackingTags = [];
         let existingTags = [];
+        let overwrittenFlagsArr = [];
+        let overwrittenFlags = new Set();
+
         $('#tagsToApplyDiv').children().each(function () {
             let tagNode = $(this);
+            overwrittenFlagsArr.push(new Set(tagNode.attr('data-overwritten').split(';')));
+            for (const element of tagNode.attr('data-overwritten').split(';')) {
+                overwrittenFlags.add(element);
+            }
             if (tagNode.attr('data-stacks') === 'False')
                 existingNonstackingTags.push(tagNode.attr('data-name') + '$' + tagNode.attr('data-filename'));
             existingTags.push(tagNode.attr('data-name') + '$' + tagNode.attr('data-filename'));
@@ -85,8 +91,12 @@ $('document').ready(function () {
         $('#availableTagTable').children().each(function () {
             let tagNode = $(this);
             if (existingNonstackingTags.indexOf(tagNode.attr('data-name') + '$' + tagNode.attr('data-filename')) < 0) {
+                if (willOverwrite(tagNode, overwrittenFlags)) {
+                    console.log(tagNode.attr('data-name') + ' will overwrite one or more already applied tags');
+                    return;
+                }
                 if (!hasRequiredTags(tagNode, existingTags)) {
-                    console.log('dunnae have the required taegs!');
+                    console.log('Missing required tags for ' + tagNode.attr('data-name'));
                     return;
                 }
                 choices.push(tagNode);
@@ -98,8 +108,9 @@ $('document').ready(function () {
             return;
 
         let tag = chooseWeighted(choices, weights);
-        console.log('addRandom ' + tag.attr('data-filename') + ' ' + tag.attr('data-name'));
-        selectTag(tag.attr('data-filename'), tag.attr('data-name'), tag.attr('data-stacks'));
+        // console.log('addRandom ' + tag.attr('data-filename') + ' ' + tag.attr('data-name'));
+        selectTag(tag.attr('data-filename'), tag.attr('data-name'), tag.attr('data-stacks'),
+            tag.attr('data-overwritten'));
     });
 
     let similarMonsters = defaultDict = new Proxy({}, {
@@ -219,20 +230,21 @@ function selectStatblock(filename) {
  * @param filename - filename of the tag table module to look in (shown on mouseover, future mouseover should include more info)
  * @param tagName
  * @param stacks - whether the tag stacks (can be applied multiple times)
+ * @param overwritten - comma-delimited string of flags which are used to determine whether this tag is overwritten by another tag
  */
-function selectTag(filename, tagName, stacks) {
+function selectTag(filename, tagName, stacks, overwritten) {
     console.log('selectTag ' + filename + ' ' + tagName);
-    $('#tagsToApplyDiv').append(`<button class="btn btn-danger tag-button" data-stacks="${stacks}" data-filename="${filename}" data-name="${tagName}" title="${filename}"><strong>&times</strong> ${tagName}</button>`)
+    $('#tagsToApplyDiv').append(`<button class="btn btn-danger tag-button" data-stacks="${stacks}" data-filename="${filename}" data-name="${tagName}" title="${filename}" data-overwritten="${overwritten}"><strong>&times</strong> ${tagName}</button>`)
 }
 
 /**
  * If a tag has other tags in its Requirements column, check to see if all required tags are already present
  * @param tagNode - DOM node of the tag we want to check requirements on
  * @param existingTags - names of the tags we've already applied
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function hasRequiredTags(tagNode, existingTags) {
-    console.log('hasRequiredTags ' + tagNode.attr('data-requires').split(',') + ' ' + existingTags);
+    // console.log('hasRequiredTags ' + tagNode.attr('data-requires').split(',') + ' ' + existingTags);
     if (tagNode.attr('data-requires') === '-')
         return true;
     let requiredTags = tagNode.attr('data-requires').split(',');
@@ -250,4 +262,20 @@ function hasRequiredTags(tagNode, existingTags) {
             requirementsFailed = true;
     });
     return !requirementsFailed;
+}
+
+/**
+ * Checks if a tag would overwrite any tags with the flags given in overwrittenFlags
+ * @param tagNode
+ * @param overwrittenFlags {Set}
+ * @returns {Boolean}
+ */
+function willOverwrite(tagNode, overwrittenFlags) {
+    let will_overwrite = false;
+    tagNode.attr('data-overwrites').split(';').forEach(function(overwritesFlag) {
+        if (overwrittenFlags.has(overwritesFlag)) {
+            will_overwrite = true;
+        }
+    });
+    return will_overwrite;
 }

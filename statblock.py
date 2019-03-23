@@ -88,7 +88,7 @@ class Statblock(object):
                  truesight: int = 0,
                  passive_perception: int = None, languages: list = None, telepathy: int = 0,
                  abilities: list = None, actions: list = None, bonus_actions: list = None,
-                 reactions: list = None, legendary_actions: list = None, num_legendary: int = 3, proficiency=0,
+                 reactions: list = None, legendary_actions: list = None, num_legendary: int = 0, proficiency=0,
                  applied_tags: list = None,
                  original_text: str = None,
                  **additional_skills):
@@ -997,6 +997,7 @@ class Tag(object):
         out_dict = {}
         for tag in tag_list:
             tag_dict = {'weight': '{:.1%}'.format(tag.weight / total_weight), 'effect': tag.effect_text,
-                        'stacks': str(tag.stacks), 'requires': tag.requires}
+                        'stacks': str(tag.stacks), 'requires': tag.requires, 'overwrites': tag.overwrites,
+                        'overwritten_by': tag.overwritten_by}
             out_dict[tag.name] = tag_dict
         return out_dict
