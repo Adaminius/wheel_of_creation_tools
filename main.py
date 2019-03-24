@@ -84,7 +84,7 @@ def get_tag_list():
         out += template.render(filename=filename, tag_name=name, weight=tag_dict['weight'], effect=tag_dict['effect'],
                                stacks=tag_dict['stacks'], requires=requires, title=title,
                                overwrites=';'.join(tag_dict['overwrites']),
-                               overwritten=';'.join(tag_dict['overwrites'])
+                               overwritten=';'.join(tag_dict['overwritten_by'])
                                )
 
     description_template = """<div class="card"  style="margin-top: 1rem; margin-bottom: 1rem;">
