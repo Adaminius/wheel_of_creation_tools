@@ -2,6 +2,7 @@ from utils import common_features
 from utils import Feature
 from statblock import Statblock
 from statblock import Tag
+from statblock import Loot
 
 all_tags = []
 table_name = 'WoC: Fey Means'
@@ -14,6 +15,10 @@ table_description = 'Fey in the Wheel of Creation come from the Ring of Seasons,
                     'the space between the rings. Their world is in many ways similar that to the Ring of Earth, ' \
                     'though twisted and exaggerated.'
 
+FEY_FREQUENT_LOOT_PROPERTIES = {
+    'primary_type': lambda sb: sb.primary_type,
+    'alignment': lambda sb: sb.alignment,
+}
 
 def apply(sb: Statblock) -> Statblock:
     sb.primary_type = 'fey'
@@ -213,6 +218,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['INT'].value += 2
     sb.ability_scores['WIS'].value += 2
     sb.skills['Deception'] = sb.proficiency + sb.ability_scores['CHA']
+    sb.loot.append(Loot('human-like eyes', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('human-like eyes',
                     '+2 to Charisma; +2 to Intelligence; +2 to Wisdom; add the Deception skill',
@@ -261,6 +267,7 @@ def apply(sb: Statblock) -> Statblock:
 
                     )
     sb.actions.append(claws)
+    sb.loot.append(Loot('lacerating claws', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('lacerating claws',
                     'add a Claw melee attack',
@@ -273,6 +280,7 @@ def apply(sb: Statblock) -> Statblock:
                     can_multiattack=True
                     )
     sb.actions.append(claws)
+    sb.loot.append(Loot('poison claws', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('poison claws',
                     'add a Poison Claws melee attack',

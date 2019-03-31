@@ -50,6 +50,9 @@ $('document').ready(function () {
                 console.log(data);
                 $('#modifiedStatblockTextArea').text(data['markdown']);
                 $('#mdPreview').empty().append(data['html']);
+                let lootTableElement = $('#lootMarker').parent().parent().parent();
+                lootTableElement.addClass('lootTable');
+                lootTableElement.addClass('table-striped');
             },
             error: function (data) {
                 console.log(data)

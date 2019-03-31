@@ -159,6 +159,7 @@ class Statblock(object):
         self.applied_tags = applied_tags if applied_tags is not None else []
         self.base_natural_armor = 0
         self.bonus_multiattacks = 0
+        self.loot = []
 
         self.original_text = original_text if original_text is not None else ''
 
@@ -768,7 +769,21 @@ class Statblock(object):
                     lines.append(line)
                 lines.append('')
 
-        return '\n'.join(['___', '___'] + ['> ' + line for line in lines])
+        if self.loot:
+            lines.append('### Loot')
+            lines.extend(Loot.to_table_lines(self.loot, self))
+            lines.append('{: #lootMarker }')  # This is so stupid, but there is an incompatibility between the
+                                              # attributes and table extensions for python-markdown. We will look for
+                                              # this marker in the client-side javascript to locate the loot table.
+
+        blockquoted_lines = []
+        for line in lines:
+            if not line.startswith('{:'):
+                blockquoted_lines.append('> ' + line)
+            else:
+                blockquoted_lines.append(line)
+
+        return '\n'.join(['___', '___'] + blockquoted_lines)
 
     @property
     def challenge(self):
@@ -1001,3 +1016,33 @@ class Tag(object):
                         'overwritten_by': tag.overwritten_by}
             out_dict[tag.name] = tag_dict
         return out_dict
+
+class Loot(object):
+    def __init__(self, name: str, cr: str='inherit', size: str='inherit', properties: dict=None):
+        """
+        Args:
+            name:   Name of the loot
+            cr: Challenge rating of the loot, 'inherit' to inherit the CR of the statblock passed to to_table_lines
+            size: Size of the loot (e.g. 'small'), 'inherit' to inherit the size of the statblock passed to to_table_lines
+            properties: Dict with property names as keys and callables which take a Statblock as values,
+                            e.g. {'alignment': lambda sb: sb.alignment}
+        """
+        self.name = name
+        self.cr = cr
+        self.size = size
+        self.properties = properties if properties is not None else {}
+
+    @staticmethod
+    def to_table_lines(loots: list, statblock: Statblock):
+        output = ['|Name|Size|CR|Properties|', '|:---:|:---:|:---:|:---:|']
+        output_format = '|{name}|{size}|{cr}|{properties}|'
+        for loot in loots:
+            name = loot.name
+            size = loot.size if loot.size != 'inherit' else size_val_to_name[statblock.size]
+            cr = loot.cr if loot.cr != 'inherit' else statblock.challenge.rating
+            properties = []
+            for key, fun in loot.properties.items():
+                properties.append(f'{fun(statblock)}')
+            properties = '; '.join(properties)
+            output.append(output_format.format(name=name, size=size, cr=cr, properties=properties))
+        return output

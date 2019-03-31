@@ -347,7 +347,6 @@ class Feature(object):
         self.effect_damage = effect_damage
         self.effect_attack = effect_attack
 
-
         # just grab the first one we see
         self.damage_formula = re.search(r'[+\-]?\d+\s+\(([A-z0-9+\-\s{}]+)\)[A-z0-9 ]+damage', self.description_template)
         if self.damage_formula is None:
