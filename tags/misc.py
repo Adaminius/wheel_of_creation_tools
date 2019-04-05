@@ -13,6 +13,12 @@ all_tags.append(Tag('legendary attacker', effect_text='add an attack legendary a
                     stacks=True, on_apply=apply))
 
 def apply(sb: Statblock) -> Statblock:
+    sb.legendary_actions.append(Feature('Dash', 'This creature moves up to its speed.', effect_hp=.2))
+    return sb
+all_tags.append(Tag('legendary mover', effect_text='add an attack legendary action', weight=10,
+                    stacks=True, on_apply=apply))
+
+def apply(sb: Statblock) -> Statblock:
     sb.num_legendary += 1
     return sb
 all_tags.append(Tag('legendary', effect_text='increase number of legendary actions by 1', weight=10,

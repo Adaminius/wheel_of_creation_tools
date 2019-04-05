@@ -22,6 +22,7 @@ FEY_FREQUENT_LOOT_PROPERTIES = {
 
 def apply(sb: Statblock) -> Statblock:
     sb.primary_type = 'fey'
+    sb.knowledge_dc_mod += 1
     sb.add_damage_resistance('bludgeoning, piercing, and slashing damage from weapons not made of thokcha')
     sb.add_damage_vulnerability('psychic')
     sb.languages.append('Sylvan')
@@ -546,6 +547,7 @@ all_tags.append(Tag('scorching hide',
 # spritely
 # gouging tusks
 # scything tusks
+# stinging tail
 # reptilian eyes
 # reckless
 # charge
@@ -558,6 +560,7 @@ all_tags.append(Tag('scorching hide',
 # heart sight (see Sprite)
 # hooves/feet
 # snout/face
+# twin-headed
 # tunneling claws
 # tree stride
 # mimic voices

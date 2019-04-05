@@ -180,7 +180,6 @@ def get_modified_statblock():
         sb = modules[basename(tag['filename'])].all_tags[tag['name']].apply(sb)
 
     markdown_text = sb.to_markdown()
-    print(markdown_text)
     preview_html = md.markdown(prepare_markdown(markdown_text), extensions=['tables', 'attr_list'])
     preview_html
 

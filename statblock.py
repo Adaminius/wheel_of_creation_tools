@@ -16,6 +16,9 @@ from utils import damage_types
 from utils import size_min, size_max, size_name_to_val, size_val_to_name
 
 
+BASE_KNOWLEDGE_DC = 10
+
+
 def parse_resist_or_immunity(text: str) -> set:
     # TODO Ordering for this stuff is not super intuitive, should maybe consider creating a class for this rather than
     # always trying to keep in mind that the bludgeoning/piercing/slashing damage thing comes last after a semicolon
@@ -80,7 +83,7 @@ class Statblock(object):
                  secondary_type: str = '',
                  alignment: str = 'unaligned', armor_class: int = 10, armor_class_type: str = '',
                  hit_point_bonus: int = 0, hit_dice: Dice = None, speed: int = 30,
-                 climb_speed: int = 0,
+                 climb_speed: int = 0, burrow_speed: int = 0,
                  fly_speed: int = 0, swim_speed: int = 0, ability_scores: dict = None,
                  damage_vulnerabilities: set = None, damage_resistances: set = None,
                  damage_immunities: set = None, condition_immunities: set = None, saving_throws: dict = None,
@@ -104,6 +107,7 @@ class Statblock(object):
         self.hit_dice = Dice.from_string('1d8') if hit_dice is None else hit_dice
         self.speed = speed
         self.climb_speed = climb_speed
+        self.burrow_speed = burrow_speed
         self.fly_speed = fly_speed
         self.swim_speed = swim_speed
 
@@ -160,6 +164,8 @@ class Statblock(object):
         self.base_natural_armor = 0
         self.bonus_multiattacks = 0
         self.loot = []
+        self.knowledge_dc_mod = 0  # WoC game mechanic; give GMs a base idea of how difficult this monster is to find
+                                   # out about.
 
         self.original_text = original_text if original_text is not None else ''
 
@@ -178,6 +184,14 @@ class Statblock(object):
         values['size_mod'] = self.size_mod()
         values['size'] = size_val_to_name[self.size]
         return values
+
+    @property
+    def base_knowledge_dc(self) -> int:
+        try:
+            knowledge_cr = math.floor(int(self.challenge.rating) / 2)
+        except ValueError:
+            knowledge_cr = 0
+        return BASE_KNOWLEDGE_DC + knowledge_cr + self.knowledge_dc_mod
 
     @property
     def size(self) -> int:
@@ -372,12 +386,14 @@ class Statblock(object):
                     sb.climb_speed = int(speed_text.strip().split()[1])
                 elif speed_text.strip().lower().startswith('swim'):
                     sb.swim_speed = int(speed_text.strip().split()[1])
+                elif speed_text.strip().lower().startswith('burrow'):
+                    sb.burrow_speed = int(speed_text.strip().split()[1])
                 elif speed_text.strip().lower().startswith('fly'):
                     sb.fly_speed = int(speed_text.strip().split()[1])
                 else:
                     print('Warning: Couldn\'t parse speed {}'.format(speed_text))
             logging.debug(f'Parsed speed="{sb.speed}", fly="{sb.fly_speed}", swim="{sb.swim_speed}", '
-                          f'climb="{sb.climb_speed}"')
+                          f'climb="{sb.climb_speed}", burrow="{sb.burrow_speed}"')
 
             lines.pop(0)
             # assert curr_line.strip().endswith('_')
@@ -564,6 +580,8 @@ class Statblock(object):
         lines.append(hp_line)
 
         speed_line = '- **Speed** {} ft.'.format(self.speed)
+        if self.burrow_speed:
+            speed_line += (', burrow {} ft.'.format(self.burrow_speed))
         if self.climb_speed:
             speed_line += (', climb {} ft.'.format(self.climb_speed))
         if self.fly_speed:
@@ -677,6 +695,8 @@ class Statblock(object):
 
         if self.applied_tags:
             lines.append('- **Tags** {}'.format(', '.join([t.name for t in self.applied_tags])))
+
+        lines.append('- **Base Knowledge DC** {}'.format(self.base_knowledge_dc))
 
         lines.append('___')
 
