@@ -774,22 +774,20 @@ class Statblock(object):
                 if lines[-1].strip() != '':
                     lines.append('')
 
-        if self.legendary_actions:
+        eligible_leg_actions = []
+        for action in self.actions + self.bonus_actions + self.reactions:
+            if 0 < action.legendary_cost <= self.num_legendary:
+                eligible_leg_actions.append(action)
+
+        if (self.legendary_actions or eligible_leg_actions) and self.num_legendary > 0:
             lines.append('### Legendary Actions')
             lines.append('')
             lines.append('This creature can take {} legendary actions, choosing from the options below. Only one '
                          'legendary action can be used at a time and only at the end of another creature\'s turn. This '
-                         'creature regains spent legendary actions at the start of its turn.'.format(self.num_legendary)
-                         )
+                         'creature regains spent legendary actions at the start of its turn.'.format(self.num_legendary))
             if lines[-1].strip() != '':
                 lines.append('')
-
-            eligible_actions = []
-            for action in self.actions + self.bonus_actions + self.reactions:
-                if 0 < action.legendary_cost <= self.num_legendary:
-                    eligible_actions.append(action)
-
-            for action in self.legendary_actions + eligible_actions:
+            for action in self.legendary_actions + eligible_leg_actions:
                 action.update_description(self.get_substitutable_values())
                 for line in action.legendary_str().splitlines():
                     lines.append(line)

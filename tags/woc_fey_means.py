@@ -173,7 +173,7 @@ all_tags.append(Tag('crow wings',
                     on_apply=apply, overwrites={'wings'}, overwritten_by={'wings'}, weight=3))
 
 def apply(sb: Statblock) -> Statblock:
-    sb.speed = min(10, sb.speed - 5)
+    sb.speed = max(10, sb.speed - 5)
     sb.fly_speed = max(20, 2 * sb.speed)
     sb.ability_scores['CHA'].value += 2
     sb.loot.append(Loot('bat wings', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
@@ -644,7 +644,7 @@ def apply(sb: Statblock) -> Statblock:
     feat = Feature('Smoldering Hide',
                    'Cracks in this creature\'s hide exude a thick burning smoke, heavily obscuring a 15-foot radius '
                    'sphere of this creature\'s choice with a center within 10 feet of this creature. Each creature '
-                   'that begins their turn in the smoke takes {hit_dice_count} fire damage.'
+                   'that begins their turn in the smoke takes {hit_dice_count} fire damage. '
                    'The smoke spreads around corners. Winds of at least 10 miles per hour will disperse the smoke. '
                    'The smoke also dissipates if this creature dies, uses this feature again, or after 10 minutes.',
                    legendary_cost=2)
@@ -718,6 +718,19 @@ all_tags.append(Tag('moldy hide',
                     on_apply=apply, overwrites={'horn'}, overwritten_by={'horn'}, weight=10))
 
 
+def apply(sb: Statblock) -> Statblock:
+    claws = Feature(name='Poison Claws',
+                    description_template='*Melee Weapon Attack:* +{prof + DEX} to hit, reach 5 ft., one target. '
+                                         '*Hit:* 7 (1d{size_die_size} + {CHA}) poison damage.',
+                    can_multiattack=True
+                    )
+    sb.actions.append(claws)
+    sb.loot.append(Loot('poison claws', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('poison claws',
+                    'add a Poison Claws melee attack',
+                    on_apply=apply, overwrites={'claws'}, overwritten_by={'claws'}, weight=12))
+
 # if we're using so much charisma, need more charisma abilities like magic attacks
 # spritely
 # gouging tusks
@@ -782,7 +795,7 @@ all_tags.append(Tag('Brumal', 'Winter alignment; cold and psychic resistance; ad
                               'charmed or put to sleep',
                     on_apply=apply,
                     overwrites={'alignment', 'jungle-dweller'}, overwritten_by={'alignment', 'Brumal'},
-                    weight=18
+                    weight=25
                     ))
 
 def apply(sb: Statblock) -> Statblock:
@@ -798,7 +811,7 @@ all_tags.append(Tag('Vernal', 'Spring alignment; poison and psychic resistance; 
                                'charmed or put to sleep',
                     on_apply=apply,
                     overwrites={'alignment'}, overwritten_by={'alignment'},
-                    weight=18
+                    weight=25
                     ))
 
 def apply(sb: Statblock) -> Statblock:
@@ -814,7 +827,7 @@ all_tags.append(Tag('Aestival', 'Summer alignment; fire and psychic resistance; 
                                'charmed or put to sleep',
                     on_apply=apply,
                     overwrites={'alignment'}, overwritten_by={'alignment'},
-                    weight=18
+                    weight=25
                     ))
 
 def apply(sb: Statblock) -> Statblock:
@@ -830,7 +843,7 @@ all_tags.append(Tag('Autumnal', 'Autumn alignment; necrotic and psychic resistan
                                'charmed or put to sleep',
                     on_apply=apply,
                     overwrites={'alignment'}, overwritten_by={'alignment'},
-                    weight=18
+                    weight=25
                     ))
 
 

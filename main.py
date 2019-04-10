@@ -65,7 +65,7 @@ def get_tag_list():
 
     template = Template(  # todo move these templates to external files
         """<tr onclick="selectTag('{{ filename }}', '{{ tag_name }}', '{{ stacks }}')" 
-        data-toggle="tooltip" title="stacks={{ title }}" data-name="{{ tag_name }}" data-filename="{{ filename }}"
+        data-toggle="tooltip" title="{{ title }}" data-name="{{ tag_name }}" data-filename="{{ filename }}"
         data-weight="{{ weight }}" data-stacks="{{ stacks }}" data-requires="{{ requires }}" 
         data-overwrites="{{ overwrites }}" data-overwritten="{{ overwritten }}">
              <td>{{ weight }}</td>
