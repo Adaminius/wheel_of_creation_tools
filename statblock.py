@@ -783,9 +783,15 @@ class Statblock(object):
                          )
             if lines[-1].strip() != '':
                 lines.append('')
-            for action in self.legendary_actions:
+
+            eligible_actions = []
+            for action in self.actions + self.bonus_actions + self.reactions:
+                if 0 < action.legendary_cost <= self.num_legendary:
+                    eligible_actions.append(action)
+
+            for action in self.legendary_actions + eligible_actions:
                 action.update_description(self.get_substitutable_values())
-                for line in str(action).splitlines():
+                for line in action.legendary_str().splitlines():
                     lines.append(line)
                 lines.append('')
 
@@ -811,8 +817,8 @@ class Statblock(object):
             'damage': 1,  # estimated damage per round
             'save_dc': .1,  # highest save difficulty class
             'attack_bonus': .05,  # highest attack bonus
-            'ac': .3,  # armor class
-            'hp': 1,  # hitpoints
+            'ac': .1,  # armor class
+            'hp': 1.2,  # hitpoints
         }
         total = sum(cr_weights.values())
         for key in cr_weights.keys():

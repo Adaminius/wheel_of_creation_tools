@@ -155,6 +155,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CON'].value -= 1
     sb.ability_scores['DEX'].value += 1
     sb.ability_scores['CHA'].value += 1
+    sb.loot.append(Loot('gossamer wings', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('gossamer wings',
                     'add a fly speed equal to walking speed; -1 to Constitution; +1 to Dexterity; +1 to Charisma',
@@ -165,6 +166,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['STR'].value -= 1
     sb.ability_scores['CHA'].value += 1
     sb.ability_scores['WIS'].value += 1
+    sb.loot.append(Loot('crow wings', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('crow wings',
                     'add a fly speed equal to walking speed; -1 to Strength; +1 to Charisma; +1 to Wisdom',
@@ -174,6 +176,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.speed = min(10, sb.speed - 5)
     sb.fly_speed = max(20, 2 * sb.speed)
     sb.ability_scores['CHA'].value += 2
+    sb.loot.append(Loot('bat wings', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('bat wings',
                     'subtract 5 ft. from walking speed; add a fly speed equal to twice walking speed; +2 to Charisma',
@@ -189,6 +192,7 @@ all_tags.append(Tag('eusocial pheromones',
 def apply(sb: Statblock) -> Statblock:
     sb.features.append(common_features['Petrifying Gaze'])
     sb.darkvision += 30
+    sb.loot.append(Loot('crystalline eyes', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('crystalline eyes',
                     'add the Petrifying Gaze feature; add 30 ft. Darkvision',
@@ -198,6 +202,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CHA'].value += 2
     sb.ability_scores['WIS'].value -= 2
     sb.skills['Insight'] = sb.proficiency + sb.ability_scores['WIS']
+    sb.loot.append(Loot('goat-like eyes', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('goat-like eyes',
                     '-2 to Charisma; +2 to Wisdom; add the Insight skill',
@@ -208,6 +213,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.darkvision += 30
     sb.features.append(common_features['Sunlight Sensitivity'])
     sb.skills['Perception'] = sb.proficiency + sb.ability_scores['WIS']
+    sb.loot.append(Loot('feline eyes', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('feline eyes',
                     '+2 to Charisma; add 30 ft. to Darkvision; add the Perception skill; '
@@ -224,6 +230,58 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('human-like eyes',
                     '+2 to Charisma; +2 to Intelligence; +2 to Wisdom; add the Deception skill',
                     on_apply=apply, overwrites={'eyes'}, overwritten_by={'eyes'}, weight=3))
+
+def apply(sb: Statblock) -> Statblock:
+    sb.ability_scores['DEX'].value += 2
+    sb.ability_scores['WIS'].value += 2
+    feat = Feature('Alert',
+                   'This creature can\'t be surprised.')
+    sb.features.append(feat)
+    sb.loot.append(Loot('compound eyes', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('compound eyes',
+                    '+2 to Dexterity; +2 to Wisdom; add the Alert feature',
+                    on_apply=apply, overwrites={'eyes'}, overwritten_by={'eyes'}, weight=4))
+
+def apply(sb: Statblock) -> Statblock:
+    sb.ability_scores['WIS'].value += 2
+    sb.skills['Perception'] = sb.proficiency + sb.ability_scores['WIS']
+    feat = Feature('Vigilant',
+                   'This creature can\'t be surprised. Visible attacks made against this creature while it\'s movement '
+                   'speed is not 0 cannot be made with advantage.')
+    sb.features.append(feat)
+    sb.condition_immunities.add('blinded')
+    sb.loot.append(Loot('myriad eyes', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('myriad eyes',
+                    '+2 to Wisdom; add the Perception skill; add the Vigilant feature; immunity to blinded condition',
+                    on_apply=apply, overwrites={'eyes'}, overwritten_by={'eyes'}, weight=4))
+
+def apply(sb: Statblock) -> Statblock:
+    sb.ability_scores['DEX'].value += 2
+    sb.darkvision += 30
+    feat = Feature('Alert',
+                   'This creature can\'t be surprised.')
+    sb.features.append(feat)
+    sb.loot.append(Loot('frog-like eyes', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('frog-like eyes',
+                    '+2 to Dexterity; 30 ft. darkvision; add the Alert feature',
+                    on_apply=apply, overwrites={'eyes'}, overwritten_by={'eyes'}, weight=8))
+
+def apply(sb: Statblock) -> Statblock:
+    sb.ability_scores['DEX'].value += 2
+    sb.ability_scores['WIS'].value += 2
+    feat = Feature('Farsighted',
+                   'This creature has advantage on Wisdom (Perception) checks that rely on sight. '
+                   'This creature doesn\'t suffer disadvantage from making ranged attacks within long range, and it '
+                   'has disadvantage when making ranged attacks within short range.')
+    sb.features.append(feat)
+    sb.loot.append(Loot('eagle eyes', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('eagle eyes',
+                    '+2 to Dexterity; +2 to Wisdom; add the Farsighted feature',
+                    on_apply=apply, overwrites={'eyes'}, overwritten_by={'eyes'}, weight=8))
 
 def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['STR'].value += 3
@@ -298,6 +356,7 @@ def apply(sb: Statblock) -> Statblock:
                      can_multiattack=False
                      )
     sb.actions.append(attack)
+    sb.loot.append(Loot('paralyzing fangs', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('paralyzing fangs',
                     'add a Paralyzing Bite melee attack',
@@ -311,6 +370,7 @@ def apply(sb: Statblock) -> Statblock:
                      can_multiattack=True
                      )
     sb.actions.append(attack)
+    sb.loot.append(Loot('venomous fangs', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('venomous fangs',
                     'add a Venomous Bite melee attack',
@@ -323,6 +383,7 @@ def apply(sb: Statblock) -> Statblock:
                      can_multiattack=False
                      )
     sb.actions.append(attack)
+    sb.loot.append(Loot('acidic saliva', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('acidic spittle',
                     'add a Spit Acid ranged attack',
@@ -336,6 +397,7 @@ def apply(sb: Statblock) -> Statblock:
                      can_multiattack=False
                      )
     sb.actions.append(attack)
+    sb.loot.append(Loot('icy saliva', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('freezing spittle',
                     'add a Spit Frost ranged attack',
@@ -350,6 +412,7 @@ def apply(sb: Statblock) -> Statblock:
                      can_multiattack=False
                      )
     sb.actions.append(attack)
+    sb.loot.append(Loot('fiery saliva', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('scorching spittle',
                     'add a Spit Fire ranged attack',
@@ -365,6 +428,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.actions.append(attack)
     sb.add_damage_resistance('necrotic')
     sb.add_damage_resistance('necrotic')
+    sb.loot.append(Loot('putrid saliva', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('putrid spittle',
                     'add a Putrid Spit ranged attack; add immunity to necrotic damage',
@@ -382,6 +446,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.add_damage_resistance('poison')
     sb.add_damage_resistance('poison')
     sb.condition_immunities.add('poisoned')
+    sb.loot.append(Loot('poisonous saliva', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('toxic spittle',
                     'add a Toxic Spit ranged attack; add immunity to poison damage and the poisoned condition',
@@ -394,6 +459,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.climb_speed = max(20, sb.speed, sb.climb_speed)
     sb.features.append(feature)
     sb.ability_scores['DEX'].value += 1
+    sb.loot.append(Loot('prehensile tail', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('prehensile tail',
                     'add the Prehensile Tail feature; add a climb speed equal to walking speed; +1 to Dexterity',
@@ -407,8 +473,9 @@ def apply(sb: Statblock) -> Statblock:
                                            'damage. On a hit, the target must also make a DC {8 + prof + STR} saving '
                                            'throw or be knocked prone.',
                       can_multiattack=False,
-                      effect_damage=.25)
+                      effect_damage=.2)
     sb.actions.append(feature)
+    sb.loot.append(Loot('sweeping tail', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('sweeping tail',
                     'add a Tail Sweep melee attack which hits all nearby targets',
@@ -420,6 +487,7 @@ def apply(sb: Statblock) -> Statblock:
         sb.base_natural_armor += 2
     else:
         sb.ability_scores['DEX'].value += 3
+    sb.loot.append(Loot('twitching tail', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('twitching tail',
                     '+1 to Charisma; +2 to AC if has natural armor, +3 to Dexterity otherwise',
@@ -430,10 +498,10 @@ def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CHA'].value += 1
     feature = Feature(name='Foul Omens',
                       description_template='This creature can\'t be surprised, and it always knows if there are '
-                                           'any creatures with hostile intentions towards it within 1 mile, but it'
+                                           'any creatures with hostile intentions towards it within 1 mile, but it '
                                            'can\'t determine their exact number or location.')
     sb.features.append(feature)
-
+    sb.loot.append(Loot('bundle of tails', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('tails without number',
                     '+1 to Charisma; add the Foul Omens feature',
@@ -447,6 +515,7 @@ def apply(sb: Statblock) -> Statblock:
                       can_multiattack=True)
     sb.actions.append(feature)
     sb.features.append(common_features['Charge'])
+    sb.loot.append(Loot('goring horns', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('goring horns',
                     'add the Charge feature; add the Gore attack; +1 to Strength',
@@ -456,6 +525,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CON'].value += 1
     sb.speed += 10
     sb.features.append(common_features['Charge'])
+    sb.loot.append(Loot('twisting antlers', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('twisting antlers',
                     'add 10 ft. to walking speed; add the Charge feature; +1 to Constitution',
@@ -467,6 +537,7 @@ def apply(sb: Statblock) -> Statblock:
     else:
         sb.ability_scores['STR'].value += 3
     sb.features.append(common_features['Charge'])
+    sb.loot.append(Loot('ramming horns', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('ramming horns',
                     'add the Charge feature; +2 to AC if has natural armor, +3 to Strength otherwise',
@@ -500,7 +571,7 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('deceptive glamour',
                     'add the Illusory Appearance action--if Intelligence > 7 can be humanoid, otherwise as '
                     'animals/plants',
-                    on_apply=apply, weight=13))
+                    on_apply=apply, weight=10))
 
 def apply(sb: Statblock) -> Statblock:
     attack = Feature(name='Icy Breath (Recharge 5-6)',
@@ -513,6 +584,7 @@ def apply(sb: Statblock) -> Statblock:
                      can_multiattack=False
                      )
     sb.actions.append(attack)
+    sb.loot.append(Loot('icy saliva', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('icy breath',
                     'add an Icy Breath action',
@@ -526,6 +598,7 @@ def apply(sb: Statblock) -> Statblock:
         sb.base_natural_armor += 2
     else:
         sb.ability_scores['CON'].value += 3
+    sb.loot.append(Loot('frozen hide', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('frozen hide',
                     'add cold immunity; add fire vulnerability; +2 to AC if has natural armor, '
@@ -536,17 +609,118 @@ def apply(sb: Statblock) -> Statblock:
     sb.add_damage_resistance('fire')
     sb.add_damage_resistance('fire')
     sb.add_damage_vulnerability('cold')
-    sb.features.append(Feature('Scorching Hide', 'When a creature makes a melee weapon attack against this creature,'
+    sb.features.append(Feature('Scorching Hide', 'When a creature makes a melee attack against this creature,'
                                                  'they take {hit_dice_count} fire damage.'))
+    sb.loot.append(Loot('scorching hide', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('scorching hide',
                     'add fire immunity; add cold vulnerability; deals fire damage to attackers',
                     on_apply=apply, overwrites={'hide'}, overwritten_by={'hide'}, weight=10, requires={'Aestival'}))
 
+def apply(sb: Statblock) -> Statblock:
+    sb.add_damage_resistance('fire')
+    sb.add_damage_resistance('fire')
+    sb.add_damage_vulnerability('cold')
+    sb.features.append(Feature('Tarry Hide', 'When a creature hits this creature with a melee attack,'
+                                             'that creature must make a DC {8 + CHA + prof} Strength saving '
+                                             'or lose hold of the weapon as it becomes lodged in this creature\'s'
+                                             'sticky hide. ' 
+                                             'If the attack was instead made using a spell with a range of touch '
+                                             'or a natural weapon, the attacker is considered grappled instead.'
+                                             'A creature can use their action to make a DC '
+                                             '{8 + CHA + prof} Strength (Athletics) check to free the weapon or '
+                                             'themselves.'
+                               ))
+    sb.loot.append(Loot('tarry hide', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('tarry hide',
+                    'add fire immunity; add cold vulnerability; attackers may be disarmed or grappled',
+                    on_apply=apply, overwrites={'hide'}, overwritten_by={'hide'}, weight=10, requires={'Aestival'}))
+
+def apply(sb: Statblock) -> Statblock:
+    sb.add_damage_resistance('fire')
+    sb.add_damage_resistance('fire')
+    sb.add_damage_vulnerability('cold')
+    feat = Feature('Smoldering Hide',
+                   'Cracks in this creature\'s hide exude a thick burning smoke, heavily obscuring a 15-foot radius '
+                   'sphere of this creature\'s choice with a center within 10 feet of this creature. Each creature '
+                   'that begins their turn in the smoke takes {hit_dice_count} fire damage.'
+                   'The smoke spreads around corners. Winds of at least 10 miles per hour will disperse the smoke. '
+                   'The smoke also dissipates if this creature dies, uses this feature again, or after 10 minutes.',
+                   legendary_cost=2)
+    sb.bonus_actions.append(feat)
+    sb.loot.append(Loot('smoldering hide', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('smoldering hide',
+                    'add fire immunity; add cold vulnerability; can produce clouds of obscuring smoke',
+                    on_apply=apply, overwrites={'hide'}, overwritten_by={'hide'}, weight=10, requires={'Aestival'}))
+
+def apply(sb: Statblock) -> Statblock:
+    sb.add_damage_resistance('necrotic')
+    sb.add_damage_resistance('necrotic')
+    sb.add_damage_vulnerability('fire')
+    feat = Feature('Moldy Hide',
+                   'As a reaction to taking bludgeoning, piercing, or slashing damage, this creature releases a cloud '
+                   'of choking spores. All creatures except constructs and undead within 5 feet must make a DC '
+                   '{8 + CHA + prof} Constitution saving throw or be stunned until the end of their next turn.')
+    sb.reactions.append(feat)
+    sb.loot.append(Loot('moldy hide', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('moldy hide',
+                    'add necrotic immunity; add fire vulnerability; can release choking spores when struck',
+                    on_apply=apply, overwrites={'hide'}, overwritten_by={'hide'}, weight=10, requires={'Autumnal'}))
+
+def apply(sb: Statblock) -> Statblock:
+    sb.add_damage_resistance('necrotic')
+    sb.add_damage_resistance('necrotic')
+    sb.add_damage_vulnerability('lightning')
+    feat = Feature('Corrosive Hide',
+                   'Any nonmagical, non-thokcha weapon made of metal that hits this creature corrodes. '
+                   'After dealing damage, '
+                   'the weapon takes a permanent and cumulative −1 penalty to damage rolls. '
+                   'If its penalty drops to −5, '
+                   'the weapon is destroyed. Nonmagical, '
+                   'non-thokcha ammunition made of metal that hits the rust monster is '
+                   'destroyed after dealing damage.'
+                   )
+    sb.features.append(feat)
+    sb.loot.append(Loot('corrosive hide', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('corrosive hide',
+                    'add necrotic immunity; add lightning vulnerability; rusts metal when struck',
+                    on_apply=apply, overwrites={'hide'}, overwritten_by={'hide'}, weight=10, requires={'Autumnal'}))
+
+def apply(sb: Statblock) -> Statblock:
+    sb.add_damage_vulnerability('fire')
+    feat = Feature('Leafy Hide',
+                   'This creature has advantage on Dexterity (Stealth) checks it makes in terrain with leafy '
+                   'vegetation while it\'s not moving.')
+    sb.features.append(feat)
+    sb.loot.append(Loot('leafy hide', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('leafy hide',
+                    'add fire vulnerability; advantage on stealth near plants',
+                    on_apply=apply, overwrites={'hide'}, overwritten_by={'hide'}, weight=10))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature('Scything Tusks',
+                   description_template='*Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. '
+                                        '*Hit:* 7 (1d{size_die_size} + {STR}) slashing damage. If this attack hits, '
+                                        'this creature can use a bonus action to immediately make an attack with '
+                                        'this weapon against another target within range.',
+                   can_multiattack=True,
+                   effect_damage=.25)
+    sb.actions.append(feat)
+    sb.loot.append(Loot('scything tusks', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('moldy hide',
+                    'add Scything Tusks attack which hits multiple enemies',
+                    on_apply=apply, overwrites={'horn'}, overwritten_by={'horn'}, weight=10))
+
+
 # if we're using so much charisma, need more charisma abilities like magic attacks
 # spritely
 # gouging tusks
-# scything tusks
 # stinging tail
 # reptilian eyes
 # reckless
@@ -566,6 +740,7 @@ all_tags.append(Tag('scorching hide',
 # mimic voices
 # voice weapon
 # Change Shape (better Illusory appearance, see dragons)
+
 # winter
 #   icy breath
 #   paralyzing breath
@@ -575,17 +750,21 @@ all_tags.append(Tag('scorching hide',
 #   fiery breath
 #   blinding radiance
 #   moisture drain
-#   rocky hide
-#   charred hide
 # autumn
 #   corrosive breath
 #   withering spores
-#   moldy hide
+#   mycelium hide
 # spring
 #   poisonous breath
 #   tantalizing spores
 #   paralyzing spores
 #   bark-like hide
+#   mossy hide
+
+# maybe later
+#   rocky hide
+#   gelatinous hide
+#   spongy hide
 
 ############################
 #    ~~~ Alignments ~~~    #

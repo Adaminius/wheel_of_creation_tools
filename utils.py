@@ -146,7 +146,7 @@ class ChallengeRating(object):
         elif cr < 5:
             cr = '1/2'
         else:
-            cr = str(int(math.floor(cr)))
+            cr = str(int(math.floor(cr - 4)))
         return cls(cr)
 
     @staticmethod
@@ -317,19 +317,22 @@ class Feature(object):
     Args:
         name:   Appears bolded and italicized at the start of an action/feature description.
         description_template:   Describes what the action does. Can have substitutable values in '{}'
-        is_legendary:   Is this a Legendary Action? They are formatted slightly differently
         can_multiattack:    Should this be included in the multiattack action? Default for attacks True, other False
         effect_ac:  when calculating CR (see Statblock.challenge), this value is added to effective AC
         effect_hp:  when calculating CR, effective hp is recalculated as (1 + effect_hp) * hp
         effect_damage:  when calculating CR, effective damage is recalculated as (1 + effect_damage) * damage
         effect_attack:  when calculating CR, this value is added to effective attack bonus
+        legendary_cost: If this feature is in a statblock's Actions, Bonus Actions, or Reactions and the statblock
+                            has num_legendary_actions >= legendary_cost, this feature will be added to statblock's
+                            legendary actions with the specified cost. If the cost is 0, this feature will not be
+                            added to the legendary actions.
     """
-    def __init__(self, name: str, description_template: str, is_legendary: bool = False, can_multiattack: bool = None,
-                 effect_ac: float=0, effect_hp: float=0, effect_damage: float=0, effect_attack: float=0):
+    def __init__(self, name: str, description_template: str, can_multiattack: bool = None,
+                 effect_ac: float=0, effect_hp: float=0, effect_damage: float=0, effect_attack: float=0,
+                 legendary_cost: int=0):
         self.name = name
         self.description_template = description_template
         self.description = ''
-        self.is_legendary = is_legendary
 
         self.is_attack = False
         if 'weapon attack' in self.description_template.lower():
@@ -341,6 +344,8 @@ class Feature(object):
                 self.can_multiattack = True
             else:
                 self.can_multiattack = False
+
+        self.legendary_cost = legendary_cost
 
         self.effect_ac = effect_ac
         self.effect_hp = effect_hp
@@ -385,9 +390,12 @@ class Feature(object):
 
         self.description = description
 
+    def legendary_str(self):
+        if self.legendary_cost > 1:
+            return '**{} (Costs {} Actions).** {}'.format(self.name,  self.legendary_cost, self.description)
+        return '**{}.** {}'.format(self.name, self.description)
+
     def __str__(self):
-        if self.is_legendary:
-            return '**{}.** {}'.format(self.name, self.description)
         return '***{}.*** {}'.format(self.name, self.description)
 
     def __repr__(self):
@@ -401,18 +409,15 @@ with open(path.join(package_directory, 'common_features.csv')) as file_handle:
     for row in reader:
         name = str(row['name'])
         description_template = str(row['description_template'])
-        if isinstance(row['is_legendary'], bool):
-            is_legendary = row['is_legendary']
-        else:
-            is_legendary = 'alse' not in row['is_legendary']
 
+        legendary_cost = float(row['legendary_cost']) if row['legendary_cost'] else 0
         effect_ac = float(row['effect_ac']) if row['effect_ac'] else 0
         effect_hp = float(row['effect_hp']) if row['effect_hp'] else 0
         effect_damage = float(row['effect_damage']) if row['effect_damage'] else 0
         effect_attack = float(row['effect_attack']) if row['effect_attack'] else 0
         common_features[name] = Feature(name=name,
                                         description_template=description_template,
-                                        is_legendary=is_legendary,
+                                        legendary_cost=legendary_cost,
                                         effect_ac=effect_ac,
                                         effect_hp=effect_hp,
                                         effect_damage=effect_damage,
