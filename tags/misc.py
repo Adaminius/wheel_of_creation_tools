@@ -1,6 +1,8 @@
 from statblock import Statblock
 from statblock import Tag
 from utils import Feature
+from utils import common_features
+import re
 
 all_tags = []
 table_name = 'Misc'
@@ -10,12 +12,27 @@ def apply(sb: Statblock) -> Statblock:
     sb.legendary_actions.append(Feature('Attack', 'This creature makes a melee attack.', effect_damage=.5))
     return sb
 all_tags.append(Tag('legendary attacker', effect_text='add an attack legendary action', weight=10,
-                    stacks=True, on_apply=apply))
+                    stacks=False, on_apply=apply))
 
 def apply(sb: Statblock) -> Statblock:
     sb.legendary_actions.append(Feature('Dash', 'This creature moves up to its speed.', effect_hp=.2))
     return sb
-all_tags.append(Tag('legendary mover', effect_text='add an attack legendary action', weight=10,
+all_tags.append(Tag('legendary mover', effect_text='add a dash legendary action', weight=10,
+                    stacks=False, on_apply=apply))
+
+def apply(sb: Statblock) -> Statblock:
+    has_feat = False
+    for i in range(len(sb.features)):
+        if 'Legendary Resistance' in sb.features[i].name:
+            n_day = int(re.search(r'(\d+)/day', sb.features[i].name).group(1))
+            sb.features[i].name = 'Legendary Resistance ({}/day)'.format(n_day + 1)
+            sb.features[i].effect_hp += .1
+            has_feat = True
+            break
+    if not has_feat:
+        sb.features.append(common_features['Legendary Resistance (1/day)'])
+    return sb
+all_tags.append(Tag('legendary shaker', effect_text='add one use of the Legendary Resistance feature', weight=10,
                     stacks=True, on_apply=apply))
 
 def apply(sb: Statblock) -> Statblock:

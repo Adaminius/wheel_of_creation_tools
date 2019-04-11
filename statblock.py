@@ -844,7 +844,7 @@ class Statblock(object):
         eff_ac = self.armor_class
         eff_hp = self.hit_points
 
-        for features in [self.actions, self.bonus_actions, self.reactions, self.legendary_actions]:
+        for features in [self.actions, self.bonus_actions, self.reactions, self.legendary_actions, self.features]:
             if features is None:
                 continue
             for feature in features:
