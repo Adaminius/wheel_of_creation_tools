@@ -7,6 +7,7 @@ table_description = 'If there is one unifying quality among the fey that inhabit
                     'none of them operate with the same morality or instincts that resemble those of humanity. Their ' \
                     'minds and bodies are not so separated, and they are bound to pacts and laws ' \
                     'ultimately incomprehensible to inhabitants of the Ring of Earth.'
+img_url = '../static/img/autumnfey.png'
 
 all_tags.append(Tag('cannot break a promise', effect_text='-', weight=20))
 all_tags.append(Tag('cannot speak a lie', '-', weight=20))

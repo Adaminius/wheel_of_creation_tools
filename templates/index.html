@@ -16,261 +16,251 @@
           crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
         integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-  <link rel="stylesheet" href="../static/css/style.css">
-  <script src="../static/js/woct_monster.js"></script>
-  <title>Wheel of Creation -- Monster Generator</title>
+  <link rel="stylesheet" href="../static/css/index.css">
+  <title>Wheel of Creation</title>
 </head>
 
 <body>
-<div class="header align-center container-fluid text-center ">
-  <div class="row" style="margin: 5%">
-  <div class="col">
-  <img src="../static/img/monsterbuilder.png" style="margin: 0 auto; text-align: center; display: block; width: 100%; max-width: 700px">
-  <p class="lead">A tool for the <em>Wheel of Creation</em>, a caravanning and monster-hunting supplement for <i class="fas fa-dragon" style="color: red"></i> 5th Edition.</p>
-  </div>
+<div class="header align-center container-fluid text-center align-middle">
+  <div class="row align-middle h-100 align-self-center align-items-center" style="">
+    <div
+        class="col align-self-center align-middle h-100 d-flex justify-content-center flex-column h-100 align-self-center align-items-center">
+      <img src="../static/img/woc2.png"
+           style="margin: 0 auto; text-align: center; width: 100%; max-width: 700px; vertical-align: middle; padding-top: 10px; padding-bottom: 10px"
+           class="align-middle">
+      <p style="position: absolute; top: 55%; font-size: 1.2rem" class="lead">A caravanning and monster-hunting
+        supplement for <i class="fas fa-dragon" style="color: red"></i> 5th Edition.</p>
+    </div>
   </div>
 </div>
-<div class="container">
-  <div class="row">
-    <div class="col-12 justify-content-center">
-      <div class="card " style="margin-top: 0; margin-bottom: 1rem;">
-        <div class="card-header" id="headingInstructions">
-          <h5 class="mb-0">
-            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseInstructions"
-                    aria-expanded="false" aria-controls="collapseInstructions">
-              Instructions <span style="font-weight: normal"><em>(click to expand)</em></span>
-            </button>
-          </h5>
-        </div>
-        <div id="collapseInstructions" class="collapse hide" aria-labelledby="headingInstructions">
-          <div class="card-body">
-            <p>This tool allows you to semirandomly create monster statblocks for 5th edition using markdown and a set
-              of premade <em>tags</em>. Tags apply various modifications, like <em>cave-dweller</em>, which gives a creature
-                the Sunlight Sensitivity feature and 60 ft. of darkvision.</p>
+<div id="whatIsWoCContainer">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 justify-content-center" id="whatIsWoC">
+        <ul class="nav nav-tabs " id="myTab" role="tablist">
+          <li class="nav-item tab">
+            <a class="nav-link active " id="overview-tab" data-toggle="tab" href="#overview" role="tab"
+               aria-controls="overview"
+               aria-selected="true">Overview</a>
+          </li>
+          <li class="nav-item tab">
+            <a class="nav-link" id="rules-tab" data-toggle="tab" href="#rules" role="tab" aria-controls="rules"
+               aria-selected="false">Rules</a>
+          </li>
+          <li class="nav-item tab">
+            <a class="nav-link" id="setting-tab" data-toggle="tab" href="#setting" role="tab" aria-controls="setting"
+               aria-selected="false">Setting</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+            <p>The Wheel of Creation is a third-party setting and rules supplement for the 5th Edition Open Gaming
+              License. It
+              portrays a world of grassy steppe, oasis cities, icy forests, and caravans which travel across it and to
+              worlds
+              beyond. Players play as <em>god-hunters</em>, groups of adventurers who guide, protect, and fuel these
+              caravans for
+              wealth, renown, and the safety and prosperity of the world.</p>
+
+            <h3 id="theproducts">The Products</h3>
+
+            <p>The current plan is that there will be three products associated with the first release of the Wheel of
+              Creation.</p>
+
             <ol>
-              <li>Select a Statblock to modify.</li>
-              <li>Choose a tag table (I recommend <strong>WoC: Fey Means</strong>, it's the most complete).
-                <ul>
-                  <li>Tag tables named <em>means</em> change a monster's statistics and abilities, while <em>mannerisms</em>
-                    tags are usually
-                    only to help the GM determine how it might behave.
-                  </li>
-                  <li><strong>Tag</strong> and <strong>Effect</strong> describe how the tag will change the basic
-                    Statblock. <strong>Weight</strong> is the chance a tag will be
-                    selected by Add Random. <strong>Requirements</strong> are other tags that must be satisfied in order
-                    for a tag to be applied.
-                  </li>
-                  <li>The first tag in a "means" table (e.g. <em>fey</em> in <em>WoC: Fey Means</em>) usually has a
-                    weight
-                    of 0 and sets a creature's type. The monster creation rules from the <em>Wheel of Creation</em>
-                    suggest
-                    that you add this tag first before adding other tags or adding random tags.
-                  </li>
-                </ul>
+              <li>A free PDF which contains caravaning and monster creation rules, a brief introduction to the setting,
+                a
+                subset of
+                additional race, class, and background options, and a handful of pre-written caravan destinations within
+                the Wheel
+                of Creation setting.
               </li>
-              <li>Click on tags in the table to add them, or hit <strong>Add Random</strong>. They'll show up below.
+
+              <li>A paid PDF with additional art, additional race and class options, full item creation rules, and
+                additional
+                setting description and pre-written caravan destinations.
               </li>
-              <li>Click apply.</li>
-              <li>Use the result as is, or click to copy the markdown text in the bottom-left and paste it into a
-                document on <a href="https://www.gmbinder.com/" target="_blank">GM Binder</a> or <a
-                    href="https://homebrewery.naturalcrit.com/" target="_blank">the Homebrewery</a>.
+
+              <li>A free web companion tool for monster creation, currently in development at <a
+                  href="/monster">wheelofcreation.net/monster</a>, and potentially other web tools as they are
+                developed.
               </li>
             </ol>
           </div>
-        </div>
-      </div>
+          <div class="tab-pane fade" id="rules" role="tabpanel" aria-labelledby="rules-tab">
+            <p>The flow of gameplay in the Wheel of Creation assumes a specific structure of Expeditions, each of which
+              are expected
+              to take aobut 4-6 game sessions: </p>
 
-      <div class="card  " style="margin-top: 1rem; margin-bottom: 1rem;">
-        <div class="card-header" id="headingNotes">
-          <h5 class="mb-0">
-            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseNotes"
-                    aria-expanded="false" aria-controls="collapseNotes">
-              Notes
-            </button>
-          </h5>
-        </div>
-        <div id="collapseNotes" class="collapse hide" aria-labelledby="headingNotes">
-          <div class="card-body">
             <ul>
-              <li>You can use the hit dice box below to scale the difficulty of the monster. A monster's proficiency bonus and
-                number of multiattacks are based on its number of hit dice.
+              <li>Players choose a destination and decide the initial composition of the caravan under their shared
+                protection.
               </li>
-              <li>You can select tags from multiple tables.</li>
-              <li>Tags are applied left-to-right.</li>
-              <li>Most tags don't stack (that is, they have no effect when applied more than once). These won't be added
-                by the Add Random button.
+
+              <li>The GM decides what places and obstacles they will encounter along the way.</li>
+
+              <li>Throughout the Expedition, players use their skills and connections to learn more about what lies
+                ahead
+                and
+                prepare accordingly.
               </li>
-              <li>Some tags are mutually exclusive, like 'Autumnal' and 'Vernal' in 'Fey Physical'. Only the last tag to
-                be applied will have any effect.
+
+              <li>Among other challenges, the caravan will be faced with monster raids, and the players will need to
+                protect the
+                caravan.
               </li>
+
+              <li>At times, the caravan will be unable to progress until the seasons turn or the players may decide to
+                halt of their
+                own accord. They can use this time to trade, gather information, craft items, and explore the area in
+                search for
+                specific monsters.
+              </li>
+
+              <li>At the end of the Expedition, the players are rewarded according to how well their caravan fared and
+                what
+                treasures they were able to gather along the way.
+              </li>
+
+              <li>The players choose a new destination.</li>
             </ul>
+
+            <p>There are systems for generating monsters randomly (or not) using a system of tags, creating creatures
+              which are
+              fresh for both the players and GM. The players will need to consult with locals and experts, dig through
+              dusty
+              scrolls, and use their skills and magical abilities to determine the capabilities, behaviors, and
+              weaknesses
+              of these
+              monsters in order to defeat them. A system for creating magical items using treasures and parts looted
+              from
+              these
+              monsters will also be provided.</p>
+          </div>
+          <div class="tab-pane fade" id="setting" role="tabpanel" aria-labelledby="setting-tab">
+            <p>The Wheel is a flat disk floating in a void of shadowy chaos, divided into three rings which turn about
+              an
+              axle. The
+              axle is called <strong>Heaven</strong>, where sits the Celestial Throne. </p>
+
+            <p>The innermost ring is called the <strong>Ring of Earth</strong>, which most closely resembles our own
+              world. The next
+              ring is called the <strong>Ring of Seasons</strong>, where float shifting islands inhabited by alien
+              creatures, most
+              serving one of four Seasonal Courts. Its turning relative to Earth measures out the year. The outer ring
+              is
+              called the
+              <strong>Ring of Stars</strong>, where mind, soul, and body are undivided. Its turning measures out the
+              ages,
+              and there
+              Heaven stations its most trusted champions to repel the <strong>Void</strong>.</p>
+
+            <p>Most of the Ring of Earth belongs to one great landmass, and sea travel is limited by brutal storms and
+              malevolent
+              sea serpents. To the far north are the Glistening Walls of Heaven, which sit at the end of a great expanse
+              of ice. At
+              the southern end of the world are the Ephemeral Wastes, an enormous, scorching desert which is dotted with
+              the Ring of
+              Earth's largest gateways to the Ring of Seasons.</p>
+
+            <h4 id="humanandothercultures">Human and Other Cultures</h4>
+
+            <p>There are four human supercultures on the primary landmass of Ring of Earth. <strong>Talbarans</strong>
+              are
+              primarily
+              nomadic
+              shepherds which inhabit the great steppe at the Ring of Earth's center. <strong>Pravyans</strong> survive
+              as
+              farmers
+              and hunters in the frozen forests of the northeast. <strong>Riyulans</strong> dwell in the mountainous
+              region in the
+              south, divided into a brutal desert, expansive plateau, and an isolated jungle. In the hilly grasslands to
+              the
+              southeast is the <strong>Azadan</strong> Empire, which controls the only land route to the Wastes.
+              Formerly,
+              the
+              Empire of Lei occupied the southwest, now there lies a haunted ruin.</p>
+
+            <p><strong>Elves</strong> are a people displaced, formerly psionic warriors from the Ring of Stars. Their
+              forms are
+              naturally malleable, and they have quickly adapted to life in the Ring of Seasons and Ring of Earth.
+              <strong>Dwarves</strong> are beings blessed by and in service to the elements, who dwell throughout Earth.
+              <strong>Blins</strong>,
+              including goblins and gnomes, are outcasts of the Courts of the Ring of Seasons.
+              <strong>Scaleborn</strong>,
+              including
+              naga and dragonborn, are the descendants of the Scaled Gods, who were first to rule over the Earth.
+              <strong>Velniki</strong> are horned giants renowned for their strength and unwavering faith in Heaven,
+              dwelling in the
+              mountains between Talbara and Prav. <strong>Daevakin</strong>, or tieflings, are the offspring of humans
+              and
+              wicked
+              demons which inhabit the spaces between the Rings, cursed with horns, fangs, and tails and universally
+              distrusted.</p>
+
+            <h4 id="monsters">Monsters</h4>
+
+            <p><strong>Fey</strong> are creatures from the Ring of Seasons, many of which serve the Courts of Spring,
+              Summer,
+              Autumn, and Winter. Each has supernatural abilities and alien desires. <strong>Kostlyavtsi</strong> are
+              intelligent
+              undead humans wielding foul sorceries and collectively working towards some unknown purpose. </p>
+
+            <p><strong>Tuguai</strong> are decaying constructs of terra cotta and stone, animated by clockwork and magic
+              and built
+              to hunt spellcasters. <strong>Daevas</strong> are manifestations of evil which drive mortals to
+              destruction,
+              feeding
+              on their anger, sorrow, hatred, and, ultimately, their souls. <strong>Skaryid</strong> are inhabitants of
+              the Ring of
+              Stars whose minds are their bodies, corrupted by the Void.</p>
           </div>
         </div>
       </div>
-
     </div>
   </div>
-  <hr style="margin-bottom: 0">
-  <div class="row">
-    <div class="col-lg-6">
-      <div class="dropdown">
-        <button class="btn btn-warning dropdown-toggle" type="button" id="tagListDropdownButton" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" style="margin-top: 1rem">
-          Choose a Tag Table
-        </button>
-        <div class="dropdown-menu" aria-labelledby="tagListDropdownButton" id="tagListDropdown">
-        </div>
+</div>
+<div id="resourcesContainer">
+  <div class="container border-top">
+    <div class="row justify-content-center" style="margin: 0; padding-bottom: 0">
+      <div class="col text-center text-white" style="margin: 0">
+        <h2 style="margin: 0; padding: 0">Resources</h2>
       </div>
     </div>
-    <div class="col-lg-6">
-      <div class="dropdown">
-        <button class="btn btn-warning dropdown-toggle" type="button" id="statblockDropdownButton"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top: 1rem">
-          Choose a Statblock
-        </button>
-        <div class="dropdown-menu" aria-labelledby="statblockDropdownButton" id="statblockDropdown"></div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-6">
-      <div id="tagTableDescription" style="margin-top: 0"></div>
-      <div class="pre-scrollable" id="tagTableDiv">
-        <table class="table table-bordered table-striped tag-table table-hover">
-          <thead>
-          <tr>
-            <th>Weight</th>
-            <th>Tag</th>
-            <th>Effect</th>
-            <th>Requires</th>
-          </tr>
-          </thead>
-          <tbody id="availableTagTable" style="cursor: pointer;">
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="col-lg-6">
-      <div class="form-group">
-        <div class="card  " style="margin-top: 1rem; margin-bottom: 1rem;">
-          <div class="card-header" id="headingStatblock">
-            <h5 class="mb-0">
-              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseStatblock"
-                      aria-expanded="false" aria-controls="collapseStatblock">
-                Notes on Statblocks
-              </button>
-            </h5>
-          </div>
-
-          <div id="collapseStatblock" class="collapse hide" aria-labelledby="headingStatblock">
-            <div class="card-body">
-              <p>Choose a statblock from the dropdown above. These are markdown files that can be rendered like the
-                NPC/monster stats in 5th Edition. This site parses these files and allows you to
-                modify them using tags, chosen deliberately or randomly.</p>
-              <p>You can edit this text directly to affect the output,
-                but the parser is somewhat fragile. You can use curly brackets "{}" for simple addition and subtraction
-                of
-                numbers, "prof" (proficiency bonus, calculated based on # of hit dice), "STR", "DEX", "CON", "INT",
-                "WIS",
-                "CHA", and "size_mod" (a value determined by a creature's size). Both average damage values (calculated
-                from
-                the dice rolls in parentheses and ability score modifiers are recalculated in the output.</p>
+    <div class="row justify-content-center">
+      <div class="col-sm-6">
+        <div class="card">
+          <h5 class="card-header text-white">Tool: Monster Builder</h5>
+          <div class="card-body">
+            <!--<h5 class="card-title">Generate creatures using WoC's tag system</h5>-->
+            <p class="card-text">An online application for creating new monsters for 5e. In active development and updated
+              regularly!</p>
+            <div class="card-links">
+              <a href="/monster" class="btn btn-warning" target="_blank">Check it out!</a>
             </div>
           </div>
         </div>
-
-        <textarea class="form-control" id="baseStatblockTextArea"
-                  title="Statblock to be Modified">{{ prefill_md }}</textarea>
       </div>
-    </div>
-  </div>
-
-  <hr>
-
-  <div class="row">
-    <div class="col-md-pull-4">
-      <div style="margin-left: 1rem">
-        <button class="btn btn-warning" id="addRandomButton">Add Random</button>
-        <button class="btn btn-warning" id="clearButton">Clear</button>
-        <div style="margin-top: 1rem; min-width: 17rem; font-family: 'Droid Sans', sans-serif" >
-          <label for="hitDiceRange"
-                 title="Also sets proficiency bonus to 1 + num_hit_dice / 4 and determines number of multiattacks.">
-            <strong>Hit Dice:</strong>
-          </label>
-          <input autocomplete="off" type="number" min=0 max=33 value=0 id="hitDiceRange" step=1>
-          <span id="hitDiceDisplay" style="font-family: 'Arial Black', sans-serif">&nbsp;[Use statblock]</span>
-        </div>
-      </div>
+      <!--<div class="col-6">-->
+        <!--<div class="card">-->
+          <!--<h5 class="card-header text-white">Art: Christina Weinman's Sketches</h5>-->
+          <!--<div class="card-body">-->
+            <!--&lt;!&ndash;<h5 class="card-title">Generate creatures using WoC's tag system</h5>&ndash;&gt;-->
+            <!--<p class="card-text">Most art created for the Wheel of Creation is being released under a CC BY 4.0 license,-->
+              <!--meaning anyone can use it as long as they attribute the creator! Check out these pieces from Christina Weinman.</p>-->
+            <!--<div>-->
+            <!--<a href="/monster" class="btn btn-warning" target="_blank">Spring Fey</a>-->
+            <!--<a href="/monster" class="btn btn-warning" style="" target="_blank">Autumn Fey</a>-->
+            <!--<a href="/monster" class="btn btn-warning" target="_blank">Velnik</a>-->
+              <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
     </div>
 
-    <div class="col-md" id="tagsToApplyDiv"
-         style="border-left: solid 1px rgba(0,0,0,.1); margin-left: 1rem; padding-left: 1rem; min-width: 6rem">
-    </div>
-  </div>
-  <hr>
-  <div class="row" style="margin-top: 1rem;">
-    <!--<div class="col-md-1" style="border-left: solid 1px gray; margin-left: 1rem; padding-left: 1rem">-->
-    <button class="btn btn-warning btn-block" id="applyTagsButton">Apply</button>
-    <!--</div>-->
-  </div>
-  <div class="row justify-content-md-center">
-    <div class="col-lg-6">
-        <textarea class="form-control" title="Copy modified statblock to clipboard" id="modifiedStatblockTextArea"
-                  data-toggle="tooltip" data-placement="top">{{ prefill_md }}</textarea>
-    </div>
-    <div class="col-lg-6">
-      <div title="Preview" class="md-preview" id="mdPreview">{{ prefill_preview }}</div>
-    </div>
-  </div>
-  <hr>
-  <div class="row">
-    <div class="col-12">
-      <div class="card  ">
-        <div class="card-header" id="headingWhatIsWoC">
-          <h5 class="mb-0">
-            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseWhatIsWoC"
-                    aria-expanded="false" aria-controls="collapseWhatIsWoC">
-              What is the Wheel of Creation?
-            </button>
-          </h5>
-        </div>
-
-        <div id="collapseWhatIsWoC" class="collapse hide" aria-labelledby="headingWhatIsWoC">
-          <div class="card-body">
-             {{ what_is_woc }}
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
-<div class="container-fluid" style="background: #598366; color: #f3f3f3">
-  <div class="container justify-content-center text-center center">
-    <div class="row">
-      <div class="col-sm-12" style="text-align: center">
-        <nav class="navbar navbar-expand-sm">
-          <ul class="navbar-nav" style="font-weight: bold; margin: 0 auto">
-            <li class="nav-item" style="border-left: none">
-              Join the <a href="https://goo.gl/forms/heNTn65JcNjKm6hZ2" target="_blank">Mailing List!</a>
-            </li>
-            <li class="nav-item">
-              View the source on <a href="https://github.com/Adaminius/wheel_of_creation_tools" target="_blank"><i
-                class="fab fa-github" style="color: black"></i> Github</a>
-            </li>
-            <li class="nav-item">
-              Contact me on <a href="https://www.reddit.com/user/Attenius" target="_blank"><i
-                class="fab fa-reddit-alien" style="color: white; "></i> Reddit</a> or <a
-                href="mailto:atteniusdev@gmail.com">email</a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </div>
-    <div class="row justify-content-sm-center">
-      <div class="col-sm-12" style="text-align: center; margin-bottom: .5rem; margin-top: 0"> &copy; 2019 Adam "Attenius" Mansfield
-      </div>
-    </div>
-  </div>
-</div>
+{{ footer }}
+
 </body>
 </html>

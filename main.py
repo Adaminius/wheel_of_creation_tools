@@ -34,15 +34,35 @@ def load_tag_module(filename):
 
 @app.route('/')
 def home():
-    """Serves homepage"""
-    with open('templates/index.html') as file_handle:
+    with open('static/html/footer.html', encoding='utf8') as footer_file_handle:
+        footer = footer_file_handle.read()
+    with open('templates/index.html', encoding='utf8') as file_handle:
+            template = Template(file_handle.read())
+    return template.render(footer=footer)
+
+
+@app.route('/legal')
+def legal():
+    with open('static/html/legal.html', encoding='utf8') as file_handle:
+        return file_handle.read()
+
+
+@app.route('/monster')
+def monster_builder():
+    with open('templates/monster.html', encoding='utf8') as file_handle:
         template = Template(file_handle.read())
     with open('statblocks/predator.md') as file_handle:
         markdown_text = file_handle.read()
-    with open('static/html/what_is_woc.html') as file_handle:
+    with open('static/html/what_is_woc.html', encoding='utf8') as file_handle:
         what_is_woc = file_handle.read()
+    with open('static/html/footer.html', encoding='utf8') as footer_file_handle:
+        footer = footer_file_handle.read()
     preview_html = md.markdown(prepare_markdown(markdown_text), extensions=['tables'])
-    return template.render(prefill_preview=preview_html, prefill_md=markdown_text, what_is_woc=what_is_woc)
+    return template.render(prefill_preview=preview_html,
+                           prefill_md=markdown_text,
+                           what_is_woc=what_is_woc,
+                           footer=footer,
+                           )
 
 
 @app.route('/getStatblock', methods=['GET'])
@@ -97,13 +117,24 @@ def get_tag_list():
           </div>
 
           <div id="collapseTagDesc" class="collapse hide" aria-labelledby="headingTagDesc">
-            <div class="card-body">{{ description }}</p>
+            <div class="card-body">
+                <p>
+                {{ description }}
+                </p>
+                {{ img }}
             </div>
           </div>
         </div>"""
     description_template = Template(description_template)
+    img_url = modules[basename(filename)].img_url
+    if img_url:
+        img = '<img src="{}" style="width: 100%; height: auto">'.format(img_url)
+    else:
+        img = ''
+
     description = description_template.render(table_name=modules[basename(filename)].table_name,  # todo set a variable to the module instead of looking it up 3 times, setup default values
-                                              description=modules[basename(filename)].table_description)
+                                              description=modules[basename(filename)].table_description,
+                                              img=img)
     return json.dumps({'tags': out, 'description': description})
 
 

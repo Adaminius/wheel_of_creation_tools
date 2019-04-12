@@ -1,7 +1,7 @@
 .header{
     background: rgba(89, 131, 102, 1) ;
     background-image:
-            linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,.6), rgba(0,0,0,.9)),
+            linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.6), rgba(0,0,0,.95)),
             url("https://upload.wikimedia.org/wikipedia/commons/d/dd/Die_drei_Bogatyr.jpg");
     background-position: center 0;
     background-size: cover;
@@ -14,12 +14,17 @@
 
 body {
     font-family: "Open Sans", sans-serif;
-    background: #fff4e2;
+    background-image: linear-gradient(to bottom, #93a191, #253f2a);
+    /*background-color: #285b3a;*/
+    color: whitesmoke;
+}
+
+.md-preview {
     color: black;
 }
 
 .btn-link:hover {
-    color: #b4a628;
+    color: #bddbc0;
 }
 
 .dropdown-item:hover {
@@ -152,8 +157,8 @@ textarea {
 }
 
 .card .card-header {
-    /*background: #f3f3f3;*/
-    background: #598366;
+    background: #75949c;
+    color: #ffe4a8;
 }
 
 .card-body {
@@ -170,12 +175,26 @@ textarea {
 }
 
 .btn-warning {
-    background: #b6a745;
+    background: #598366;
+
     color: #f3f3f3;
+    border-color: white;
 }
 
 .btn-warning:hover {
-    background: #b6a745;
+    background: #42624c;
+    border-color: white;
+    color: #f3f3f3;
+}
+
+.show>.btn-warning.dropdown-toggle {
+    background: #42624c;
+    border-color: white;
+    color: #f3f3f3;
+}
+
+.card-body {
+    color: black;
 }
 
 .btn-link {
@@ -196,6 +215,10 @@ input[type=number]{
     background-color: #598366;
 }
 
+#footer {
+    background-color: #1f2228;
+
+}
 /*input[type=range]{*/
     /*-webkit-appearance: none;*/
 /*}*/

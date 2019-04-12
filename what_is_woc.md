@@ -1,6 +1,6 @@
 # What is the Wheel of Creation?
 
-The Wheel of Creation is a third-party setting and rules supplement for the 5th Edition Open Gaming License. It portrays a world of grassy steppe, oasis cities, icy forests, and caravans which travel across it and to worlds beyond. Players play as *god-hunters*, groups of adventurers who guide, protect, and fuel these caravans for wealth, renown, and the safety and prosperity of the world.
+The Wheel of Creation is a third-party setting and rules supplement for the 5th Edition Open Game License. It portrays a world of grassy steppe, oasis cities, towering mountains, icy forests, and caravans which travel across it and to worlds beyond. Players play as *god-hunters*, groups of adventurers who guide, protect, and fuel these caravans for wealth, renown, and the safety and prosperity of the world.
 
 ### The Products
 

@@ -7,6 +7,7 @@ import re
 all_tags = []
 table_name = 'Misc'
 table_description = 'Simple or unflavored operations'
+img_url = '../static/img/velnik.png'
 
 def apply(sb: Statblock) -> Statblock:
     sb.legendary_actions.append(Feature('Attack', 'This creature makes a melee attack.', effect_damage=.5))

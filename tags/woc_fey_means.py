@@ -14,6 +14,7 @@ table_description = 'Fey in the Wheel of Creation come from the Ring of Seasons,
                     'neither so virtuous as the Emperors of Heaven nor so vile as the Void or the demons in haunting the ' \
                     'the space between the rings. Their world is in many ways similar that to the Ring of Earth, ' \
                     'though twisted and exaggerated.'
+img_url = '../static/img/springfey.png'
 
 FEY_FREQUENT_LOOT_PROPERTIES = {
     'primary_type': lambda sb: sb.primary_type,

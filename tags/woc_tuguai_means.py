@@ -7,6 +7,7 @@ from statblock import Loot
 all_tags = []
 table_name = 'WoC: Tuguai Means'
 table_description = 'Coming Soon!'
+img_url = ''
 
 
 def modify_loot_properties(sb: Statblock, loot_name, key, value):
