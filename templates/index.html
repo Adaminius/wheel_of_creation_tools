@@ -2,7 +2,9 @@
 <html>
 
 <head>
-  <meta name="viewport" content="width=device-width; initial-scale=1.0;">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0;">
+  <meta name="HandheldFriendly" content="true" />
+  <meta name="MobileOptimized" content="320" />
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -25,14 +27,21 @@
   <div class="row align-middle h-100 align-self-center align-items-center" style="">
     <div
         class="col align-self-center align-middle h-100 d-flex justify-content-center flex-column h-100 align-self-center align-items-center">
-      <img src="../static/img/woc2.png"
-           style="margin: 0 auto; text-align: center; width: 100%; max-width: 700px; vertical-align: middle; padding-top: 10px; padding-bottom: 10px"
-           class="align-middle">
-      <p style="position: absolute; top: 55%; font-size: 1.2rem" class="lead">A caravanning and monster-hunting
+      <!--<img src="../static/img/woc2.png"-->
+           <!--style="margin: 0 auto; text-align: center; width: 100%; max-width: 700px; vertical-align: middle; padding-top: 10px; padding-bottom: 10px"-->
+           <!--class="align-middle">-->
+      <div id="spinnerLogo">
+        <img class="image-spin logo" src="../static/img/woc_map_layer1.png">
+        <img class="image-spin2 logo" src="../static/img/woc_map_layer2.png">
+        <img class="image-spin3 logo" src="../static/img/woc_map_layer3.png">
+        <img class="logo-title" src="../static/img/woc3.png">
+      </div>
+      <p style=" " class="lead">A caravanning and monster-hunting
         supplement for <i class="fas fa-dragon" style="color: red"></i> 5th Edition.</p>
     </div>
   </div>
 </div>
+<div id="mainContent">
 <div id="whatIsWoCContainer">
   <div class="container">
     <div class="row">
@@ -90,7 +99,7 @@
           <div class="tab-pane fade" id="rules" role="tabpanel" aria-labelledby="rules-tab">
             <p>The flow of gameplay in the Wheel of Creation assumes a specific structure of Expeditions, each of which
               are expected
-              to take aobut 4-6 game sessions: </p>
+              to take about 4-6 game sessions: </p>
 
             <ul>
               <li>Players choose a destination and decide the initial composition of the caravan under their shared
@@ -233,7 +242,7 @@
           <h5 class="card-header text-white">Tool: Monster Builder</h5>
           <div class="card-body">
             <!--<h5 class="card-title">Generate creatures using WoC's tag system</h5>-->
-            <p class="card-text">An online application for creating new monsters for 5e. In active development and updated
+            <p class="card-text">An online application for creating new monster statblocks for 5e. In active development and updated
               regularly!</p>
             <div class="card-links">
               <a href="/monster" class="btn btn-warning" target="_blank">Check it out!</a>
@@ -259,6 +268,7 @@
     </div>
 
   </div>
+</div>
 </div>
 {{ footer }}
 

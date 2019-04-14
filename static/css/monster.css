@@ -14,7 +14,11 @@
 
 body {
     font-family: "Open Sans", sans-serif;
-    background-image: linear-gradient(to bottom, #93a191, #253f2a);
+    background-color: rgb(75, 110, 86);
+    background-image: -webkit-linear-gradient(to bottom, #8f8e91, #29462f);
+    background-image: -moz-linear-gradient(to bottom, #8f8e91, #29462f);
+    background-image: linear-gradient(to bottom, #8f8e91, #29462f);
+    /*background-repeat: no-repeat;*/
     /*background-color: #285b3a;*/
     color: whitesmoke;
 }
@@ -106,8 +110,8 @@ textarea {
 }
 
 .md-preview blockquote table thead tr th {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: .6rem;
+    padding-right: .6rem;
 }
 
 #tagTableDiv {

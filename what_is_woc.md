@@ -12,7 +12,7 @@ The current plan is that there will be three products associated with the first 
 
 ### Rules and Gameplay
 
-The flow of gameplay in the Wheel of Creation assumes a specific structure of Expeditions, each of which are expected to take aobut 4-6 game sessions: 
+The flow of gameplay in the Wheel of Creation assumes a specific structure of Expeditions, each of which are expected to take about 4-6 game sessions: 
 
 * Players choose a destination and decide the initial composition of the caravan under their shared protection.
 * The GM decides what places and obstacles they will encounter along the way.
