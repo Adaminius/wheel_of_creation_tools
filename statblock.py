@@ -1,7 +1,6 @@
 import random
 import re
 import math
-import logging
 from collections import defaultdict
 from copy import deepcopy
 from typing import Callable  # don't remove, used in docstrings
@@ -64,7 +63,6 @@ def parse_features(lines: list, is_legendary=False):
             continue
         actions.append(Feature(action_name, action_description, is_legendary))
 
-    logging.debug(f'parse_actions(lines={lines},\n is_legendary={is_legendary}) -> {actions}, {lines}')
     return actions, lines
 
 
@@ -302,11 +300,8 @@ class Statblock(object):
     def from_markdown(cls, text: str = '', filename=''):
         """Primary way objects of this class should be constructed. Parses a markdown file into a statblock."""
         if filename:
-            logging.debug(f'New Statblock from file f{filename}.')
             with open(filename) as file_handle:
                 text = file_handle.read()
-        else:
-            logging.debug('New Statblock from text.')
         if not text and not filename:
             raise RuntimeError('Either text or filename must be specified.')
 
@@ -322,7 +317,6 @@ class Statblock(object):
 
             curr_line = curr_line.replace('> ##', '')
             sb.name = curr_line.strip()
-            logging.debug(f'Parsed name "{sb.name}"')
 
             curr_line = lines.pop(0)
             curr_line = curr_line.strip('>').strip().strip('*').strip().split(',')
@@ -332,7 +326,6 @@ class Statblock(object):
             else:
                 size_and_types, alignment = curr_line
                 sb.alignment = alignment.strip()
-            logging.debug(f'Parsed alignment "{sb.alignment}"')
 
             size_and_types = size_and_types.split()
             size = 'Medium'
@@ -341,10 +334,8 @@ class Statblock(object):
             elif len(size_and_types) == 3:
                 size, sb.primary_type, sb.secondary_type = size_and_types
                 sb.secondary_type = sb.secondary_type.replace('(', '').replace(')', '').strip()
-            logging.debug(f'Parsed types "{sb.primary_type}", "{sb.secondary_type}""')
 
             sb.size = size
-            logging.debug(f'Parsed size "{size_val_to_name[sb.size]}"')
 
             lines.pop(0)
             # assert curr_line.strip().endswith('_')
@@ -356,7 +347,6 @@ class Statblock(object):
                 sb.armor_class_type = ' '.join(curr_line[1:]).lstrip('(').rstrip(')')
             elif len(curr_line) == 1:
                 sb.armor_class = int(curr_line[0])
-            logging.debug(f'Parsed AC "{sb.armor_class}", "{sb.armor_class_type}"')
 
             curr_line = lines.pop(0)
             curr_line = curr_line.replace('> - **Hit Points** ', '').strip().split()
@@ -372,9 +362,6 @@ class Statblock(object):
 
             if sb.hit_dice is None:
                 sb.hit_dice = Dice(1, sb.size_die_size())
-
-            logging.debug(f'Parsed HP "{sb.hit_points}"')
-            logging.debug(f'Parsed hit dice "{sb.hit_dice}"')
 
             curr_line = lines.pop(0)
             curr_line = curr_line.replace('> - **Speed** ', '')
@@ -392,8 +379,6 @@ class Statblock(object):
                     sb.fly_speed = int(speed_text.strip().split()[1])
                 else:
                     print('Warning: Couldn\'t parse speed {}'.format(speed_text))
-            logging.debug(f'Parsed speed="{sb.speed}", fly="{sb.fly_speed}", swim="{sb.swim_speed}", '
-                          f'climb="{sb.climb_speed}", burrow="{sb.burrow_speed}"')
 
             lines.pop(0)
             # assert curr_line.strip().endswith('_')
@@ -419,11 +404,9 @@ class Statblock(object):
                 if score_val is not None:
                     ab_score.value = int(score_val.split()[0])
                 sb.ability_scores[ab_score.short_name] = ab_score
-            logging.debug(f'Parsed ability scores "{sb.ability_scores}"')
 
             if 'natural armor' in sb.armor_class_type:
                 sb.base_natural_armor = sb.armor_class - sb.ability_scores['DEX'].modifier
-                logging.debug(f'Parsed base natural armor "{sb.base_natural_armor}"')
 
             if lines[0].rstrip('>').strip().startswith('_'):
                 lines.pop(0)
@@ -434,7 +417,6 @@ class Statblock(object):
                 for save_text in save_texts:
                     save_name, save_mod = save_text.split()
                     sb.saving_throws[save_name] = int(save_mod)
-            logging.debug(f'Parsed saving throws "{sb.saving_throws}"')
 
             if 'Skills' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Skills** ', '')
@@ -442,27 +424,22 @@ class Statblock(object):
                 for skill_text in skill_texts:
                     skill_name, skill_mod = skill_text.split()
                     sb.skills[skill_name] = int(skill_mod)
-            logging.debug(f'Parsed skills "{sb.skills}"')
 
             if 'Damage Vuln' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Damage Vulnerabilities** ', '')
                 sb.damage_vulnerabilities = parse_resist_or_immunity(curr_line)
-            logging.debug(f'Parsed damage vulns "{sb.damage_vulnerabilities}"')
 
             if 'Damage Resist' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Damage Resistances** ', '')
                 sb.damage_resistances = parse_resist_or_immunity(curr_line)
-            logging.debug(f'Parsed damage resistances "{sb.damage_resistances}"')
 
             if 'Damage Immun' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Damage Immunities** ', '')
                 sb.damage_immunities = parse_resist_or_immunity(curr_line)
-            logging.debug(f'Parsed damage immunities "{sb.damage_immunities}"')
 
             if 'Condition Immun' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Condition Immunities** ', '')
                 sb.condition_immunities = [c.strip() for c in curr_line.strip().split(',') if c.strip()]
-            logging.debug(f'Parsed condition immunities "{sb.condition_immunities}"')
 
             if 'Senses' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Senses** ', '')
@@ -480,9 +457,6 @@ class Statblock(object):
                         sb.tremorsense = int(sense_text[1])
                     if sense_text[0] == 'passive':
                         sb.__passive_perception = int(sense_text[2])
-            logging.debug(
-                f'Parsed senses blindsight={sb.blindsight}, truesight={sb.truesight}, darkvision={sb.darkvision},'
-                f'tremorsense={sb.tremorsense}, passive perception={sb.__passive_perception}')
 
             if 'Languages' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Languages** ', '')
@@ -495,19 +469,15 @@ class Statblock(object):
             if len(sb.languages) == 1:
                 if re.search(r'[A-Za-z0-9]', sb.languages[0]) is None:  # check for something like '-'
                     sb.languages = []
-            logging.debug(f'Parsed languages "{sb.languages}"')
-            logging.debug(f'Parsed telepathy "{sb.telepathy}"')
 
             if 'Challenge' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Challenge** ', '')
                 challenge = curr_line.strip().split()[0]
                 # sb.challenge = ChallengeRating(challenge)  # for now, we just evaluate at the end
-            # logging.debug(f'Parsed CR "{sb.challenge.rating}"')
 
             if 'Tags' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Tags** ', '')
                 sb.applied_tags = [Tag(tag_name.strip()) for tag_name in curr_line.split(',')]
-            logging.debug(f'Parsed tags "{sb.applied_tags}""')
 
             if not lines:
                 return sb
@@ -532,8 +502,6 @@ class Statblock(object):
                         if num_leg:
                             sb.num_legendary = int(num_leg.groups()[0])
                     sb.legendary_actions, lines = parse_features(lines, is_legendary=True)
-            logging.debug(f'Parsed features={sb.features}, actions={sb.actions}, bonus actions={sb.bonus_actions},'
-                          f'legendary actions={sb.legendary_actions}, num legendary={sb.num_legendary}')
 
         except Exception as e:
             print('\nRemaining lines:')
@@ -914,7 +882,6 @@ def default_remove(tag, statblock: Statblock) -> Statblock:
     """Default callback for removing a tag from a Statblock. A new Statblock is remade, then all tags but the tag to be
     removed are applied to it."""
     if statblock.original_text is None:
-        logging.warning('Cannot remove tag, no original text for this Statblock.')
         return statblock
 
     new_sb = Statblock.from_markdown(statblock.original_text)
