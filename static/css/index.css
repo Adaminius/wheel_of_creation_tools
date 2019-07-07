@@ -27,6 +27,7 @@
 
 .container {
     margin-top: 0;
+    padding-top: 1rem;
 }
 
 #mainContent {
@@ -51,11 +52,12 @@
 #resourcesContainer {
     /*background-image: linear-gradient(to bottom, #8f8e91, #29462f);*/
     /*height: 100vh;*/
+    padding-bottom: 1rem;
 }
 
 .row {
-    padding-bottom: 1rem;
-    padding-top: 1rem;
+    /*padding-bottom: 1rem;*/
+    /*padding-top: 1rem;*/
 }
 
 #footer>.container>.row{
@@ -169,10 +171,15 @@ textarea {
 }
 
 .card {
+    /*margin-top: 1rem;*/
     margin-bottom: 1rem;
     margin-right: 0;
     margin-left: 0;
     height: 100%;
+}
+
+.col-sm-6 {
+    margin-top: 1rem;
 }
 
 .card .card-header {
@@ -180,8 +187,21 @@ textarea {
     background: #75949c;
 }
 
+.card-icon {
+    padding-right: .75rem;
+}
+
+.card-links {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    padding-bottom: 1.25rem;
+    padding-top: 0;
+}
+
 .card-body {
-    background: whitesmoke;
+    /*background: whitesmoke;*/
+    /*height: 100%;*/
+    padding-bottom: 0;
 }
 
 .btn {
@@ -189,12 +209,12 @@ textarea {
 }
 
 .btn-block {
-    margin-right: 1rem;
-    margin-left: 1rem;
+    /*margin-right: 1rem;*/
+    /*margin-left: 1rem;*/
 }
 
 .btn-warning {
-    background: #7cb67b;
+    background: #639162;
 
     color: #f3f3f3;
     border-color: white;
@@ -236,7 +256,6 @@ input[type=number]{
 
 #footer {
     background-color: #1f2228;
-
 }
 
 #spinnerLogo {

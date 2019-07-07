@@ -37,7 +37,7 @@ def home():
     with open('static/html/footer.html', encoding='utf8') as footer_file_handle:
         footer = footer_file_handle.read()
     with open('templates/index.html', encoding='utf8') as file_handle:
-            template = Template(file_handle.read())
+        template = Template(file_handle.read())
     return template.render(footer=footer)
 
 

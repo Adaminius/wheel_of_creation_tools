@@ -146,7 +146,7 @@ all_tags.append(Tag('psionic dampening array',
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Cloaking Field',
                    description_template='This creature and anything it carries becomes invisible until it attacks or '
-                                        'uses a spell.',
+                                        'uses a spell or spell-like ability.',
                    effect_hp=.25,
                    )
     sb.bonus_actions.append(feat)
@@ -164,7 +164,8 @@ def apply(sb: Statblock) -> Statblock:
                    effect_hp=.25,
                    )
     sb.features.append(feat)
-    modify_loot_properties(sb, 'jadeheart', 'reinforced', lambda s: 'reinforced')
+    sb.loot.append(Loot('celadon plating', properties={'dc': lambda s: f'DC {s.base_knowledge_dc} Refine check with '
+                                                                       f'mason\'s tools or smith\'s tools to extract'}))
     return sb
 all_tags.append(Tag('reinforced plating',
                     'all bludgeoning/piercing/slashing damage reduced by 3',
@@ -176,21 +177,44 @@ def apply(sb: Statblock) -> Statblock:
                    description_template='As an action, when this creature has fewer than {CON + CON} hit points '
                                         'remaining, it '
                                         'can choose to '
-                                        'emit a loud warning chirp and explode at the start of its next turn. The '
+                                        'emit a loud warning chirp immediately and explode at the start of its next turn. The '
                                         'explosion extends in a 30-foot radius, and all creatures within the blast '
                                         'must succeed on a DC {CON + prof + 8} Dexterity saving throw or take '
                                         'fire damage equal to this creature\'s remaining hit points on a failed save, '
-                                        'half as much damage on a success. This creature and its jadeheart are '
-                                        'destroyed. The creature has an override code in the Leitian language, and '
+                                        'half as much damage on a success. This creature is destroyed. If the damage was'
+                                        ' greater than this creature\'s CR, it\'s gone, too. The creature has an '
+                                        'override code in the Leitian language, and '
                                         'will explode at the start of its next turn upon hearing it.',
                    effect_damage=.25,
-                   effect_hp=.25,
                    )
     sb.features.append(feat)
     modify_loot_properties(sb, 'jadeheart', 'elemental', lambda s: 'elemental')
     return sb
 all_tags.append(Tag('destruction override',
                     'explodes at low hp or with codeword',
+                    on_apply=apply, overwrites={'override'}, overwritten_by={'override'}, weight=6))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Stasis Override',
+                   description_template='As an action, when this creature has fewer than {CON + CON} hit points '
+                                        'remaining, it '
+                                        'can choose to '
+                                        'emit a loud warning chirp immediately and cocoon itself at the start of its '
+                                        'next turn. A crystalline shell encases itself about the creature, making it '
+                                        'immune to all forms of harm and rendering it unconscious. The shell can only '
+                                        'be destroyed by an *antimagic field* spell or equivalent effect. The creature '
+                                        'regains hit points at a rate of one per hour. The cocoon disappears one hour '
+                                        'after the creature reaches its hit point maximum. '
+                                        'The creature has an '
+                                        'override code in the Leitian language, and '
+                                        'will trigger the stasis cocoon at the start of its next turn upon hearing it.',
+                   effect_hp=.15,
+                   )
+    sb.features.append(feat)
+    modify_loot_properties(sb, 'jadeheart', 'antimagical', lambda s: 'antimagical')
+    return sb
+all_tags.append(Tag('stasis override',
+                    'forms crystalline cocoon at low hp or with codeword',
                     on_apply=apply, overwrites={'override'}, overwritten_by={'override'}, weight=6))
 
 

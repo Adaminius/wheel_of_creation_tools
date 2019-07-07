@@ -6,7 +6,7 @@ The Wheel of Creation is a third-party setting and rules supplement for the 5th 
 
 The current plan is that there will be three products associated with the first release of the Wheel of Creation.
 
-1. A free PDF which contains caravaning and monster creation rules, a brief introduction to the setting, a subset of additional race, class, and background options, and a handful of pre-written caravan destinations within the Wheel of Creation setting.
+1. A free PDF which contains caravanning and monster creation rules, a brief introduction to the setting, a subset of additional race, class, and background options, and a handful of pre-written caravan destinations within the Wheel of Creation setting.
 2. A paid PDF with additional art, additional race and class options, full item creation rules, and additional setting description and pre-written caravan destinations.
 3. A free web companion tool for monster creation, currently in development at [WheelOfCreation.net](https://wheelofcreation.net/), and potentially other web tools as they are developed.
 

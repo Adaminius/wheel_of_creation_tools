@@ -1,5 +1,10 @@
 runtime: python37
 env: standard
+instance_class: F2
+automatic_scaling:
+  max_concurrent_requests: 16
+  min_pending_latency: 300ms
+  max_pending_latency: 300ms
 #entrypoint: gunicorn -b :$PORT main:app
 #
 #runtime_config:
