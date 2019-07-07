@@ -15,6 +15,21 @@ def modify_loot_properties(sb: Statblock, loot_name, key, value):
         if loot.name.lower().strip() == loot_name.lower().strip():
             loot.properties[key] = value
 
+def make_destructible_feature(name: str, already_has_destructible=False):
+    if already_has_destructible:
+        return Feature(name=f'Destructible: {name}', description_template=f'As above, but with *{name}*.')
+    return Feature(name=f'Destructible: {name}', description_template=
+                   f'If a creature knows the name of the tag which grants this creature its *{name}* feature, it can '
+                   f'choose to declare a strike against the part of this creature\'s anatomy which grants that '
+                   f'feature before rolling. The attack is always considered to be against three-quarters cover. '
+                   f'After two successful hits or one critical hit against *{name}*, this creature can no longer use '
+                   f'*{name}*. Damage is dealt as normal.')
+
+def has_any_destructible(sb: Statblock):
+    for feat in sb.features:
+        if feat.name.startswith('Destructible:'):
+            return True
+    return False
 
 def apply(sb: Statblock) -> Statblock:
     sb.primary_type = 'construct'
@@ -57,7 +72,7 @@ def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Fire Ray (Recharge 5-6)',
                    description_template='This creature raises an appendage and unleashes a gout of flame in a 60-foot '
                                         'line that is 5 feet wide. Each creature in the line must make a '
-                                        'DC {8 + CON + prof} Dexterity saving throw, taking {prof}d{size_die_size} '
+                                        'DC {8 + CON + prof} Dexterity saving throw, taking 1 ({prof}d{size_die_size}) '
                                         'fire damage on a failed save, or half as much damage on a successful one. '
                                         'In addition, terrain under the area of the ray is ignited, dealing '
                                         'd{size_die_size} fire damage to any creature that ends its turn in the area. '
@@ -69,6 +84,8 @@ def apply(sb: Statblock) -> Statblock:
     sb.actions.append(feat)
     sb.add_damage_resistance('fire')
     modify_loot_properties(sb, 'jadeheart', 'elemental', lambda s: 'elemental')
+    sb.features.append(make_destructible_feature('Fire Ray',
+                                                 already_has_destructible=has_any_destructible(sb)))
     return sb
 all_tags.append(Tag('fire ray',
                     'add a Fire Ray action; add resistance to fire damage',
@@ -78,7 +95,7 @@ def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Ice Ray (Recharge 5-6)',
                    description_template='This creature raises an appendage and unleashes an icy blast in a 60-foot '
                                         'line that is 5 feet wide. Each creature in the line must make a '
-                                        'DC {8 + CON + prof} Dexterity saving throw, taking {prof}d{size_die_size} '
+                                        'DC {8 + CON + prof} Dexterity saving throw, taking 1 ({prof}d{size_die_size}) '
                                         'cold damage on a failed save, or half as much damage on a successful one. '
                                         'In addition, terrain under the area of the ray is frozen, becoming difficult '
                                         'terrain. '
@@ -88,11 +105,12 @@ def apply(sb: Statblock) -> Statblock:
     sb.actions.append(feat)
     sb.add_damage_resistance('cold')
     modify_loot_properties(sb, 'jadeheart', 'elemental', lambda s: 'elemental')
+    sb.features.append(make_destructible_feature('Ice Ray',
+                                                 already_has_destructible=has_any_destructible(sb)))
     return sb
 all_tags.append(Tag('ice ray',
                     'add a Ice Ray action; add resistance to cold damage',
                     on_apply=apply, overwrites={'ranged_arm'}, overwritten_by={'ranged_arm'}, weight=12))
-
 
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Whirring Blades',
@@ -106,6 +124,8 @@ def apply(sb: Statblock) -> Statblock:
                    )
     sb.actions.append(feat)
     modify_loot_properties(sb, 'jadeheart', 'intricate', lambda s: 'intricate')
+    sb.features.append(make_destructible_feature('Whirring Blades',
+                                                 already_has_destructible=has_any_destructible(sb)))
     return sb
 all_tags.append(Tag('whirring blades',
                     'add a Whirring Blades melee_attack',
@@ -121,6 +141,8 @@ def apply(sb: Statblock) -> Statblock:
                    )
     sb.features.append(feat)
     modify_loot_properties(sb, 'jadeheart', 'antimagical', lambda s: 'antimagical')
+    sb.features.append(make_destructible_feature('Antimagic Cone',
+                                                 already_has_destructible=has_any_destructible(sb)))
     return sb
 all_tags.append(Tag('antimagic cone',
                     'add an Antimagic Cone feature',
@@ -136,12 +158,32 @@ def apply(sb: Statblock) -> Statblock:
                    effect_hp=.25,
                    )
     sb.features.append(feat)
+    sb.features.append(make_destructible_feature('Psionic Dampening Array',
+                                                 already_has_destructible=has_any_destructible(sb)))
     modify_loot_properties(sb, 'jadeheart', 'psionic', lambda s: 'psionic')
     return sb
 all_tags.append(Tag('psionic dampening array',
                     'add the Psionic Dampening Array feature',
                     on_apply=apply, overwrites={'field'}, overwritten_by={'field'}, weight=12))
 
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Vortex Engine',
+                   description_template='Until the start of its next turn, this creature generates a barrier of '
+                                        'rushing wind (30 miles per hour) in a 10-foot radius around '
+                                        'this creature that moves with it. All '
+                                        'ranged attacks that pass through, in, or out of the wind have disadvantage. '
+                                        'Creatures within the wind are deafened. The area is difficult for terrain for '
+                                        'creatures other than this creature. Flames in the area are extinguished. '
+                                        'Gas or vapor in the area is dispersed.',
+                   effect_hp=.25,
+                   )
+    sb.bonus_actions.append(feat)
+    sb.features.append(make_destructible_feature('Vortex Engine', already_has_destructible=has_any_destructible(sb)))
+    modify_loot_properties(sb, 'jadeheart', 'elemental', lambda s: 'elemental')
+    return sb
+all_tags.append(Tag('vortex engine',
+                    'add the Vortex Engine bonus action',
+                    on_apply=apply, overwrites={'field'}, overwritten_by={'field'}, weight=12))
 
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Cloaking Field',
@@ -150,6 +192,8 @@ def apply(sb: Statblock) -> Statblock:
                    effect_hp=.25,
                    )
     sb.bonus_actions.append(feat)
+    sb.features.append(make_destructible_feature('Cloaking Field',
+                                                 already_has_destructible=has_any_destructible(sb)))
     modify_loot_properties(sb, 'jadeheart', 'shadowy', lambda s: 'shadowy')
     return sb
 all_tags.append(Tag('cloaking field',
@@ -189,6 +233,8 @@ def apply(sb: Statblock) -> Statblock:
                    )
     sb.features.append(feat)
     modify_loot_properties(sb, 'jadeheart', 'elemental', lambda s: 'elemental')
+    sb.features.append(make_destructible_feature('Destruction Override',
+                                                 already_has_destructible=has_any_destructible(sb)))
     return sb
 all_tags.append(Tag('destruction override',
                     'explodes at low hp or with codeword',
@@ -212,6 +258,8 @@ def apply(sb: Statblock) -> Statblock:
                    )
     sb.features.append(feat)
     modify_loot_properties(sb, 'jadeheart', 'antimagical', lambda s: 'antimagical')
+    sb.features.append(make_destructible_feature('Stasis Override',
+                                                 already_has_destructible=has_any_destructible(sb)))
     return sb
 all_tags.append(Tag('stasis override',
                     'forms crystalline cocoon at low hp or with codeword',
