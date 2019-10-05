@@ -113,6 +113,24 @@ all_tags.append(Tag('ice ray',
                     on_apply=apply, overwrites={'ranged_arm'}, overwritten_by={'ranged_arm'}, weight=12))
 
 def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Explosive Cannon (Recharge 5-6)',
+                   description_template='*Ranged Weapon Attack:* +{prof + DEX} to hit, range 30/120 ft., one target. '
+                                        '*Hit:* 7 (1d{size_die_size} + {DEX}) bludgeoning damage. Hit or miss, the '
+                                        'projectile explodes. The target and each creature within 5 feet of it must '
+                                        'succeed on a Dexterity saving throw or take 5 ({prof}d6) fire damage. This '
+                                        'attack deals double damage to structures.',
+                   can_multiattack=False,
+                   )
+    sb.actions.append(feat)
+    modify_loot_properties(sb, 'jadeheart', 'stout', lambda s: 'stout')
+    sb.features.append(make_destructible_feature('Explosive Cannon',
+                                                 already_has_destructible=has_any_destructible(sb)))
+    return sb
+all_tags.append(Tag('explosive cannon',
+                    'add an Explosive Cannon action',
+                    on_apply=apply, overwrites={'ranged_arm'}, overwritten_by={'ranged_arm'}, weight=8))
+
+def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Whirring Blades',
                    description_template='*Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. '
                                         '*Hit:* 7 (1d{size_die_size} + {STR}) slashing damage. If this attack hits, '
@@ -128,9 +146,44 @@ def apply(sb: Statblock) -> Statblock:
                                                  already_has_destructible=has_any_destructible(sb)))
     return sb
 all_tags.append(Tag('whirring blades',
-                    'add a Whirring Blades melee_attack',
+                    'add a Whirring Blades melee attack',
                     on_apply=apply, overwrites={'melee_arm'}, overwritten_by={'melee_arm'}, weight=12))
 
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Sledgehammer',
+                   description_template='*Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. '
+                                        '*Hit:* 7 (1d{size_die_size} + {STR}) bludgeoning damage. If the target is a '
+                                        'creature, that creature must make a DC {STR + prof + 8} Strength '
+                                        'saving throw or be knocked prone.',
+                   can_multiattack=True,
+                   effect_damage=.5,
+                   )
+    sb.actions.append(feat)
+    modify_loot_properties(sb, 'jadeheart', 'stout', lambda s: 'stout')
+    sb.features.append(make_destructible_feature('Sledgehammer',
+                                                 already_has_destructible=has_any_destructible(sb)))
+    return sb
+all_tags.append(Tag('sledgehammer',
+                    'add a Sledgehammer melee attack',
+                    on_apply=apply, overwrites={'melee_arm'}, overwritten_by={'melee_arm'}, weight=12))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Barbed Claws',
+                   description_template='*Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. '
+                                        '*Hit:* 7 (1d{size_die_size} + {STR}) piercing damage. If the target is a '
+                                        'creature, it is grappled (escape DC {STR + prof + 8}). Until the grapple '
+                                        'ends, this creature can\'t use this attack on a different creature.',
+                   can_multiattack=True,
+                   effect_damage=.5,
+                   )
+    sb.actions.append(feat)
+    modify_loot_properties(sb, 'jadeheart', 'intricate', lambda s: 'intricate')
+    sb.features.append(make_destructible_feature('Barbed Claws',
+                                                 already_has_destructible=has_any_destructible(sb)))
+    return sb
+all_tags.append(Tag('barbed claws',
+                    'add a Barbed Claws melee attack',
+                    on_apply=apply, overwrites={'melee_arm'}, overwritten_by={'melee_arm'}, weight=12))
 
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Antimagic Cone',
@@ -148,12 +201,11 @@ all_tags.append(Tag('antimagic cone',
                     'add an Antimagic Cone feature',
                     on_apply=apply, overwrites={'eye'}, overwritten_by={'eye'}, weight=12))
 
-
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Psionic Dampening Array',
                    description_template='All non-construct, non-undead creatures within 60 feet of this creature make '
                                         'attack rolls, saving throws, and skill checks based on Intelligence, Wisdom, '
-                                        'or Charisma are made at disadvantage. All psychic damage dealt to or by '
+                                        'or Charisma at disadvantage. All psychic damage dealt to or by '
                                         'any creatures in the field is halved.',
                    effect_hp=.25,
                    )
@@ -200,7 +252,6 @@ all_tags.append(Tag('cloaking field',
                     'add the Cloak bonus action',
                     on_apply=apply, overwrites={'field'}, overwritten_by={'field'}, weight=12))
 
-
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Reinforced Plating',
                    description_template='All bludgeoning, piercing, and slashing damage dealt by non-magical weapons '
@@ -215,18 +266,17 @@ all_tags.append(Tag('reinforced plating',
                     'all bludgeoning/piercing/slashing damage reduced by 3',
                     on_apply=apply, overwrites={'plating'}, overwritten_by={'plating'}, weight=12))
 
-
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Destruction Override',
-                   description_template='As an action, when this creature has fewer than {CON + CON} hit points '
+                   description_template='As an action, when this creature has fewer than {hit_dice_count + '
+                                        'hit_dice_count + hit_dice_count + hit_dice_count} hit points '
                                         'remaining, it '
                                         'can choose to '
                                         'emit a loud warning chirp immediately and explode at the start of its next turn. The '
                                         'explosion extends in a 30-foot radius, and all creatures within the blast '
                                         'must succeed on a DC {CON + prof + 8} Dexterity saving throw or take '
                                         'fire damage equal to this creature\'s remaining hit points on a failed save, '
-                                        'half as much damage on a success. This creature is destroyed. If the damage was'
-                                        ' greater than this creature\'s CR, it\'s gone, too. The creature has an '
+                                        'half as much damage on a success. This creature is destroyed. The creature has an '
                                         'override code in the Leitian language, and '
                                         'will explode at the start of its next turn upon hearing it.',
                    effect_damage=.25,
