@@ -84,6 +84,8 @@ class Dice(object):
         s = s.lower().split('d')
         if len(s) == 1:
             return cls(count=1, size=int(s[0]))
+        if s[0] == '':
+            return cls(count=1, size=int(s[1]))
 
         return cls(count=int(s[0]), size=int(s[1]))
 
