@@ -23,22 +23,32 @@ def modify_loot_properties(sb: Statblock, loot_name, key, value):
             loot.properties[key] = value
 
 
-def make_minion(name, type_, ac=10, damage='d6 + 1', speed=30, size='Medium', features=None, physical=2, mental=0,
-                vulnerabilities=None, immunities=None, ranged=0, melee_type='bludgeoning', ranged_type='bludgeoning'):
+def has_tag(sb: Statblock, name: str):
+    for tag in sb.applied_tags:
+        if tag.name == name:
+            return True
+    return False
+
+
+def make_minion(name, type_, ac='{prof + 10}', damage='d4 + {prof}', speed=30, size='Medium', features=None,
+                physical='{prof}', mental='0',
+                vulnerabilities=None, damage_immunities=None, ranged=0, melee_type='bludgeoning',
+                ranged_type='bludgeoning', condition_immunities=None):
     # vulnerable = f'&emsp;Vulnerable to {", ".join(vulnerabilities)}.\n\n' if vulnerabilities is not None else ''
-    immune = f'&emsp;Immune to {", ".join(immunities)}.\n\n' if immunities is not None else ''
-    feature = f'&emsp;Has the {", ".join(features)} features.\n\n' if features is not None else ''  # should always be features that the parent has so user doesn't have to read more stuff
-    ranged_attack = f' Ranged {ranged}/{2 * ranged} ft.' if ranged > 0 else ''
-    vuln = f', takes **{"/".join(vulnerabilities)}** damage once,' if vulnerabilities else ''
+    immune = f'{"/".join(damage_immunities)} damage ' if damage_immunities is not None else ''
+    cond_immune = f'{"and " if damage_immunities else ""}{"/".join(condition_immunities)} conditions. ' if condition_immunities is not None else ''
+    feature = f'&emsp;Has the {", ".join(features)} features.\n\n' if features is not None else ''
+    ranged_attack = f' Ranged {ranged_type} {ranged}/{2 * ranged} ft.' if ranged > 0 else ''
+    vuln = f', **{"/".join(vulnerabilities)}** damage once,' if vulnerabilities else ''
     text = f'\n\n' \
            f'**{name}** (*{size.capitalize()} {type_}*) \n\n' \
-           f'&emsp;**AC {ac}. Speed {speed} ft.**\n\n' \
-           f'{immune}' \
+           f'&emsp;**AC** {ac}. **Speed** {speed} ft.\n\n' \
+           f'{"&emsp;**Immune:** " if condition_immunities or damage_immunities else ""}{immune}{cond_immune}\n\n' \
            f'{feature}' \
-           f'&emsp;**{"+" if physical > 0 else ""}{physical} to attacks** and STR/DEX/CON rolls. ' \
-           f'{"+" if mental > 0 else ""}{mental} to INT/WIS/CHA rolls.\n\n' \
+           f'&emsp;**Add {physical} to attacks** and STR/DEX/CON rolls. ' \
+           f'Add {mental} to INT/WIS/CHA rolls.\n\n' \
            f'&emsp;Melee {melee_type} 5 ft.{ranged_attack} All **attacks deal 5 ({damage})**.\n\n' \
-           f'&emsp;Dies when it takes damage twice{vuln} or is crit once.\n\n'
+           f'&emsp;Dies upon taking damage twice{vuln} or {ac} damage in one hit.\n\n'
     return text
 
 
@@ -164,21 +174,156 @@ def apply(sb: Statblock) -> Statblock:
     minion = make_minion(
         name='Zombie Minion',
         type_='undead',
-        ac=10,
-        damage='d6 + 1',
+        ac='6 + prof',
+        damage='d4 + 2',
         speed=20,
-        physical=2,
-        mental=-2,
+        physical='{prof}',
+        mental='{prof - 4}',
         vulnerabilities=['radiant'],
-        immunities=['poison', 'necrotic'],
+        damage_immunities=['poison', 'necrotic'],
+        condition_immunities=['charmed', 'frightened', 'poisoned']
     )
-    feat = Feature(name='Overlord',
-                   description_template='This creature can conjure a group 2 (1d4 + 1) zombie minions 1/day. Their '
-                                        f'statistics are: {minion}',
-                   can_multiattack=False)
+    feat = Feature(name='Summon Zombie Entourage',
+                   description_template='This creature can conjure a group of 2 (1d4 + 1) zombie minions 1/day. '
+                                        'Each appears in an unoccupied space within 30 ft. of this creature. '
+                                        'They follow this creature\'s mental commands '
+                                        'and die if this creature dies or moves more than 1 mile away. One minion may '
+                                        'take a turn after a player character ends their turn. Minions can\'t take '
+                                        'more than one '
+                                        'turn each round. ' 
+                                        f'Their statistics are: {minion}',
+                   can_multiattack=False,
+                   effect_damage=.75,
+                   effect_hp=.75,
+                   )
     sb.actions.append(feat)
     return sb
-all_tags.append(Tag('overlord', 'can conjure zombie minions',
-                    on_apply=apply, weight=10, overwritten_by={'minions'}, overwrites={'minions'}))
+all_tags.append(Tag('zombie escort', 'can conjure a small group of zombie minions',
+                    on_apply=apply, weight=15, overwritten_by={'minions'}, overwrites={'minions'}))
+
+def apply(sb: Statblock) -> Statblock:
+    minion = make_minion(
+        name='Skeleton Minion',
+        size='Medium',
+        type_='undead',
+        ac='{10 + prof}',
+        damage='d4 + 2',
+        ranged=30,
+        ranged_type='piercing',
+        speed=30,
+        physical='{prof}',
+        mental='{prof - 4}',
+        vulnerabilities=['bludgeoning'],
+        damage_immunities=['poison', 'necrotic'],
+        condition_immunities=['charmed', 'frightened', 'poisoned']
+    )
+    feat = Feature(name='Summon Skeletal Entourage',
+                   description_template='This creature can conjure a group of 2 (1d4 + 1) skeleton minions 1/day. '
+                                        'Each appears in an unoccupied space within 30 ft. of this creature. '
+                                        'They follow this creature\'s mental commands '
+                                        'and die if this creature dies or moves more than 1 mile away. One minion may '
+                                        'take a turn after a player character ends their turn. Minions can\'t take '
+                                        'more than one '
+                                        'turn each round. ' 
+                                        f'Their statistics are: {minion}',
+                   can_multiattack=False,
+                   effect_damage=.5,
+                   effect_hp=.5,
+                   )
+    sb.actions.append(feat)
+    return sb
+all_tags.append(Tag('skeletal escort', 'can conjure a small group of skeleton minions',
+                    on_apply=apply, weight=15, overwritten_by={'minions'}, overwrites={'minions'}))
+
+# todo skeleton horde, summons like 3d4 + 3, larger effect on damage/hp
+# todo zombie horde, summons like 3d4 + 3
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Elephantine Mount',
+                   description_template='Rides into battle astride a creature of sewn flesh and bone. '
+                                        'This mount has the statistics of an elephant (CR 4), except that it is undead '
+                                        'and immune to necrotic and poison damage and the frightened, charmed, '
+                                        'and poisoned conditions *(Note: the mount\'s CR is **not** included in the '
+                                        'calculation for this creature\'s CR).*'
+                                        'The mount acts independently, but obeys the rider\'s mental commands.'
+                   )
+    sb.features.append(feat)
+    return sb
+all_tags.append(Tag('elephantine mount', 'rides into battle on an enormous undead creature',
+                    on_apply=apply, weight=4, overwritten_by={'mount'}, overwrites={'mount'}))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Cervine Mount',
+                   description_template='Rides into battle astride a creature of sewn flesh and bone. '
+                                        'This mount has the statistics of a giant elk (CR 2), except that it is undead '
+                                        'and immune to necrotic and poison damage and the frightened, charmed, '
+                                        'and poisoned conditions *(Note: the mount\'s CR is **not** included in the '
+                                        'calculation for this creature\'s CR).*'
+                                        'The mount acts independently, but obeys the rider\'s mental commands.'
+                   )
+    sb.features.append(feat)
+    return sb
+all_tags.append(Tag('cervine mount', 'rides into battle on a giant elk-like undead creature',
+                    on_apply=apply, weight=8, overwritten_by={'mount'}, overwrites={'mount'}))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Arachniadian Mount',
+                   description_template='Rides into battle astride a creature of sewn flesh and bone. '
+                                        'This mount has the statistics of a giant spider (CR 1), except that it is undead '
+                                        'and immune to necrotic and poison damage and the frightened, charmed, '
+                                        'and poisoned conditions *(Note: the mount\'s CR is **not** included in the '
+                                        'calculation for this creature\'s CR).*'
+                                        'The mount acts independently, but obeys the rider\'s mental commands.'
+                   )
+    sb.features.append(feat)
+    return sb
+all_tags.append(Tag('arachnidian mount', 'rides into battle on a giant spider-like undead creature',
+                    on_apply=apply, weight=10, overwritten_by={'mount'}, overwrites={'mount'}))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Batty Mount',
+                   description_template='Rides into battle astride a creature of sewn flesh and bone. '
+                                        'This mount has the statistics of a giant bat (CR 1), except that it is undead '
+                                        'and immune to necrotic and poison damage and the frightened, charmed, '
+                                        'and poisoned conditions *(Note: the mount\'s CR is **not** included in the '
+                                        'calculation for this creature\'s CR).*'
+                                        'The mount acts independently, but obeys the rider\'s mental commands.'
+                   )
+    sb.features.append(feat)
+    return sb
+all_tags.append(Tag('batty mount', 'rides into battle on a giant bat-like undead creature',
+                    on_apply=apply, weight=10, overwritten_by={'mount'}, overwrites={'mount'}))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Screeching Mount',
+                   description_template='Rides into battle astride a creature of sewn flesh and bone. '
+                                        'This mount has the statistics of a giant bat (CR 1), except that it is undead '
+                                        'and immune to necrotic and poison damage and the frightened, charmed, '
+                                        'and poisoned conditions *(Note: the mount\'s CR is **not** included in the '
+                                        'calculation for this creature\'s CR).*'
+                                        'The mount acts independently, but obeys the rider\'s mental commands.'
+                   )
+    sb.features.append(feat)
+    return sb
+all_tags.append(Tag('screeching mount', 'rides into battle on a giant bat-like undead creature',
+                    on_apply=apply, weight=10, overwritten_by={'mount'}, overwrites={'mount'}))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Chitinous Mount',
+                   description_template='Rides into battle astride a creature of sewn flesh and bone. '
+                                        'This mount has the statistics of a giant bat (CR 1), except that it is undead '
+                                        'and immune to necrotic and poison damage and the frightened, charmed, '
+                                        'and poisoned conditions *(Note: the mount\'s CR is **not** included in the '
+                                        'calculation for this creature\'s CR).*'
+                                        'The mount acts independently, but obeys the rider\'s mental commands.'
+
+                   )
+    sb.features.append(feat)
+    return sb
+all_tags.append(Tag('chitinous mount', 'rides into battle on a giant scorpion-like undead creature',
+                    on_apply=apply, weight=10, overwritten_by={'mount'}, overwrites={'mount'}))
 
 all_tags = dict([(tag.name, tag) for tag in all_tags])
+
+# todo add 'scepters'/weapons: grant a basic melee or ranged attack with some kind of damage like fire/necrotic/cold/poison,
+# + some other, stronger spell-like ability. break under some condition if a non-kostlyavets uses them. add to loot table?
