@@ -165,6 +165,13 @@ textarea {
     color: #ffe4a8;
 }
 
+code {
+    background: #fafee4;
+    color: black;
+    display: block;
+    padding: 5px;
+}
+
 .card-body {
     background: whitesmoke;
 }

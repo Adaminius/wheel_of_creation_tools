@@ -24,16 +24,21 @@ def modify_loot_properties(sb: Statblock, loot_name, key, value):
 
 
 def make_minion(name, type_, ac=10, damage='d6 + 1', speed=30, size='Medium', features=None, physical=2, mental=0,
-                vulnerabilities=None, immunities=None, ranged=0):
-    vulnerable = f' Vulnerable to {", ".join(vulnerabilities)}.' if vulnerabilities is not None else ''
-    immune = f' Immune to {", ".join(immunities)}.' if immunities is not None else ''
-    feature = f' Has the {", ".join(features)} features.' if features is not None else ''  # should always be something in parent statblock
+                vulnerabilities=None, immunities=None, ranged=0, melee_type='bludgeoning', ranged_type='bludgeoning'):
+    # vulnerable = f'&emsp;Vulnerable to {", ".join(vulnerabilities)}.\n\n' if vulnerabilities is not None else ''
+    immune = f'&emsp;Immune to {", ".join(immunities)}.\n\n' if immunities is not None else ''
+    feature = f'&emsp;Has the {", ".join(features)} features.\n\n' if features is not None else ''  # should always be features that the parent has so user doesn't have to read more stuff
     ranged_attack = f' Ranged {ranged}/{2 * ranged} ft.' if ranged > 0 else ''
-    text = f'**{name}** *{size.capitalize()} {type_}*. AC {ac}. Speed {speed} ft.{vulnerable}{immune}{feature} Add ' \
-           f'{physical} to all attacks and STR/DEX/CON skill checks and saving throws. Add {mental} ' \
-           f'to all INT/WIS/CHA skill ' \
-           f'checks and saving throws. Melee 5 ft.{ranged_attack} Deals 8 ({damage}) with all attacks. Dies when it ' \
-           f'takes damage twice, takes damage of a type it is vulnerable to once, or is critically hit once.'
+    vuln = f', takes **{"/".join(vulnerabilities)}** damage once,' if vulnerabilities else ''
+    text = f'\n\n' \
+           f'**{name}** (*{size.capitalize()} {type_}*) \n\n' \
+           f'&emsp;**AC {ac}. Speed {speed} ft.**\n\n' \
+           f'{immune}' \
+           f'{feature}' \
+           f'&emsp;**{"+" if physical > 0 else ""}{physical} to attacks** and STR/DEX/CON rolls. ' \
+           f'{"+" if mental > 0 else ""}{mental} to INT/WIS/CHA rolls.\n\n' \
+           f'&emsp;Melee {melee_type} 5 ft.{ranged_attack} All **attacks deal 5 ({damage})**.\n\n' \
+           f'&emsp;Dies when it takes damage twice{vuln} or is crit once.\n\n'
     return text
 
 
