@@ -7,7 +7,7 @@ import re
 import io
 import math
 import logging
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from os import path
 
 package_directory = path.dirname(path.abspath(__file__))
@@ -46,6 +46,20 @@ def setup_logging(debug=True, filename=''):
         logging.basicConfig(filename=filename, level=log_level, format=log_format)
     else:
         logging.basicConfig(stream=sys.stderr, level=log_level, format=log_format)
+
+
+def ordinal(num: str):
+    if isinstance(num, int):
+        num = str(num)
+    if isinstance(num, float):
+        num = str(int(num))
+    mapping = {
+        '1': 'st',
+        '2': 'nd',
+        '3': 'rd'
+    }
+    mapping = defaultdict(lambda: 'th', mapping)
+    return f'{num}{mapping[num[-1]]}'
 
 
 class RollableTable(object):
