@@ -1,14 +1,14 @@
+# Monster Builder
+
 ## Something need doing?
 
 * Features
-    * Loot
     * Include bloodied threshold in statblock to use for future mechanics
     * Use an int like 'num_can_multiattack' for actions instead of 'can_multiattack', might allow us to do stuff like claw-claw-bite
     * Open preview in new window
     * Use pyparsing to implement multiplication, basic functions, operator precedence in the curly bracket stuff
     * Need to rework multiattack -- could add can_multiattack attribute to Actions, then set # by hit dice/desired DPR?
     * Export to Roll20
-    * Pretty horizontal rule similar to official books in preview
     * In the preview: click to roll dice, form-fill HP (so you could use this to track HP if you were only using the site)
     * Save preview PNG
     * Max AC for each type of armor?
@@ -18,27 +18,19 @@
     * on_to_markdown Callback
     * Add burrow speed
     * Handle spells?
-    * Add to_json() and flatten_json() methods for Statblock? 
+    * Add to_json() and flatten_json() methods for Statblock?
+      * We can use this for a "save/load statblock to/from file" button below the output text.
+      * Can just look like:
+         ```
+         {"original_statblock": "...",  // original markdown
+          "tags": [{"name": "Aestival", "file": "fey_means.py"}, ...]
+         }
+         ```
+      * Then to remake we just parse the original statblock and reapply the tags
 * Design/Mechanics
-    * A 'create lesser minions' or 'create lesser undead' action that does something like
-       * Create d4 Undead Minions. They have:
-          * Die if they take > 2 damage
-          * AC 12 (armor scraps)
-          * speed 30 ft.
-          * +2 to hit, d6 damage, range 80/320 ft. (shortsword/shortbow)
-          * +2 on STR/DEX/CON saves and skills
-          * -2 on INT/WIS/CHA saves and skills
-          * immunity to poison and necrotic damage
-          * immunity to the poisoned condition
-    * Similar 'create greater undead' that have + 2 to all that, and die if they take damage twice, take radiant damage, or take a critical hit
-    * Necrin shouldn't have magic resistance, that's for Constructs. Need to give them something else defining?
-    * Set minimum stats for different types?
     * Need something that's vulnerable to poison damage and the various types of damage in general
-    * Necrin should most of the time wear armor instead of having natural armor? maybe handle that with a humanoidish statblock?
-    * Maybe do something like size sets die size, hit dice set # of dice
-    * Size tags -- spritely?
+    * Kostlyavtsi should most of the time wear armor instead of having natural armor? maybe handle that with a humanoidish statblock?f
 * Text changes
-    * Figure out how to comply with FCP or OGL?
 * Code health/quality
     * Split templates into external files instead of inline in flask code
     * Move styling over into separate CSS file
@@ -50,6 +42,13 @@
 
 ## Job's done!
 
+* Maybe do something like size sets die size, hit dice set # of dice
+* Set minimum stats for different types?
+* A 'create lesser minions' or 'create lesser undead' action that does something like
+       * Create d4 Undead Minions. They have:
+* Figure out how to comply with FCP or OGL?
+* Pretty horizontal rule similar to official books in preview
+* Loot
 * Update Stablock.from_markdown() to create a new class first instead of building from dictionary
 * Fix Feature descriptions
 * Update applying tags to modify a copy of class
