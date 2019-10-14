@@ -253,8 +253,7 @@ class Statblock(object):
         values['base_ac'] = self.base_armor
         values['base_armor'] = self.base_armor
         values['base_armor_class'] = self.base_armor
-        return
-        # return parsing.build_grammar()
+        return parsing.calculate(self.armor_class_formula, values)
 
     @property
     def num_multiattacks(self):
