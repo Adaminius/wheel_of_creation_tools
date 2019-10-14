@@ -310,7 +310,7 @@ all_tags.append(Tag('petite',
 
 def apply(sb: Statblock) -> Statblock:
     if sb.armor_class_type.lower().strip() == 'natural armor':
-        sb.base_natural_armor += 2
+        sb.base_armor += 2
     else:
         sb.ability_scores['DEX'].value += 3
     sb.size -= 1
@@ -485,7 +485,7 @@ all_tags.append(Tag('sweeping tail',
 def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CHA'].value += 1
     if sb.armor_class_type.lower().strip() == 'natural armor':
-        sb.base_natural_armor += 2
+        sb.base_armor += 2
     else:
         sb.ability_scores['DEX'].value += 3
     sb.loot.append(Loot('twitching tail', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
@@ -534,7 +534,7 @@ all_tags.append(Tag('twisting antlers',
 
 def apply(sb: Statblock) -> Statblock:
     if sb.armor_class_type.lower().strip() == 'natural armor':
-        sb.base_natural_armor += 2
+        sb.base_armor += 2
     else:
         sb.ability_scores['STR'].value += 3
     sb.features.append(common_features['Charge'])
@@ -596,7 +596,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.add_damage_resistance('cold')
     sb.add_damage_vulnerability('fire')
     if sb.armor_class_type.lower().strip() == 'natural armor':
-        sb.base_natural_armor += 2
+        sb.base_armor += 2
     else:
         sb.ability_scores['CON'].value += 3
     sb.loot.append(Loot('frozen hide', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))

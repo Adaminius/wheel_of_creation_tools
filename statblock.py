@@ -79,7 +79,9 @@ class Statblock(object):
     #   Type-hinting is kind of fun, though.
     def __init__(self, name: str = None, size: int = 2, primary_type: str = 'Humanoid',
                  secondary_type: str = '',
-                 alignment: str = 'unaligned', armor_class: int = 10, armor_class_type: str = '',
+                 alignment: str = 'unaligned', base_armor: int = 10,
+                 armor_class_formula: str = 'base_armor_class + DEX',
+                 armor_class_type: str = 'natural armor',
                  hit_point_bonus: int = 0, hit_dice: Dice = None, speed: int = 30,
                  climb_speed: int = 0, burrow_speed: int = 0,
                  fly_speed: int = 0, swim_speed: int = 0, ability_scores: dict = None,
@@ -95,12 +97,13 @@ class Statblock(object):
                  **additional_skills):
 
         self.name = name if name is not None else random_name()
-        self.__size = size
+        self._size = size
         self.primary_type = primary_type
         self.secondary_type = secondary_type
         self.alignment = alignment
-        self.armor_class = armor_class
+        self.base_armor = base_armor
         self.armor_class_type = armor_class_type
+        self.armor_class_formula = armor_class_formula
         self.hit_point_bonus = hit_point_bonus
         self.hit_dice = Dice.from_string('1d8') if hit_dice is None else hit_dice
         self.speed = speed
@@ -157,9 +160,8 @@ class Statblock(object):
         self.legendary_actions = legendary_actions if legendary_actions is not None else []
 
         self.num_legendary = num_legendary
-        self.__proficiency = proficiency
+        self._proficiency = proficiency
         self.applied_tags = applied_tags if applied_tags is not None else []
-        self.base_natural_armor = 0
         self.bonus_multiattacks = 0
         self.loot = []
         self.knowledge_dc_mod = 0  # WoC game mechanic; give GMs a base idea of how difficult this monster is to find
@@ -181,6 +183,11 @@ class Statblock(object):
         values['size_dice_size'] = self.size_die_size()
         values['size_mod'] = self.size_mod()
         values['size'] = size_val_to_name[self.size]
+        values['ac'] = self.armor_class
+        values['armor_class'] = self.armor_class
+        values['base_ac'] = self.base_armor
+        values['base_armor'] = self.base_armor
+        values['base_armor_class'] = self.base_armor
         return values
 
     @property
@@ -193,7 +200,7 @@ class Statblock(object):
 
     @property
     def size(self) -> int:
-        return min(size_max, max(size_min, self.__size))
+        return min(size_max, max(size_min, self._size))
 
     @size.setter
     def size(self, size):
@@ -201,7 +208,7 @@ class Statblock(object):
             size = size.strip().lower()
             size = size[0].upper() + size[1:]
             size = size_name_to_val.get(size, 2)
-        self.__size = min(size_max, max(size_min, size))
+        self._size = min(size_max, max(size_min, size))
 
     @property
     def passive_perception(self) -> int:
@@ -219,13 +226,35 @@ class Statblock(object):
     @property
     def proficiency(self):
         """If proficiency wasn't set explicitly, calculates based on # of hit dice."""
-        if not self.__proficiency:
+        if not self._proficiency:
             return 1 + int(max(math.ceil(self.hit_dice.count / 4), 0))
-        return self.__proficiency
+        return self._proficiency
 
     @proficiency.setter
     def proficiency(self, proficiency):
-        self.__proficiency = proficiency
+        self._proficiency = proficiency
+
+    # noinspection DuplicatedCode
+    @property
+    def armor_class(self):
+        import parsing
+        values = {}
+        for ab_score in self.ability_scores.values():
+            values[ab_score.name] = ab_score.value
+            values[ab_score.short_name] = ab_score.modifier
+        for skill, skill_mod in self.skills.items():
+            values[skill] = skill_mod
+        values['proficiency'] = self.proficiency
+        values['prof'] = self.proficiency
+        values['hit_dice_count'] = self.hit_dice.count
+        values['size_die_size'] = self.size_die_size()
+        values['size_dice_size'] = self.size_die_size()
+        values['size_mod'] = self.size_mod()
+        values['base_ac'] = self.base_armor
+        values['base_armor'] = self.base_armor
+        values['base_armor_class'] = self.base_armor
+        return
+        # return parsing.build_grammar()
 
     @property
     def num_multiattacks(self):
@@ -343,10 +372,14 @@ class Statblock(object):
             curr_line = lines.pop(0)
             curr_line = re.sub(r'>\s*-?\s*\**\s*Armor Class\s*\**\s*', '', curr_line).strip().split()
             if len(curr_line) >= 2:
-                sb.armor_class = int(curr_line[0])
+                armor_class = int(curr_line[0])
                 sb.armor_class_type = ' '.join(curr_line[1:]).lstrip('(').rstrip(')')
-            elif len(curr_line) == 1:
-                sb.armor_class = int(curr_line[0])
+                # todo: implement equipment-based armor class formuls (e.g. studded leather armor -> 12 + DEX)
+                if 'natural armor' in sb.armor_class_type:
+                    sb.armor_class_formula = 'base_armor + DEX'
+            else:
+                armor_class = int(curr_line[0])
+                sb.armor_class_formula = 'base_armor + DEX'
 
             curr_line = lines.pop(0)
             curr_line = curr_line.replace('> - **Hit Points** ', '').strip().split()
@@ -406,7 +439,10 @@ class Statblock(object):
                 sb.ability_scores[ab_score.short_name] = ab_score
 
             if 'natural armor' in sb.armor_class_type:
-                sb.base_natural_armor = sb.armor_class - sb.ability_scores['DEX'].modifier
+                sb.base_armor = armor_class - sb.ability_scores['DEX'].modifier
+            else:
+                # todo implement other base armor calculations for equipment-based ACs (chainmail, etc.)
+                sb.base_armor = armor_class - sb.ability_scores['DEX'].modifier
 
             if lines[0].rstrip('>').strip().startswith('_'):
                 lines.pop(0)
@@ -526,7 +562,7 @@ class Statblock(object):
         lines.append('___')
 
         if 'natural armor' in self.armor_class_type:
-            ac_line = '- **Armor Class** {}'.format(self.base_natural_armor + self.ability_scores['DEX'].modifier)
+            ac_line = '- **Armor Class** {}'.format(self.base_armor + self.ability_scores['DEX'].modifier)
         else:
             ac_line = '- **Armor Class** {}'.format(self.armor_class)
         if self.armor_class_type:
