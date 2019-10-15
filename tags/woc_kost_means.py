@@ -386,7 +386,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.actions.append(feat)
     feat = Feature(name='Bane',
                    description_template='While a kostlyavets wields a baneblade, it may cast *bane* at '
-                                        'will as with a level {prof} spell slot, requiring no material components.',
+                                        'will as with a {prof}th level spell slot, requiring no material components.',
                    effect_hp=.1
                    )
     sb.actions.append(feat)

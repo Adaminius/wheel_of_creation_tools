@@ -810,7 +810,8 @@ class Statblock(object):
             else:
                 blockquoted_lines.append(line)
 
-        return '\n'.join(['___', '___'] + blockquoted_lines)
+        output = '\n'.join(['___', '___'] + blockquoted_lines)
+        return output.replace(' 1th', ' 1st').replace(' 2th', ' 2nd').replace(' 3th', ' 3rd')
 
     @property
     def challenge(self):
