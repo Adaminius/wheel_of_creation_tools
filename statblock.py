@@ -4,6 +4,7 @@ import math
 from collections import defaultdict
 from copy import deepcopy
 from typing import Callable  # don't remove, used in docstrings
+import parsing
 from utils import Dice, num_to_english, substitute_values
 from utils import AbilityScore
 from utils import ChallengeRating
@@ -237,7 +238,6 @@ class Statblock(object):
     # noinspection DuplicatedCode
     @property
     def armor_class(self):
-        import parsing
         values = {}
         for ab_score in self.ability_scores.values():
             values[ab_score.name] = ab_score.value

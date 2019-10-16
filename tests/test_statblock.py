@@ -23,6 +23,7 @@ def test_statblock_md_parser(setup_statblock: statblock.Statblock):
     assert sb.alignment == 'Unaligned'
     assert sb.armor_class == 12
     assert sb.armor_class_type == 'natural armor'
+    assert sb.base_armor == 10
     assert sb.hit_points == 11
     assert sb.hit_dice.count == 2
     assert sb.hit_dice.size == 8
@@ -44,7 +45,7 @@ def test_statblock_md_parser(setup_statblock: statblock.Statblock):
     assert sb.passive_perception == 8
     assert sb.languages == ['Sylvan', 'testLanguage']
     assert sb.telepathy == 100
-    assert sb.challenge.rating == '0'
+    # assert sb.challenge.rating == '0'
     assert len(sb.features) == 2
     assert sb.features[1].name == 'testAbility'
     assert sb.features[1].description_template == 'Foos bars.'
@@ -68,21 +69,21 @@ def test_apply_tags(setup_statblock: statblock.Statblock):
     assert sb.swim_speed == 15
     assert sb.climb_speed == 5
     assert tags.woc_fey_means.all_tags['lumbering'] in sb.applied_tags
-    sb = tags.woc_fey_means.all_tags['Wintry'].apply(sb)
+    sb = tags.woc_fey_means.all_tags['Brumal'].apply(sb)
     assert sb.alignment == 'Winter'
     assert 'cold' in sb.damage_resistances
     assert 'psychic' in sb.damage_resistances
-    assert tags.woc_fey_means.all_tags['Wintry'] in sb.applied_tags
-    sb = tags.woc_fey_means.all_tags['Summery'].apply(sb)
+    assert tags.woc_fey_means.all_tags['Brumal'] in sb.applied_tags
+    sb = tags.woc_fey_means.all_tags['Aestival'].apply(sb)
     assert sb.alignment == 'Summer'
     assert 'fire' in sb.damage_resistances
     assert 'psychic' in sb.damage_resistances
     assert 'cold' not in sb.damage_resistances
     assert tags.woc_fey_means.all_tags['lumbering'] in sb.applied_tags
-    assert tags.woc_fey_means.all_tags['Wintry'] not in sb.applied_tags
-    assert tags.woc_fey_means.all_tags['Summery'] in sb.applied_tags
+    assert tags.woc_fey_means.all_tags['Brumal'] not in sb.applied_tags
+    assert tags.woc_fey_means.all_tags['Aestival'] in sb.applied_tags
     assert len(sb.applied_tags) == 4
-    sb = tags.woc_fey_means.all_tags['Wintry'].apply(sb)
+    sb = tags.woc_fey_means.all_tags['Brumal'].apply(sb)
     sb = tags.woc_fey_mannerisms.all_tags['cold logic'].apply(sb)
     assert len(sb.applied_tags) == 5
     # open('test_statblock_applied.md', 'w').write(sb.to_markdown())
