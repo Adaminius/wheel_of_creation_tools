@@ -1,18 +1,16 @@
 import random
 import re
 import math
+import parsing
 from collections import defaultdict
 from copy import deepcopy
 from typing import Callable  # don't remove, used in docstrings
-import parsing
 from utils import Dice, num_to_english, substitute_values
 from utils import AbilityScore
 from utils import ChallengeRating
 from utils import Feature
 from utils import parse_table
 from utils import format_modifier
-from utils import process_operands
-from utils import damage_types
 from utils import size_min, size_max, size_name_to_val, size_val_to_name
 
 
@@ -170,6 +168,7 @@ class Statblock(object):
 
         self.original_text = original_text if original_text is not None else ''
 
+    # noinspection DuplicatedCode
     def get_substitutable_values(self):
         values = {}
         for ab_score in self.ability_scores.values():
@@ -829,9 +828,9 @@ class Statblock(object):
         damages, attack_bonuses, dcs = [0], [0], [0]
         values = self.get_substitutable_values()
         for action in self.actions:
-            dam = process_operands(substitute_values(action.damage_formula, values).split(), values)
-            att = process_operands(substitute_values(action.attack_bonus_formula, values).split(), values)
-            dc = process_operands(substitute_values(action.dc_formula, values).split(), values)
+            dam = parsing.calculate(substitute_values(action.damage_formula, values), values)
+            att = parsing.calculate(substitute_values(action.attack_bonus_formula, values), values)
+            dc = parsing.calculate(substitute_values(action.dc_formula, values), values)
             damages.append(dam)
             attack_bonuses.append(att)
             dcs.append(dc)

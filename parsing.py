@@ -54,7 +54,13 @@ fn = {
     'abs': abs,
     'round': round,
     'trunc': math.floor,
-    'sgn': lambda a: -1 if a < -epsilon else 1 if a > epsilon else 0
+    'sgn': lambda a: -1 if a < -epsilon else 1 if a > epsilon else 0,
+    'greater': lambda a, b, result_true, result_false: result_true if a > b else result_false,
+    'gequal': lambda a, b, result_true, result_false: result_true if a >= b else result_false,
+    'less': lambda a, b, result_true, result_false: result_true if a < b else result_false,
+    'lequal': lambda a, b, result_true, result_false: result_true if a <= b else result_false,
+    'equal': lambda a, b, result_true, result_false: result_true if a == b else result_false,
+    'nequal': lambda a, b, result_true, result_false: result_true if a != b else result_false,
     }
 
 
@@ -76,10 +82,10 @@ def evaluate_stack(stack: list, vals: dict):
         return fn[op](*args)
     elif op in vals:
         return float(vals[op])
-    elif op[0].isalpha():
-        raise Exception(f'Invalid identifier "{op}" while parsing stack {stack} with vals {vals}')
     elif re.search(r'\d*d\d+', op):  # matches dice
         return utils.Dice.from_string(op).upper_average()
+    elif op[0].isalpha():
+        raise Exception(f'Invalid identifier "{op}" while parsing stack {stack} with vals {vals}')
     else:
         try:
             return int(op)

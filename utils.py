@@ -7,6 +7,7 @@ import re
 import io
 import math
 import logging
+import parsing
 from collections import OrderedDict, defaultdict
 from os import path
 
@@ -399,7 +400,7 @@ class Feature(object):
         description = substitute_values(self.description_template, values)
         matches = re.findall(r'([+\-]?\d+\s+\(([A-z0-9+\-\s]+)\))', description)
         for match in matches:
-            total = max(1, process_operands([op.strip() for op in match[1].split()], values))
+            total = max(1, parsing.calculate(match[1], values))
             pretty = match[1].replace('+ -', '- ')  # turn adding negative numbers into subtracting positive
             pretty = pretty.replace('- -', '+ ')  # turn subtracting negative numbers into adding positive
             description = description.replace(match[0], '{} ({})'.format(total, pretty))
@@ -533,8 +534,7 @@ def substitute_values(template, values):
     operand_groups = re.findall(r'{([^{}]+)}',  template)
     totals = []
     for operands in operand_groups:
-        operands = [op.strip() for op in operands.split() if op.strip()]
-        totals.append(process_operands(operands, values))
+        totals.append(parsing.calculate(operands, values))
 
     match = re.search(r'{([^{}]+)}', template)
 
@@ -542,7 +542,6 @@ def substitute_values(template, values):
         while match:
             out_str = out_str.replace(match.group(0), str(totals.pop(0)))
             match = re.search(r'{([^{}]+)}', out_str)
-
     except KeyError as e:
         print('Missing substitutable values for updating statblock template (e.g. {prof + STR}).')
         print(e)

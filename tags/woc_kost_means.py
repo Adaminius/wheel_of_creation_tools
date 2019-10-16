@@ -246,7 +246,7 @@ def apply(sb: Statblock) -> Statblock:
                                         'This mount has the statistics of an elephant (CR 4), except that it is undead '
                                         'and immune to necrotic and poison damage and the frightened, charmed, '
                                         'and poisoned conditions *(Note: the mount\'s CR is **not** included in the '
-                                        'calculation for this creature\'s CR).*'
+                                        'calculation for this creature\'s CR).* '
                                         'The mount acts independently, but obeys the rider\'s mental commands.'
                    )
     sb.features.append(feat)
@@ -260,7 +260,7 @@ def apply(sb: Statblock) -> Statblock:
                                         'This mount has the statistics of a giant elk (CR 2), except that it is undead '
                                         'and immune to necrotic and poison damage and the frightened, charmed, '
                                         'and poisoned conditions *(Note: the mount\'s CR is **not** included in the '
-                                        'calculation for this creature\'s CR).*'
+                                        'calculation for this creature\'s CR).* '
                                         'The mount acts independently, but obeys the rider\'s mental commands.'
                    )
     sb.features.append(feat)
@@ -274,7 +274,7 @@ def apply(sb: Statblock) -> Statblock:
                                         'This mount has the statistics of a giant spider (CR 1), except that it is undead '
                                         'and immune to necrotic and poison damage and the frightened, charmed, '
                                         'and poisoned conditions *(Note: the mount\'s CR is **not** included in the '
-                                        'calculation for this creature\'s CR).*'
+                                        'calculation for this creature\'s CR).* '
                                         'The mount acts independently, but obeys the rider\'s mental commands.'
                    )
     sb.features.append(feat)
@@ -288,7 +288,7 @@ def apply(sb: Statblock) -> Statblock:
                                         'This mount has the statistics of a giant bat (CR 1), except that it is undead '
                                         'and immune to necrotic and poison damage and the frightened, charmed, '
                                         'and poisoned conditions *(Note: the mount\'s CR is **not** included in the '
-                                        'calculation for this creature\'s CR).*'
+                                        'calculation for this creature\'s CR).* '
                                         'The mount acts independently, but obeys the rider\'s mental commands.'
                    )
     sb.features.append(feat)
@@ -302,7 +302,7 @@ def apply(sb: Statblock) -> Statblock:
                                         'This mount has the statistics of a giant scorpion (CR 1), except that it is undead '
                                         'and immune to necrotic and poison damage and the frightened, charmed, '
                                         'and poisoned conditions *(Note: the mount\'s CR is **not** included in the '
-                                        'calculation for this creature\'s CR).*'
+                                        'calculation for this creature\'s CR).* '
                                         'The mount acts independently, but obeys the rider\'s mental commands.'
 
                    )
@@ -315,13 +315,42 @@ all_tags.append(Tag('chitinous mount', 'rides into battle on a giant scorpion-li
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Staff of Shadows',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({prof - 1}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
     feat = Feature(name='Shadow Bolt',
                    description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({prof - 1}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
+                   can_multiattack=True,
+                   )
+    sb.actions.append(feat)
+    feat = Feature(name='Darkness',
+                   description_template='While a kostlyavets wields a staff of shadows, it may cast *darkness* at '
+                                        'will, requiring no material components.')
+    sb.actions.append(feat)
+    sb.loot.append(Loot('staff of shadows',
+                        properties={'wieldable': lambda s:
+                                    f'If wielded by a creature other than a kostlyavets, acts as a quarterstaff '
+                                    f'that deals {s.proficiency - 1}d6 necrotic damage instead of its '
+                                    f'regular damage and turns to ash '
+                                    f'at the end of the first combat it hits an enemy in.'
+                                    }))
+    return sb
+all_tags.append(Tag('staff of shadows',
+                    'add necrotic attacks; cast darkness at will',
+                    on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Staff of Shadows',
+                   description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
+                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
+                   can_multiattack=True,
+                   )
+    sb.actions.append(feat)
+    feat = Feature(name='Shadow Bolt',
+                   description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
+                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
@@ -344,13 +373,13 @@ all_tags.append(Tag('staff of shadows',
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Staff of Silence',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({prof - 1}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
     feat = Feature(name='Shadow Bolt',
                    description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({prof - 1}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
@@ -372,35 +401,36 @@ all_tags.append(Tag('staff of silence',
 
 
 def apply(sb: Statblock) -> Statblock:
-    feat = Feature(name='Baneblade',
+    feat = Feature(name='Ethereal Blade',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({prof - 1}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) cold damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
-    feat = Feature(name='Shadow Bolt',
+    feat = Feature(name='Icy Touch',
                    description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({prof - 1}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) cold damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
-    feat = Feature(name='Bane',
-                   description_template='While a kostlyavets wields a baneblade, it may cast *bane* at '
-                                        'will as with a {prof}th level spell slot, requiring no material components.',
+    feat = Feature(name='Misty Step',
+                   description_template='While a kostlyavets wields an ethereal blade, it may cast *misty step* at '
+                                        'at will, requiring no material components.',
                    effect_hp=.1
                    )
     sb.actions.append(feat)
-    sb.loot.append(Loot('baneblade',
+    sb.loot.append(Loot('ethereal blade',
                         properties={'wieldable': lambda s:
                                     f'If wielded by a creature other than a kostlyavets, acts as a longsword '
-                                    f'that deals {s.proficiency - 1}d8 necrotic damage instead of its '
+                                    f'that deals {s.proficiency - 1}d8 cold damage instead of its '
                                     f'regular damage and turns to ash '
                                     f'at the end of the first combat it hits an enemy in.'
                                     }))
     return sb
-all_tags.append(Tag('baneblade',
-                    'add necrotic attacks; cast bane at will',
-                    on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12))
+all_tags.append(Tag('ethereal blade',
+                    'add cold attacks; cast misty step at will',
+                    on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12,
+                    requires={'ghostly'}))
 
 
 all_tags = dict([(tag.name, tag) for tag in all_tags])

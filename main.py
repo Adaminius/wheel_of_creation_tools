@@ -178,8 +178,8 @@ def get_all_statblocks():
     return out
 
 def prepare_markdown(text: str) -> str:
-    text = re.sub('___\s+___\n', '', text)
-    text = re.sub('> ___', '\n> ___\n', text)
+    text = re.sub(r'___\s+___\n', '', text)
+    text = re.sub(r'> ___', '\n> ___\n', text)
     text = text.replace('>', '> ')
     text = text.replace('>  ', '> ')
     return text
