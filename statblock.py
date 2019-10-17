@@ -958,7 +958,7 @@ class Tag(object):
             remove (Callable[[Statblock], Statblock]):  Callable that should return a Statblock with the effects of
                                                         this Tag undone. By default, this is done by taking the base
                                                         statblock and reapplying every tag but this one.
-            requires (set): Set of tag names which this Tag requires in order to be applied
+            requires (set): Set of tag names which this Tag requires one of in order to be applied
         """
         self.name = name
         self.effect_text = effect_text
@@ -1002,7 +1002,7 @@ class Tag(object):
 
         if self.requires:
             old_names = [tag.name for tag in statblock.applied_tags]
-            if not all([required_tag in old_names for required_tag in self.requires]):
+            if not any([required_tag in old_names for required_tag in self.requires]):
                 return statblock
 
         for old_tag in statblock.applied_tags:

@@ -241,7 +241,7 @@ function selectTag(filename, tagName, stacks, overwritten) {
 }
 
 /**
- * If a tag has other tags in its Requirements column, check to see if all required tags are already present
+ * If a tag has other tags in its Requirements column, check to see if at least one required tag is present
  * @param tagNode - DOM node of the tag we want to check requirements on
  * @param existingTags - names of the tags we've already applied
  * @returns {Boolean}
@@ -257,12 +257,12 @@ function hasRequiredTags(tagNode, existingTags) {
     });
     existingTags = cleanedExistingTags;
 
-    let requirementsFailed = false;
+    let requirementsFailed = true;
     requiredTags.forEach(function (requiredTag) {
-        if (requirementsFailed)
+        if (!requirementsFailed)
             return;
-        if (existingTags.indexOf(requiredTag) < 0)
-            requirementsFailed = true;
+        if (existingTags.indexOf(requiredTag) >= 0)
+            requirementsFailed = false;
     });
     return !requirementsFailed;
 }

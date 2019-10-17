@@ -17,6 +17,12 @@ ever-present threat in the Ring of Earth, and though their ultimate goals are un
 a common purpose.
 """
 
+escorts = {'zombie escort', 'skeletal escort', 'mummified escort', 'ghostly escort',
+           'vampiric escort', 'ghoulish escort'}
+hordes = {'zombie horde', 'skeletal horde', 'mummified horde', 'ghostly horde',
+          'vampiric horde', 'ghoulish horde'}
+escorts_and_hordes = escorts.union(hordes)
+
 def modify_loot_properties(sb: Statblock, loot_name, key, value):
     for loot in sb.loot:
         if loot.name.lower().strip() == loot_name.lower().strip():
@@ -87,13 +93,6 @@ all_tags.append(Tag('Kostlyavets',
                     'vulnerability to radiant damage',
                     weight=0, on_apply=apply))
 
-
-def apply(sb: Statblock) -> Statblock:
-    sb.ability_scores['INT'].value += 2
-    return sb
-all_tags.append(Tag('foul cunning', '+2 to Intelligence', on_apply=apply, stacks=True))
-
-
 def apply(sb: Statblock) -> Statblock:
     sb.features.append(common_features['Undead Fortitude'])
     sb.ability_scores['STR'].value += 2
@@ -101,7 +100,6 @@ def apply(sb: Statblock) -> Statblock:
     return sb
 all_tags.append(Tag('meaty', 'gain the Undead Fortitude feature; +4 Constitution; +2 Strength', on_apply=apply,
                     weight=40, overwritten_by={'undead form'}, overwrites={'undead form'}))
-
 
 def apply(sb: Statblock) -> Statblock:
     sb.add_damage_resistance('piercing')
@@ -184,7 +182,7 @@ def apply(sb: Statblock) -> Statblock:
         condition_immunities=['charmed', 'frightened', 'poisoned']
     )
     feat = Feature(name='Summon Zombie Entourage',
-                   description_template='This creature can conjure a group of 2 (1d4 + 1) zombie minions 1/day. '
+                   description_template='This creature can conjure a group of 4 zombie minions 1/day. '
                                         'Each appears in an unoccupied space within 30 ft. of this creature. '
                                         'They follow this creature\'s mental commands '
                                         'and die if this creature dies, this creature moves more than 1 mile away, '
@@ -204,6 +202,38 @@ all_tags.append(Tag('zombie escort', 'can conjure a small group of zombie minion
 
 def apply(sb: Statblock) -> Statblock:
     minion = make_minion(
+        name='Zombie Minion',
+        type_='undead',
+        ac='{7 + prof}',
+        damage='d4 + {prof}',
+        speed=20,
+        physical='{prof}',
+        mental='{prof - 4}',
+        vulnerabilities=['radiant'],
+        damage_immunities=['poison', 'necrotic'],
+        condition_immunities=['charmed', 'frightened', 'poisoned']
+    )
+    feat = Feature(name='Summon Zombie Horde',
+                   description_template='This creature can conjure a group of 2 (1d4 + 8) zombie minions 1/day. '
+                                        'Each appears in an unoccupied space within 60 ft. of this creature. '
+                                        'They follow this creature\'s mental commands '
+                                        'and die if this creature dies, this creature moves more than 1 mile away, '
+                                        'or at dawn of the next day. One minion may '
+                                        'take a turn after a player character ends their turn. Minions can\'t take '
+                                        'more than one '
+                                        'turn each round. ' 
+                                        f'Their statistics are: {minion}',
+                   can_multiattack=False,
+                   effect_damage=.75,
+                   effect_hp=.5,
+                   )
+    sb.actions.append(feat)
+    return sb
+all_tags.append(Tag('zombie horde', 'can conjure a large group of zombie minions',
+                    on_apply=apply, weight=10, overwritten_by={'minions'}, overwrites={'minions'}))
+
+def apply(sb: Statblock) -> Statblock:
+    minion = make_minion(
         name='Skeleton Minion',
         size='Medium',
         type_='undead',
@@ -219,7 +249,7 @@ def apply(sb: Statblock) -> Statblock:
         condition_immunities=['charmed', 'frightened', 'poisoned']
     )
     feat = Feature(name='Summon Skeletal Entourage',
-                   description_template='This creature can conjure a group of 2 (1d4 + 1) skeleton minions 1/day. '
+                   description_template='This creature can conjure a group of 4 skeleton minions 1/day. '
                                         'Each appears in an unoccupied space within 30 ft. of this creature. '
                                         'They follow this creature\'s mental commands '
                                         'and die if this creature dies, this creature moves more than 1 mile away, '
@@ -237,8 +267,77 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('skeletal escort', 'can conjure a small group of skeleton minions',
                     on_apply=apply, weight=15, overwritten_by={'minions'}, overwrites={'minions'}))
 
-# todo skeleton horde, summons like 3d4 + 3, larger effect on damage/hp
-# todo zombie horde, summons like 3d4 + 3
+def apply(sb: Statblock) -> Statblock:
+    minion = make_minion(
+        name='Skeleton Minion',
+        size='Medium',
+        type_='undead',
+        ac='{9 + prof}',
+        damage='d4 + {prof}',
+        ranged=30,
+        ranged_type='piercing',
+        speed=30,
+        physical='{prof}',
+        mental='{prof - 4}',
+        vulnerabilities=['bludgeoning'],
+        damage_immunities=['poison', 'necrotic'],
+        condition_immunities=['charmed', 'frightened', 'poisoned']
+    )
+    feat = Feature(name='Summon Skeletal Horde',
+                   description_template='This creature can conjure a group of 2 (1d4 + 8) skeleton minions 1/day. '
+                                        'Each appears in an unoccupied space within 30 ft. of this creature. '
+                                        'They follow this creature\'s mental commands '
+                                        'and die if this creature dies, this creature moves more than 1 mile away, '
+                                        'or at dawn of the next day. One minion may '
+                                        'take a turn after a player character ends their turn. Minions can\'t take '
+                                        'more than one '
+                                        'turn each round. ' 
+                                        f'Their statistics are: {minion}',
+                   can_multiattack=False,
+                   effect_damage=.75,
+                   effect_hp=.5,
+                   )
+    sb.actions.append(feat)
+    return sb
+all_tags.append(Tag('skeletal horde', 'can conjure a large group of skeleton minions',
+                    on_apply=apply, weight=10, overwritten_by={'minions'}, overwrites={'minions'}))
+
+
+
+def apply(sb: Statblock) -> Statblock:
+    minion = make_minion(
+        name='Ghost Minion',
+        size='Medium',
+        type_='undead',
+        ac='{12 + prof}',
+        damage='d4 + {prof}',
+        ranged=30,
+        ranged_type='cold',
+        speed=40,
+        physical='{prof - 2}',
+        mental='{prof}',
+        vulnerabilities=['psychic'],
+        damage_immunities=['poison', 'necrotic', 'cold'],
+        condition_immunities=['poisoned', 'grappled', 'prone']
+    )
+    feat = Feature(name='Summon Ghostly Entourage',
+                   description_template='This creature can conjure a group of 4 ghost minions 1/day. '
+                                        'Each appears in an unoccupied space within 30 ft. of this creature. '
+                                        'They follow this creature\'s mental commands '
+                                        'and die if this creature dies, this creature moves more than 1 mile away, '
+                                        'or at dawn of the next day. One minion may '
+                                        'take a turn after a player character ends their turn. Minions can\'t take '
+                                        'more than one '
+                                        'turn each round. ' 
+                                        f'Their statistics are: {minion}',
+                   can_multiattack=False,
+                   effect_damage=.5,
+                   effect_hp=.3,
+                   )
+    sb.actions.append(feat)
+    return sb
+all_tags.append(Tag('ghostly escort', 'can conjure a small group of ghost minions',
+                    on_apply=apply, weight=15, overwritten_by={'minions'}, overwrites={'minions'}))
 
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Elephantine Mount',
@@ -315,13 +414,13 @@ all_tags.append(Tag('chitinous mount', 'rides into battle on a giant scorpion-li
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Staff of Shadows',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
     feat = Feature(name='Shadow Bolt',
                    description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
@@ -332,7 +431,7 @@ def apply(sb: Statblock) -> Statblock:
     sb.loot.append(Loot('staff of shadows',
                         properties={'wieldable': lambda s:
                                     f'If wielded by a creature other than a kostlyavets, acts as a quarterstaff '
-                                    f'that deals {s.proficiency - 1}d6 necrotic damage instead of its '
+                                    f'that deals {max(s.proficiency - 1, 1)}d6 necrotic damage instead of its '
                                     f'regular damage and turns to ash '
                                     f'at the end of the first combat it hits an enemy in.'
                                     }))
@@ -342,26 +441,26 @@ all_tags.append(Tag('staff of shadows',
                     on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12))
 
 def apply(sb: Statblock) -> Statblock:
-    feat = Feature(name='Staff of Shadows',
+    feat = Feature(name='Staff of Flames',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) fire damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
-    feat = Feature(name='Shadow Bolt',
+    feat = Feature(name='Fiery Bolt',
                    description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) fire damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
-    feat = Feature(name='Darkness',
-                   description_template='While a kostlyavets wields a staff of shadows, it may cast *darkness* at '
-                                        'will, requiring no material components.')
+    feat = Feature(name='Flaming Sphere',
+                   description_template='While a kostlyavets wields a staff of flames, it may cast *flaming sphere* at '
+                                        'will at {max(prof, 2)}th level, requiring no material components.')
     sb.actions.append(feat)
-    sb.loot.append(Loot('staff of shadows',
+    sb.loot.append(Loot('staff of flames',
                         properties={'wieldable': lambda s:
                                     f'If wielded by a creature other than a kostlyavets, acts as a quarterstaff '
-                                    f'that deals {s.proficiency - 1}d6 necrotic damage instead of its '
+                                    f'that deals {max(s.proficiency - 1, 1)}d6 fire damage instead of its '
                                     f'regular damage and turns to ash '
                                     f'at the end of the first combat it hits an enemy in.'
                                     }))
@@ -373,24 +472,24 @@ all_tags.append(Tag('staff of shadows',
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Staff of Silence',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
     feat = Feature(name='Shadow Bolt',
                    description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
     feat = Feature(name='Silence',
                    description_template='While a kostlyavets wields a staff of shadows, it may cast *silence* at '
-                                        'will.')
+                                        'will, requiring no material components.')
     sb.actions.append(feat)
     sb.loot.append(Loot('staff of shadows',
                         properties={'wieldable': lambda s:
                                     f'If wielded by a creature other than a kostlyavets, acts as a quarterstaff '
-                                    f'that deals {s.proficiency - 1}d6 necrotic damage instead of its '
+                                    f'that deals {max(s.proficiency - 1, 1)}d6 necrotic damage instead of its '
                                     f'regular damage and turns to ash '
                                     f'at the end of the first combat it hits an enemy in.'
                                     }))
@@ -403,13 +502,13 @@ all_tags.append(Tag('staff of silence',
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Ethereal Blade',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) cold damage. ',
+                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) cold damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
     feat = Feature(name='Icy Touch',
                    description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({min(prof - 1, 1)}d{size_die_size} + {INT}) cold damage. ',
+                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) cold damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
@@ -418,11 +517,11 @@ def apply(sb: Statblock) -> Statblock:
                                         'at will, requiring no material components.',
                    effect_hp=.1
                    )
-    sb.actions.append(feat)
+    sb.bonus_actions.append(feat)
     sb.loot.append(Loot('ethereal blade',
                         properties={'wieldable': lambda s:
                                     f'If wielded by a creature other than a kostlyavets, acts as a longsword '
-                                    f'that deals {s.proficiency - 1}d8 cold damage instead of its '
+                                    f'that deals {max(s.proficiency - 1, 1)}d8 cold damage instead of its '
                                     f'regular damage and turns to ash '
                                     f'at the end of the first combat it hits an enemy in.'
                                     }))
@@ -431,6 +530,33 @@ all_tags.append(Tag('ethereal blade',
                     'add cold attacks; cast misty step at will',
                     on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12,
                     requires={'ghostly'}))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Vampiric Sacrifice',
+                   description_template='When a minion under this creature\'s control within 60 ft. would take damage, '
+                                        'this creature may sacrifice it to '
+                                        'gain 5 ({max(prof - 1, 1)}d8 + {max(prof - 1, 1)}) temporary hitpoints. '
+                                        'These temporary hitpoints '
+                                        'are lost at dawn.',
+                   )
+    sb.reactions.append(feat)
+    return sb
+all_tags.append(Tag('vampiric rune',
+                    'sacrifice a minion to gain temp hp',
+                    on_apply=apply, overwrites={'rune'}, overwritten_by={'rune'}, weight=12,
+                    requires=escorts_and_hordes))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Abjuring Sacrifice',
+                   description_template='This creature may sacrifice a minion under its control within 60 ft. to '
+                                        'cast *counterspell* at {max(prof, 3)}th level.',
+                   )
+    sb.reactions.append(feat)
+    return sb
+all_tags.append(Tag('abjuring rune',
+                    'sacrifice a minion to cast counterspell',
+                    on_apply=apply, overwrites={'rune'}, overwritten_by={'rune'}, weight=12,
+                    requires=escorts_and_hordes))
 
 
 all_tags = dict([(tag.name, tag) for tag in all_tags])
@@ -441,9 +567,7 @@ all_tags = dict([(tag.name, tag) for tag in all_tags])
 # spell should generally alter the battlefield in some way; at will/multiple use
 
 # to add:
-# flaming sphere?
 # web
-# misty step?
 # warding wind?
 
 # todo fly speed for ghostly?
@@ -454,5 +578,3 @@ all_tags = dict([(tag.name, tag) for tag in all_tags])
 # counterspell?
 
 # todo add ritual knives (or something like that): sacrifice minions for effects
-
-# todo implement ordinals?
