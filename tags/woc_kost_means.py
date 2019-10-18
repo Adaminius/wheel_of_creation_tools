@@ -20,7 +20,7 @@ a common purpose.
 escorts = {'zombie escort', 'skeletal escort', 'mummified escort', 'ghostly escort',
            'vampiric escort', 'ghoulish escort'}
 hordes = {'zombie horde', 'skeletal horde', 'mummified horde', 'ghostly horde',
-          'vampiric horde', 'ghoulish horde'}
+          'ghoulish horde'}
 escorts_and_hordes = escorts.union(hordes)
 
 def modify_loot_properties(sb: Statblock, loot_name, key, value):
@@ -102,8 +102,7 @@ all_tags.append(Tag('meaty', 'gain the Undead Fortitude feature; +4 Constitution
                     weight=40, overwritten_by={'undead form'}, overwrites={'undead form'}))
 
 def apply(sb: Statblock) -> Statblock:
-    sb.add_damage_resistance('piercing')
-    sb.add_damage_resistance('slashing')
+    sb.add_damage_resistance('piercing and slashing')
     sb.add_damage_vulnerability('bludgeoning')
     sb.ability_scores['DEX'].value += 4
     sb.ability_scores['CON'].value += 2
@@ -225,7 +224,7 @@ def apply(sb: Statblock) -> Statblock:
                                         f'Their statistics are: {minion}',
                    can_multiattack=False,
                    effect_damage=.75,
-                   effect_hp=.5,
+                   effect_hp=.4,
                    )
     sb.actions.append(feat)
     return sb
@@ -295,14 +294,12 @@ def apply(sb: Statblock) -> Statblock:
                                         f'Their statistics are: {minion}',
                    can_multiattack=False,
                    effect_damage=.75,
-                   effect_hp=.5,
+                   effect_hp=.4,
                    )
     sb.actions.append(feat)
     return sb
 all_tags.append(Tag('skeletal horde', 'can conjure a large group of skeleton minions',
                     on_apply=apply, weight=10, overwritten_by={'minions'}, overwrites={'minions'}))
-
-
 
 def apply(sb: Statblock) -> Statblock:
     minion = make_minion(
@@ -410,36 +407,6 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('chitinous mount', 'rides into battle on a giant scorpion-like undead creature',
                     on_apply=apply, weight=8, overwritten_by={'mount'}, overwrites={'mount'}))
 
-
-def apply(sb: Statblock) -> Statblock:
-    feat = Feature(name='Staff of Shadows',
-                   description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
-                   can_multiattack=True,
-                   )
-    sb.actions.append(feat)
-    feat = Feature(name='Shadow Bolt',
-                   description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
-                   can_multiattack=True,
-                   )
-    sb.actions.append(feat)
-    feat = Feature(name='Darkness',
-                   description_template='While a kostlyavets wields a staff of shadows, it may cast *darkness* at '
-                                        'will, requiring no material components.')
-    sb.actions.append(feat)
-    sb.loot.append(Loot('staff of shadows',
-                        properties={'wieldable': lambda s:
-                                    f'If wielded by a creature other than a kostlyavets, acts as a quarterstaff '
-                                    f'that deals {max(s.proficiency - 1, 1)}d6 necrotic damage instead of its '
-                                    f'regular damage and turns to ash '
-                                    f'at the end of the first combat it hits an enemy in.'
-                                    }))
-    return sb
-all_tags.append(Tag('staff of shadows',
-                    'add necrotic attacks; cast darkness at will',
-                    on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12))
-
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Staff of Flames',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
@@ -498,7 +465,6 @@ all_tags.append(Tag('staff of silence',
                     'add necrotic attacks; cast silence at will',
                     on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12))
 
-
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Ethereal Blade',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
@@ -513,7 +479,7 @@ def apply(sb: Statblock) -> Statblock:
                    )
     sb.actions.append(feat)
     feat = Feature(name='Misty Step',
-                   description_template='While a kostlyavets wields an ethereal blade, it may cast *misty step* at '
+                   description_template='While a kostlyavets wields an ethereal blade, it may cast *misty step* '
                                         'at will, requiring no material components.',
                    effect_hp=.1
                    )
@@ -530,6 +496,38 @@ all_tags.append(Tag('ethereal blade',
                     'add cold attacks; cast misty step at will',
                     on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12,
                     requires={'ghostly'}))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Burning Blade',
+                   description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
+                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) fire damage. ',
+                   can_multiattack=True,
+                   )
+    sb.actions.append(feat)
+    feat = Feature(name='Fiery Bolt',
+                   description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
+                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) fire damage. ',
+                   can_multiattack=True,
+                   )
+    sb.actions.append(feat)
+    feat = Feature(name='Flaming Sphere',
+                   description_template='While a kostlyavets wields a burning blade, it may cast *flaming sphere*'
+                                        ' at {max(2, prof)}th level'
+                                        'at will, requiring no material components.',
+                   effect_damage=.25
+                   )
+    sb.actions.append(feat)
+    sb.loot.append(Loot('burning blade',
+                        properties={'wieldable': lambda s:
+                                    f'If wielded by a creature other than a kostlyavets, acts as a longsword '
+                                    f'that deals {max(s.proficiency - 1, 1)}d8 fire damage instead of its '
+                                    f'regular damage and turns to ash '
+                                    f'at the end of the first combat it hits an enemy in.'
+                                    }))
+    return sb
+all_tags.append(Tag('burning blade',
+                    'add fire attacks; cast burning blade at will',
+                    on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12,))
 
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Vampiric Sacrifice',
@@ -572,9 +570,17 @@ all_tags = dict([(tag.name, tag) for tag in all_tags])
 
 # todo fly speed for ghostly?
 # todo mummy minions
-# todo ghost minions
 
 # todo add trinkets: single/limited use spell
 # counterspell?
 
 # todo add ritual knives (or something like that): sacrifice minions for effects
+# todo scaling REALLy needs work
+# todo scaling REALLY needs work
+# todo scaling REALLY needs work
+# todo scaling REALLY needs work
+# todo scaling really needs work
+# todo scaling really needs work
+# todo scaling really needs work
+# todo scaling really needs work
+# todo scaling really needs work

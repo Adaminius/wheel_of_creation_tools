@@ -174,13 +174,16 @@ all_tags.append(Tag('crow wings',
                     on_apply=apply, overwrites={'wings'}, overwritten_by={'wings'}, weight=3))
 
 def apply(sb: Statblock) -> Statblock:
+    def nearest_five(n):
+        return int(n / 5) * 5
+
     sb.speed = max(10, sb.speed - 5)
-    sb.fly_speed = max(20, 2 * sb.speed)
+    sb.fly_speed = max(20, nearest_five(1.5 * sb.speed))
     sb.ability_scores['CHA'].value += 2
     sb.loot.append(Loot('bat wings', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('bat wings',
-                    'subtract 5 ft. from walking speed; add a fly speed equal to twice walking speed; +2 to Charisma',
+                    'subtract 5 ft. from walking speed; add a fly speed equal to 1.5x walking speed; +2 to Charisma',
                     on_apply=apply, overwrites={'wings'}, overwritten_by={'wings'}, weight=3))
 
 def apply(sb: Statblock) -> Statblock:
@@ -732,6 +735,20 @@ all_tags.append(Tag('poison claws',
                     'add a Poison Claws melee attack',
                     on_apply=apply, overwrites={'claws'}, overwritten_by={'claws'}, weight=12))
 
+def apply(sb: Statblock) -> Statblock:
+    claws = Feature(name='Tunneling Claws',
+                    description_template='*Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. '
+                                         '*Hit:* 7 (1d{size_die_size} + {STR}) slashing damage.',
+                    can_multiattack=True
+                    )
+    sb.actions.append(claws)
+    sb.burrow_speed += 20
+    sb.loot.append(Loot('tunneling claws', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('tunneling claws',
+                    'add a tunneling claws melee attack; add 20 ft. burrowing speed',
+                    on_apply=apply, overwrites={'claws'}, overwritten_by={'claws'}, weight=12))
+
 # if we're using so much charisma, need more charisma abilities like magic attacks
 # spritely
 # gouging tusks
@@ -749,7 +766,6 @@ all_tags.append(Tag('poison claws',
 # hooves/feet
 # snout/face
 # twin-headed
-# tunneling claws
 # tree stride
 # mimic voices
 # voice weapon

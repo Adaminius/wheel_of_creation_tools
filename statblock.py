@@ -858,7 +858,7 @@ class Statblock(object):
 
         has_bps_immun = False
         for immun in self.damage_immunities:
-            if 'slash' in immun.lower() and 'pier' in immun.lower():
+            if 'blud' in immun.lower() and 'slash' in immun.lower() and 'pier' in immun.lower():
                 has_bps_immun = True
         if len(self.damage_immunities) >= 2 or has_bps_immun:
             if self.hit_dice.count < 11:
@@ -868,7 +868,7 @@ class Statblock(object):
 
         has_bps_resist = False
         for resist in self.damage_resistances:
-            if 'slash' in resist.lower() and 'pier' in resist.lower():
+            if 'blud' in resist.lower() and 'slash' in resist.lower() and 'pier' in resist.lower():
                 has_bps_resist = True
         if len(self.damage_resistances) >= 2 or has_bps_resist:
             if self.hit_dice.count < 11:

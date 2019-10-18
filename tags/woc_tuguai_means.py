@@ -249,8 +249,28 @@ def apply(sb: Statblock) -> Statblock:
     modify_loot_properties(sb, 'jadeheart', 'shadowy', lambda s: 'shadowy')
     return sb
 all_tags.append(Tag('cloaking field',
-                    'add the Cloak bonus action',
+                    'turn invisible as a bonus action',
                     on_apply=apply, overwrites={'field'}, overwritten_by={'field'}, weight=12))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Deploy Sentry Wards',
+                   description_template='(2/short rest) This creature deploys d4 small runestones with AC 5 and 5 '
+                                        'hitpoints '
+                                        'each into unoccupied spaces this creature can see within 60 ft. '
+                                        'Each runestone has truesight 15 ft., cannot see further than 15 ft., and '
+                                        'has no other senses. While this creature is within 1 mile of a runestone it '
+                                        'deployed, it can see through the runestone in addition to its own senses. '
+                                        'The runestones cease to function if this creature uses this ability again.',
+                   effect_hp=.25,
+                   )
+    sb.actions.append(feat)
+    sb.features.append(make_destructible_feature('Sentry Wards',
+                                                 already_has_destructible=has_any_destructible(sb)))
+    modify_loot_properties(sb, 'jadeheart', 'psychic', lambda s: 'psychic')
+    return sb
+all_tags.append(Tag('sentry wards',
+                    'can place d4 runestones it has truesight from',
+                    on_apply=apply, overwrites={'wards'}, overwritten_by={'wards'}, weight=12))
 
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Reinforced Plating',
@@ -264,6 +284,17 @@ def apply(sb: Statblock) -> Statblock:
     return sb
 all_tags.append(Tag('reinforced plating',
                     'all bludgeoning/piercing/slashing damage reduced by 3',
+                    on_apply=apply, overwrites={'plating'}, overwritten_by={'plating'}, weight=12))
+
+def apply(sb: Statblock) -> Statblock:
+    sb.add_damage_resistance('radiant')
+    sb.add_damage_resistance('radiant')
+    sb.add_damage_resistance('fire')
+    sb.loot.append(Loot('celadon plating', properties={'dc': lambda s: f'DC {s.base_knowledge_dc} Refine check with '
+                                                                       f'mason\'s tools or smith\'s tools to extract'}))
+    return sb
+all_tags.append(Tag('reflective coating',
+                    'add immunity to radiant damage; add resistance to fire damage',
                     on_apply=apply, overwrites={'plating'}, overwritten_by={'plating'}, weight=12))
 
 def apply(sb: Statblock) -> Statblock:
