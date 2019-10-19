@@ -48,6 +48,13 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('beautiful', '+2 to Charisma', on_apply=apply))
 
 def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Snow Camouflage', description_template='This creature has advantage on Dexterity (Stealth) '
+                                                                'made to hide in snowy terrain.')
+    sb.features.append(feat)
+    return sb
+all_tags.append(Tag('snow camouflage', 'advantage to hide in snowy terrain', on_apply=apply, requires={'Brumal'}))
+
+def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CHA'].value += 2
     beckon = Feature(name='Beckon', description_template=
                      'This creature targets one humanoid, beast, or giant it can see within 30 ft. of it and performs '

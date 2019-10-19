@@ -92,6 +92,27 @@ all_tags.append(Tag('fire ray',
                     on_apply=apply, overwrites={'ranged_arm'}, overwritten_by={'ranged_arm'}, weight=12))
 
 def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Lightning Ray (Recharge 5-6)',
+                   description_template='This creature raises an appendage and unleashes a blast of lightning in a 60-foot '
+                                        'line that is 5 feet wide. Each creature in the line must make a '
+                                        'DC {8 + CON + prof} Dexterity saving throw, taking 1 ({prof}d{size_die_size}) '
+                                        'lightning damage on a failed save, or half as much damage on a successful one. '
+                                        'In addition, any creature that is not immune to lightning and that fails this '
+                                        'saving throw can\'t take reactions until the start of this creature\'s next '
+                                        'turn and drop whatever they are holding.',
+                   can_multiattack=False,
+                   )
+    sb.actions.append(feat)
+    sb.add_damage_resistance('lightning')
+    modify_loot_properties(sb, 'jadeheart', 'elemental', lambda s: 'elemental')
+    sb.features.append(make_destructible_feature('Lightning Ray',
+                                                 already_has_destructible=has_any_destructible(sb)))
+    return sb
+all_tags.append(Tag('lightning ray',
+                    'add a Lightning Ray action; add resistance to lightning damage',
+                    on_apply=apply, overwrites={'ranged_arm'}, overwritten_by={'ranged_arm'}, weight=12))
+
+def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Ice Ray (Recharge 5-6)',
                    description_template='This creature raises an appendage and unleashes an icy blast in a 60-foot '
                                         'line that is 5 feet wide. Each creature in the line must make a '

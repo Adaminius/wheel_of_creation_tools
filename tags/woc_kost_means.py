@@ -410,13 +410,13 @@ all_tags.append(Tag('chitinous mount', 'rides into battle on a giant scorpion-li
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Staff of Flames',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) fire damage. ',
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) fire damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
     feat = Feature(name='Fiery Bolt',
                    description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) fire damage. ',
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) fire damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
@@ -432,20 +432,20 @@ def apply(sb: Statblock) -> Statblock:
                                     f'at the end of the first combat it hits an enemy in.'
                                     }))
     return sb
-all_tags.append(Tag('staff of shadows',
-                    'add necrotic attacks; cast darkness at will',
+all_tags.append(Tag('staff of flames',
+                    'add fire attacks; cast flaming sphere at will',
                     on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12))
 
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Staff of Silence',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) necrotic damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
     feat = Feature(name='Shadow Bolt',
                    description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) necrotic damage. ',
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) necrotic damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
@@ -468,13 +468,13 @@ all_tags.append(Tag('staff of silence',
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Ethereal Blade',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) cold damage. ',
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) cold damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
     feat = Feature(name='Icy Touch',
                    description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) cold damage. ',
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) cold damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
@@ -500,13 +500,13 @@ all_tags.append(Tag('ethereal blade',
 def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Burning Blade',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
-                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) fire damage. ',
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) fire damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
     feat = Feature(name='Fiery Bolt',
                    description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
-                                        '*Hit:* 7 ({max(prof - 1, 1)}d{size_die_size} + {INT}) fire damage. ',
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) fire damage. ',
                    can_multiattack=True,
                    )
     sb.actions.append(feat)
