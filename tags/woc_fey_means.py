@@ -590,7 +590,7 @@ def apply(sb: Statblock) -> Statblock:
                      description_template='The creature exhales a freezing gust of wind in a 30 ft. cone. Each '
                                           'creature in that area must make a DC {8 + prof + CHA} Constitution '
                                           'saving throw. On a failed saving throw, the creature is pushed back 15 ft. '
-                                          'and takes 5 ({prof + prof - 1}d6) cold damage. On a success, it isn\'t pushed '
+                                          'and takes 5 ({prof}d6) cold damage. On a success, it isn\'t pushed '
                                           'and takes half as much damage.',
                      can_multiattack=False
                      )
@@ -600,6 +600,43 @@ def apply(sb: Statblock) -> Statblock:
 all_tags.append(Tag('icy breath',
                     'add an Icy Breath action',
                     on_apply=apply, overwrites={'breath'}, overwritten_by={'breath'}, weight=10, requires={'Brumal'}))
+
+def apply(sb: Statblock) -> Statblock:
+    attack = Feature(name='Fiery Breath (Recharge 5-6)',
+                     # todo: if we implement a better op parser, could scale the cone from 15 to 60 ft.
+                     description_template='The creature exhales a gout of flame in a 30 ft. cone. Each '
+                                          'creature in the area must make a DC {8 + prof + CHA} Dexterity '
+                                          'saving throw, taking 5 (2 * prof - 1)d8 fire damage on a failed '
+                                          'save, or half as much damage on a successful one.',
+                     can_multiattack=False
+                     )
+    sb.actions.append(attack)
+    sb.loot.append(Loot('fiery saliva', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('fiery breath',
+                    'add a Fiery Breath action',
+                    on_apply=apply, overwrites={'breath'}, overwritten_by={'breath'}, weight=10, requires={'Aestival'}))
+
+def apply(sb: Statblock) -> Statblock:
+    attack = Feature(name='Corrosive Breath (Recharge 5-6)',
+                     # todo: if we implement a better op parser, could scale the cone from 15 to 60 ft.
+                     description_template='The creature exhales a spray of corrosive mist in a 30 ft. cone. Each '
+                                          'creature in that area must make a DC {8 + prof + CHA} Dexterity '
+                                          'saving throw, taking 5 (2 * prof - 1)d8 necrotic damage on a failed '
+                                          'save, or half as much damage on a successful one.'
+                                          ' Either way, any metal nonmagical, non-thokcha armor or '
+                                          'shield an '
+                                          'affected creature is wearing takes a permanent and cumulative −1 penalty'
+                                          ' to the AC it offers. Armor reduced to an AC of 10 or a shield that drops to'
+                                          ' a +0 bonus is destroyed.',
+                     can_multiattack=False
+                     )
+    sb.actions.append(attack)
+    sb.loot.append(Loot('corrosive saliva', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('corrosive breath',
+                    'add a Corrosive Breath action which dissolves armor',
+                    on_apply=apply, overwrites={'breath'}, overwritten_by={'breath'}, weight=10, requires={'Autumnal'}))
 
 def apply(sb: Statblock) -> Statblock:
     sb.add_damage_resistance('cold')
@@ -781,14 +818,12 @@ all_tags.append(Tag('tunneling claws',
 # winter
 #   icy breath
 #   paralyzing breath
-#   snow camouflage
 #   ice walk
 # summer
 #   fiery breath
 #   blinding radiance
 #   moisture drain
 # autumn
-#   corrosive breath
 #   withering spores
 #   mycelium hide
 # spring

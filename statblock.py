@@ -825,7 +825,7 @@ class Statblock(object):
         for key in cr_weights.keys():
             cr_weights[key] = cr_weights[key] / total
 
-        damages, attack_bonuses, dcs = [0], [0], [0]
+        damages, attack_bonuses, dcs, multi_damages = [0], [0], [0], [0]
         values = self.get_substitutable_values()
         for action in self.actions:
             dam = parsing.calculate(substitute_values(action.damage_formula, values), values)
@@ -834,7 +834,9 @@ class Statblock(object):
             damages.append(dam)
             attack_bonuses.append(att)
             dcs.append(dc)
-        damage = max(max(damages), 1) * max(self.num_multiattacks, 1)
+            if action.can_multiattack:
+                multi_damages.append(dam)
+        damage = max(max(max(multi_damages), 1) * max(self.num_multiattacks, 1), max(damages))
         attack_bonus = max(max(attack_bonuses), self.proficiency + min(self.ability_scores['DEX'].modifier,
                                                                        self.ability_scores['STR'].modifier))
         save_dc = max(max(dcs), 8 + self.proficiency)
