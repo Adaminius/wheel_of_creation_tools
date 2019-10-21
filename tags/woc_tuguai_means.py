@@ -171,6 +171,24 @@ all_tags.append(Tag('whirring blades',
                     on_apply=apply, overwrites={'melee_arm'}, overwritten_by={'melee_arm'}, weight=12))
 
 def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Psionic Blades',
+                   description_template='*Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. '
+                                        '*Hit:* 7 (1d{size_die_size} + {STR}) psychic damage. The target\'s '
+                                        'AC for this attack is 10 + its Intelligence modifier unless it is wearing '
+                                        'magical armor or armor made out of celadon.',
+                   can_multiattack=True,
+                   effect_damage=.25,
+                   )
+    sb.actions.append(feat)
+    modify_loot_properties(sb, 'jadeheart', 'psionic', lambda s: 'psionic')
+    sb.features.append(make_destructible_feature('Psionic Blades',
+                                                 already_has_destructible=has_any_destructible(sb)))
+    return sb
+all_tags.append(Tag('psionic blades',
+                    'add a Psionic Blades melee attack',
+                    on_apply=apply, overwrites={'melee_arm'}, overwritten_by={'melee_arm'}, weight=4))
+
+def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Sledgehammer',
                    description_template='*Melee Weapon Attack:* +{prof + STR} to hit, reach 5 ft., one target. '
                                         '*Hit:* 7 (1d{size_die_size} + {STR}) bludgeoning damage. If the target is a '

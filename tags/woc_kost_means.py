@@ -545,6 +545,18 @@ all_tags.append(Tag('vampiric rune',
                     requires=escorts_and_hordes))
 
 def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Warding Sacrifice',
+                   description_template='This creature may sacrifice a minion under its control within 60 ft. to '
+                                        'cast *shield*.'
+                   )
+    sb.reactions.append(feat)
+    return sb
+all_tags.append(Tag('warding rune',
+                    'sacrifice a minion to cast shield',
+                    on_apply=apply, overwrites={'rune'}, overwritten_by={'rune'}, weight=12,
+                    requires=escorts_and_hordes))
+
+def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Abjuring Sacrifice',
                    description_template='This creature may sacrifice a minion under its control within 60 ft. to '
                                         'cast *counterspell* at {max(prof, 3)}th level.',
