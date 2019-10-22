@@ -196,6 +196,17 @@ all_tags.append(Tag('bat wings',
 def apply(sb: Statblock) -> Statblock:
     sb.features.append(common_features['Pack Tactics'])
     return sb
+all_tags.append(Tag('pack tactical',
+                    'add the Pack Tactics feature',
+                    on_apply=apply, weight=4))
+
+def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Eusocial Pheromones',
+                   description_template='This creature and any friendly creatures with this feature within 120 ft. '
+                                        'always act on the same initiative count, using the lowest'
+                                        ' initiative roll between them.')
+    sb.features.append(feat)
+    return sb
 all_tags.append(Tag('eusocial pheromones',
                     'add the Pack Tactics feature',
                     on_apply=apply, weight=2))
