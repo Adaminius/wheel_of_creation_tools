@@ -530,6 +530,42 @@ all_tags.append(Tag('burning blade',
                     on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12,))
 
 def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Samosek Sword',
+                   description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) slashing damage. ',
+                   can_multiattack=True,
+                   )
+    sb.actions.append(feat)
+    feat = Feature(name='Sword Toss',
+                   description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) slashing damage. ',
+                   can_multiattack=True,
+                   )
+    sb.actions.append(feat)
+    feat = Feature(name='Dancing Rune Weapon',
+                   description_template='While a kostlyavets wields a samosek sword, it may cast *spiritual weapon*'
+                                        ' at {max(2, prof)}th level'
+                                        'at will.',
+                   effect_damage=.25
+                   )
+    sb.actions.append(feat)
+    sb.loot.append(Loot('samosek sword',
+                        properties={'wieldable': lambda s:
+                                    f'If wielded by a creature other than a kostlyavets, acts as a longsword '
+                                    f'that deals {max(s.proficiency - 1, 1)}d8 slashing damage instead of its '
+                                    f'regular damage and turns to ash '
+                                    f'at the end of the first combat it hits an enemy in. The sword can be used '
+                                    f'as a thrown weapon with range 30/60 ft. The creature who threw the sword'
+                                    f' can recall the sword '
+                                    f'back to its hand as long as it is within 60 ft. '
+                                    f''
+                                    }))
+    return sb
+all_tags.append(Tag('Samosek Sword',
+                    'add slashing attacks; cast spiritual weapon at will',
+                    on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12,))
+
+def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Vampiric Sacrifice',
                    description_template='When a minion under this creature\'s control within 60 ft. would take damage, '
                                         'this creature may sacrifice it to '
