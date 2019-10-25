@@ -804,6 +804,24 @@ all_tags.append(Tag('tunneling claws',
                     'add a tunneling claws melee attack; add 20 ft. burrowing speed',
                     on_apply=apply, overwrites={'claws'}, overwritten_by={'claws'}, weight=12))
 
+def apply(sb: Statblock) -> Statblock:
+    feature = Feature(name='Path of Frost',
+                      description_template='An aura of frost extends around this creature. '
+                                         'When a creature starts its turn within 5 ft. of this creature, '
+                                         'it takes {(prof - 1) * 2} cold damage '
+                                         'if it has not already taken damage '
+                                         'from this feature this turn. This creature can choose to walk atop '
+                                         'water as if it were solid ground, leaving behind a trail of ice '
+                                         'which melts after 10 minutes.',
+                      effect_damage=.1
+                     )
+    sb.features.append(feature)
+    # sb.loot.append(Loot('tunneling claws', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
+    return sb
+all_tags.append(Tag('aura of frost',
+                    'deals cold damage in area; can walk on water',
+                    on_apply=apply, overwrites={'aura'}, overwritten_by={'aura'}, weight=12))
+
 # if we're using so much charisma, need more charisma abilities like magic attacks
 # spritely
 # gouging tusks
