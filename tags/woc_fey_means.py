@@ -820,7 +820,7 @@ def apply(sb: Statblock) -> Statblock:
     return sb
 all_tags.append(Tag('aura of frost',
                     'deals cold damage in area; can walk on water',
-                    on_apply=apply, overwrites={'aura'}, overwritten_by={'aura'}, weight=12))
+                    on_apply=apply, overwrites={'aura'}, overwritten_by={'aura'}, weight=12, requires={'Brumal'}))
 
 # if we're using so much charisma, need more charisma abilities like magic attacks
 # spritely
