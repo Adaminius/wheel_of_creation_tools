@@ -1,4 +1,7 @@
 import random
+import numpy as np
+import re
+from collections import defaultdict
 from statblock import Statblock
 
 
@@ -33,6 +36,127 @@ generic_titles = [
     ' the Lonely',
 ]
 
+special_consonant_mapping = {text: i for text, i in
+  zip(['shch', 'sch', 'sh', 'ch', 'kh', 'ts', 'dzh', 'zh', 'ph', 'lh'],
+      r'01234569789!@#$%^&*()+_.,/\?')
+}
+reverse_special_consonant_mapping = {v: k for k, v in special_consonant_mapping.items()}
+
+
+def encode_consonants(word):
+    """This is a really dumb way to deal with the problem of multiple letter consonants, 
+    but it was the first thing that I thought of."""
+    for k, v in special_consonant_mapping.items():
+        word = word.replace(k, v)
+    return word
+
+
+def decode_consonants(word):
+    for k, v in reverse_special_consonant_mapping.items():
+        word = word.replace(k, v)
+    return word
+
+
+def is_vowel(letter: str):
+    if letter in {'a', 'e', 'i', 'o', 'u', 'y'}:
+        return True
+
+
+def is_consonant(letter: str):
+    if letter == 'y':
+        return True
+    return not is_vowel(letter)
+
+
+def word_to_phonemes(word: str, max_length=5):
+    word = list(encode_consonants(word.lower()))
+    
+    phonemes = []
+    current_phoneme = ''
+    found_vowel = False
+    while len(word) > 3:
+        letter = word.pop(0)
+        current_phoneme += letter
+        if (is_consonant(letter) and found_vowel) or len(current_phoneme) >= max_length:
+            phonemes.append(current_phoneme)
+            current_phoneme = ''
+            found_vowel = False
+        if is_vowel(letter):
+            found_vowel = True
+    phonemes.append(''.join(word))
+
+    return [decode_consonants(p) for p in phonemes]
+
+
+def build_markov(text: str):
+    """Breaks text up into words by whitespace, then breaks those words up into phonemes.
+    Uses these phonemes to create a markov chain which can be used to create words
+    similar to those in the text."""
+    text = text\
+        .replace(',', ' ')\
+        .replace('.', ' ')\
+        .replace(';', '') \
+        .replace(':', '') \
+        .replace('?', '') \
+        .replace('!', '') \
+        .replace('"', '')
+        # .replace('-', '')\
+        # .replace('\'', '') \
+    words = [word for word in re.split(r'\W+', text) if word]
+    phoneme_groups = [word_to_phonemes(word) for word in words]
+
+    markov_counts = defaultdict(lambda: defaultdict(int))
+    for phoneme_group in phoneme_groups[1:]:
+        last_phoneme = phoneme_group[0].lower()
+        for phoneme in phoneme_group:
+            phoneme = phoneme.lower()
+            markov_counts[last_phoneme][phoneme] += 1
+            last_phoneme = phoneme
+
+    markov_chain = {}
+    for phoneme, counts in markov_counts.items():
+        keys = []
+        values = []
+        for key, value in counts.items():
+            keys.append(key)
+            values.append(value)
+        markov_chain[phoneme] = (keys, np.array(values) / sum(values))
+
+    return markov_chain
+
+
+def walk_markov(markov_chain, steps, last_phoneme=None):
+    if steps <= 0:
+        return []
+    if last_phoneme is None:
+        last_phoneme = random.choice(list(markov_chain.keys()))
+        return [last_phoneme] + walk_markov(markov_chain, steps - 1, last_phoneme)
+    choices, probabilities = markov_chain[last_phoneme]
+    if choices is None:
+        return [last_phoneme] + walk_markov(markov_chain, steps - 1, random.choice(list(markov_chain.keys())))
+    choice = np.random.choice(choices, p=probabilities)
+    if choice == last_phoneme:
+        return [last_phoneme] + walk_markov(markov_chain, steps - 1, random.choice(list(markov_chain.keys())))
+    return [choice] + walk_markov(markov_chain, steps - 1, last_phoneme)
+
+
+def make_markov_word(markov_chain, max_phonemes=7, min_phonemes=2):
+    length = random.randint(min_phonemes, max_phonemes + 1)
+    return ''.join(walk_markov(markov_chain, length))
+
+
+def file_to_markov_chain(filename):
+    # todo accept multiple file names e.g. so we can have prav_fey + prav_brumal
+    with open(filename) as file_handle:
+        lines = file_handle.read().splitlines()
+    lines = [line for line in lines if not line.startswith('#')]
+    return build_markov(' '.join(lines))
+
+
+markov_chains = {
+    'prav_fey': file_to_markov_chain('name_lists/prav_fey.txt')
+}
+
 
 def get_other_name(sb: Statblock):
     first = [
@@ -62,15 +186,10 @@ def get_other_name(sb: Statblock):
 def get_fey_name(sb: Statblock):
     if 'fey' not in sb.primary_type.lower():
         return []
-    prav = [
-        'Rusalka',
-        'Vodianoi',
-        'Leshy',
-        'Likho',
-        'Kikimora',
-        'Mavka',
+
+    names = [
+        make_markov_word(markov_chains['prav_fey'])
     ]
-    names = [random.choice(choices) for choices in [prav]]
     return [random.choice(names)]
 
 
@@ -80,6 +199,9 @@ generators = [
 
 
 def get_random_name(sb: Statblock):
+    """Get a random name from the list of functions in `generators`. These functions should only return names if the
+    stat block meets some criteria, e.g. it must be the fey type to get a fey name. If there are no eligible names,
+    uses `get_other_name()`."""
     names = []
     for generator in generators:
         names.extend(generator(sb))
@@ -89,12 +211,13 @@ def get_random_name(sb: Statblock):
 
 
 if __name__ == '__main__':
-    sb = Statblock.from_markdown(filename='statblocks/warrior.md')
-    print(get_random_name(sb))
-    sb = Statblock.from_markdown(filename='statblocks/predator.md')
-    print(get_random_name(sb))
-    sb = Statblock.from_markdown(filename='statblocks/predator.md')
-    import tags.woc_fey_means
-    sb = tags.woc_fey_means.all_tags['fey'].apply(sb)
-    print(get_random_name(sb))
+    for _ in range(10):
+        # sb = Statblock.from_markdown(filename='statblocks/warrior.md')
+        # print(get_random_name(sb))
+        # sb = Statblock.from_markdown(filename='statblocks/predator.md')
+        # print(get_random_name(sb))
+        sb = Statblock.from_markdown(filename='statblocks/predator.md')
+        import tags.woc_fey_means
+        sb = tags.woc_fey_means.all_tags['fey'].apply(sb)
+        print(get_random_name(sb))
 
