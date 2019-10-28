@@ -206,6 +206,8 @@ textarea {
 
 .btn {
     font-weight: bold;
+    margin: .15rem;
+    padding: .25rem;
 }
 
 .btn-block {
