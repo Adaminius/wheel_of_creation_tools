@@ -74,7 +74,7 @@ def word_to_phonemes(word: str, max_length=5):
     phonemes = []
     current_phoneme = ''
     found_vowel = False
-    while len(word) > 3:
+    while len(word) > 2:
         letter = word.pop(0)
         current_phoneme += letter
         if (is_consonant(letter) and found_vowel) or len(current_phoneme) >= max_length:
@@ -83,7 +83,11 @@ def word_to_phonemes(word: str, max_length=5):
             found_vowel = False
         if is_vowel(letter):
             found_vowel = True
-    phonemes.append(''.join(word))
+    if len(current_phoneme) < 2:
+        phonemes.append(current_phoneme + ''.join(word))
+    else:
+        phonemes.append(current_phoneme)
+        phonemes.append(''.join(word))
 
     return [decode_consonants(p) for p in phonemes]
 
@@ -102,18 +106,20 @@ def build_markov(text: str):
         .replace('"', '')
         # .replace('-', '')\
         # .replace('\'', '') \
-    words = [word for word in re.split(r'\W+', text) if word]
+    words = set([word.lower() for word in re.split(r'\W+', text) if len(word) > 2])
     phoneme_groups = [word_to_phonemes(word) for word in words]
 
     markov_counts = defaultdict(lambda: defaultdict(int))
-    for phoneme_group in phoneme_groups[1:]:
+    top_level = []
+    for phoneme_group in phoneme_groups:
+        top_level.append(phoneme_group[0])
         last_phoneme = phoneme_group[0].lower()
-        for phoneme in phoneme_group:
+        for phoneme in phoneme_group[1:]:
             phoneme = phoneme.lower()
             markov_counts[last_phoneme][phoneme] += 1
             last_phoneme = phoneme
 
-    markov_chain = {}
+    markov_chain = {'': (top_level, np.ones(len(top_level)) / len(top_level))}
     for phoneme, counts in markov_counts.items():
         keys = []
         values = []
@@ -132,7 +138,7 @@ def walk_markov(markov_chain, steps, last_phoneme=None):
         last_phoneme = random.choice(list(markov_chain.keys()))
         return [last_phoneme] + walk_markov(markov_chain, steps - 1, last_phoneme)
     choices, probabilities = markov_chain[last_phoneme]
-    if choices is None:
+    if not choices:
         return [last_phoneme] + walk_markov(markov_chain, steps - 1, random.choice(list(markov_chain.keys())))
     choice = np.random.choice(choices, p=probabilities)
     if choice == last_phoneme:
@@ -140,21 +146,23 @@ def walk_markov(markov_chain, steps, last_phoneme=None):
     return [choice] + walk_markov(markov_chain, steps - 1, last_phoneme)
 
 
-def make_markov_word(markov_chain, max_phonemes=7, min_phonemes=2):
-    length = random.randint(min_phonemes, max_phonemes + 1)
-    return ''.join(walk_markov(markov_chain, length))
+def make_markov_word(markov_chain, max_phonemes=4, min_phonemes=2, max_length=11, min_length=3):
+    word = ''
+    while len(word) < min_length or len(word) > max_length:
+        number_phonemes = random.randint(min_phonemes, max_phonemes + 1)
+        word = ''.join(walk_markov(markov_chain, number_phonemes, ''))
+    return word
 
 
-def file_to_markov_chain(filename):
+def file_to_markov_ready_text(filename):
     # todo accept multiple file names e.g. so we can have prav_fey + prav_brumal
     with open(filename) as file_handle:
         lines = file_handle.read().splitlines()
     lines = [line for line in lines if not line.startswith('#')]
-    return build_markov(' '.join(lines))
-
+    return ' '.join(lines)
 
 markov_chains = {
-    'prav_fey': file_to_markov_chain('name_lists/prav_fey.txt')
+    'prav_fey': build_markov(re.sub(r'[^A-Za-z\s]+', '', file_to_markov_ready_text('name_lists/prav_fey.txt')))
 }
 
 
@@ -188,7 +196,7 @@ def get_fey_name(sb: Statblock):
         return []
 
     names = [
-        make_markov_word(markov_chains['prav_fey'])
+        make_markov_word(markov_chains['prav_fey'], max_phonemes=4, min_phonemes=2, max_length=12, min_length=4)
     ]
     return [random.choice(names)]
 
@@ -202,6 +210,7 @@ def get_random_name(sb: Statblock):
     """Get a random name from the list of functions in `generators`. These functions should only return names if the
     stat block meets some criteria, e.g. it must be the fey type to get a fey name. If there are no eligible names,
     uses `get_other_name()`."""
+    # todo filter swear words
     names = []
     for generator in generators:
         names.extend(generator(sb))
@@ -211,6 +220,9 @@ def get_random_name(sb: Statblock):
 
 
 if __name__ == '__main__':
+    from pprint import pprint as pp
+    pp(markov_chains)
+    names = []
     for _ in range(10):
         # sb = Statblock.from_markdown(filename='statblocks/warrior.md')
         # print(get_random_name(sb))
@@ -219,5 +231,6 @@ if __name__ == '__main__':
         sb = Statblock.from_markdown(filename='statblocks/predator.md')
         import tags.woc_fey_means
         sb = tags.woc_fey_means.all_tags['fey'].apply(sb)
-        print(get_random_name(sb))
+        names.append(get_random_name(sb))
+    print(''.join(['{:<13}'.format(name) for name in names]))
 
