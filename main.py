@@ -1,9 +1,7 @@
 import importlib
 import importlib.util
 import sys
-import pprint
 import statblock
-import utils
 import markdown as md
 import re
 import json
@@ -214,6 +212,14 @@ def get_modified_statblock():
     preview_html = md.markdown(prepare_markdown(markdown_text), extensions=['tables', 'attr_list'])
 
     return json.dumps({'markdown': markdown_text, 'html': preview_html})
+
+
+try:
+    # Serve the caravan builder app if available
+    from caravan_app import caravan
+    app.register_blueprint(caravan.caravan_bp)
+except Exception as e:
+    print(e)
 
 
 def parse_args(args):

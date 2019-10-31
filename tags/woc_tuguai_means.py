@@ -312,6 +312,30 @@ all_tags.append(Tag('sentry wards',
                     on_apply=apply, overwrites={'wards'}, overwritten_by={'wards'}, weight=12))
 
 def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Deploy Explosive Wards',
+                   description_template='(1/short rest) This creature deploys 2d4 tiny runestones with AC 5 and 5 '
+                                        'hitpoints '
+                                        'each into unoccupied spaces this creature can see within 60 ft. '
+                                        'When a small or '
+                                        'larger living ends its turn within 5 ft. of a runestone or enters a '
+                                        'runestone\'s space, the runestone detonates, destroying itself. '
+                                        'Each creature within 5 ft. must make a DC {8 + CON + prof} Dexterity '
+                                        'saving throw, taking {prof}d6 force damage on a failed save or half '
+                                        'as much on a success. Runestones may be disabled with a DC {8 + CON + prof} '
+                                        'Dexterity (Sleight of Hand) check or Dexterity (Thieves\' Tools) check. '  
+                                        'The runestones cease to function if this creature uses this ability again.',
+                   effect_dam=.1,
+                   )
+    sb.actions.append(feat)
+    sb.features.append(make_destructible_feature('Explosive Wards',
+                                                 already_has_destructible=has_any_destructible(sb)))
+    modify_loot_properties(sb, 'jadeheart', 'elemental', lambda s: 'elemental')
+    return sb
+all_tags.append(Tag('explosive wards',
+                    'can place 2d4 runestones which explode when a creature comes near',
+                    on_apply=apply, overwrites={'wards'}, overwritten_by={'wards'}, weight=12))
+
+def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Reinforced Plating',
                    description_template='All bludgeoning, piercing, and slashing damage dealt by non-magical weapons '
                                         'is reduced by 3.',
@@ -344,7 +368,7 @@ def apply(sb: Statblock) -> Statblock:
                                         'can choose to '
                                         'emit a loud warning chirp immediately and explode at the start of its next turn. The '
                                         'explosion extends in a 30-foot radius, and all creatures within the blast '
-                                        'must succeed on a DC {CON + prof + 8} Dexterity saving throw or take '
+                                        'must succeed on a  Dexterity saving throw or take '
                                         'fire damage equal to this creature\'s remaining hit points on a failed save, '
                                         'half as much damage on a success. This creature is destroyed. The creature has an '
                                         'override code in the Leitian language, and '
