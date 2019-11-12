@@ -276,7 +276,11 @@ function hasRequiredTags(tagNode, existingTags) {
 function willOverwrite(tagNode, overwrittenFlags) {
     let will_overwrite = false;
     tagNode.attr('data-overwrites').split(';').forEach(function(overwritesFlag) {
+        if (!overwritesFlag) {
+            return;
+        }
         if (overwrittenFlags.has(overwritesFlag)) {
+            console.log(`ow ${JSON.stringify(overwrittenFlags)} ${overwritesFlag}`);
             will_overwrite = true;
         }
     });

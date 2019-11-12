@@ -4,7 +4,6 @@ import re
 from collections import defaultdict
 from statblock import Statblock
 
-
 generic_titles = [
     ' the Invincible',
     ' the Invisible',
@@ -37,9 +36,9 @@ generic_titles = [
 ]
 
 special_consonant_mapping = {text: i for text, i in
-  zip(['shch', 'sch', 'sh', 'ch', 'kh', 'ts', 'dzh', 'zh', 'ph', 'lh'],
-      r'01234569789!@#$%^&*()+_.,/\?')
-}
+                             zip(['shch', 'sch', 'sh', 'ch', 'kh', 'ts', 'dzh', 'zh', 'ph', 'lh'],
+                                 r'01234569789!@#$%^&*()+_.,/\?')
+                             }
 reverse_special_consonant_mapping = {v: k for k, v in special_consonant_mapping.items()}
 
 
@@ -70,7 +69,7 @@ def is_consonant(letter: str):
 
 def word_to_phonemes(word: str, max_length=5):
     word = list(encode_consonants(word.lower()))
-    
+
     phonemes = []
     current_phoneme = ''
     found_vowel = False
@@ -96,16 +95,16 @@ def build_markov(text: str):
     """Breaks text up into words by whitespace, then breaks those words up into phonemes.
     Uses these phonemes to create a markov chain which can be used to create words
     similar to those in the text."""
-    text = text\
-        .replace(',', ' ')\
-        .replace('.', ' ')\
+    text = text \
+        .replace(',', ' ') \
+        .replace('.', ' ') \
         .replace(';', '') \
         .replace(':', '') \
         .replace('?', '') \
         .replace('!', '') \
         .replace('"', '')
-        # .replace('-', '')\
-        # .replace('\'', '') \
+    # .replace('-', '')\
+    # .replace('\'', '') \
     words = set([word.lower() for word in re.split(r'\W+', text) if len(word) > 2])
     phoneme_groups = [word_to_phonemes(word) for word in words]
 
@@ -156,13 +155,34 @@ def make_markov_word(markov_chain, max_phonemes=4, min_phonemes=2, max_length=11
 
 def file_to_markov_ready_text(filename):
     # todo accept multiple file names e.g. so we can have prav_fey + prav_brumal
-    with open(filename) as file_handle:
+    with open(filename, encoding='utf8') as file_handle:
         lines = file_handle.read().splitlines()
     lines = [line for line in lines if not line.startswith('#')]
     return ' '.join(lines)
 
+
 markov_chains = {
-    'prav_fey': build_markov(re.sub(r'[^A-Za-z\s]+', '', file_to_markov_ready_text('name_lists/prav_fey.txt')))
+    # 'prav_fey': build_markov(re.sub(r'[^A-Za-z\s]+', '', file_to_markov_ready_text('name_lists/prav_fey.txt'))),
+    'foo': build_markov(re.sub(r'[^A-Za-z\s]+', '',
+                               file_to_markov_ready_text('name_lists/foo.txt')
+                               .replace('Þ', 'th')
+                               .replace('á', 'a')
+                               .replace('ð', 'th')
+                               .replace('ý', 'y')
+                               .replace('æ', 'ae')
+                               .replace('ó', 'o')
+                               .replace('ö', 'oe')
+                               .replace('é', 'e')
+                               .replace('í', 'i')
+                               .replace('section', '')
+                               .replace('aaa', 'aa')
+                               .replace('eee', 'ee')
+                               .replace('ooo', 'oo')
+                               .replace('uuu', 'uu')
+                               .replace('iii', 'ii')
+                               )
+                        )
+
 }
 
 
@@ -221,16 +241,19 @@ def get_random_name(sb: Statblock):
 
 if __name__ == '__main__':
     from pprint import pprint as pp
-    pp(markov_chains)
+
+    with open('mark.txt', 'w') as fh:
+        pp(markov_chains, stream=fh)
     names = []
     for _ in range(10):
         # sb = Statblock.from_markdown(filename='statblocks/warrior.md')
         # print(get_random_name(sb))
         # sb = Statblock.from_markdown(filename='statblocks/predator.md')
         # print(get_random_name(sb))
-        sb = Statblock.from_markdown(filename='statblocks/predator.md')
-        import tags.woc_fey_means
-        sb = tags.woc_fey_means.all_tags['fey'].apply(sb)
-        names.append(get_random_name(sb))
+        # sb = Statblock.from_markdown(filename='statblocks/predator.md')
+        # import tags.woc_fey_means
+        #
+        # sb = tags.woc_fey_means.all_tags['fey'].apply(sb)
+        # names.append(get_random_name(sb))
+        names.append(make_markov_word(markov_chains['foo'], max_phonemes=4, min_phonemes=1, max_length=13, min_length=3))
     print(''.join(['{:<13}'.format(name) for name in names]))
-

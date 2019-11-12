@@ -317,12 +317,12 @@ def apply(sb: Statblock) -> Statblock:
                                         'hitpoints '
                                         'each into unoccupied spaces this creature can see within 60 ft. '
                                         'When a small or '
-                                        'larger living ends its turn within 5 ft. of a runestone or enters a '
+                                        'larger living creature ends its turn within 5 ft. of a runestone or enters a '
                                         'runestone\'s space, the runestone detonates, destroying itself. '
                                         'Each creature within 5 ft. must make a DC {8 + CON + prof} Dexterity '
                                         'saving throw, taking {prof}d6 force damage on a failed save or half '
                                         'as much on a success. Runestones may be disabled with a DC {8 + CON + prof} '
-                                        'Dexterity (Sleight of Hand) check or Dexterity (Thieves\' Tools) check. '  
+                                        'Dexterity (Sleight of Hand) check or Dexterity (thieves\' tools) check. '  
                                         'The runestones cease to function if this creature uses this ability again.',
                    effect_dam=.1,
                    )
