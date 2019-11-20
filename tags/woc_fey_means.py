@@ -617,7 +617,7 @@ def apply(sb: Statblock) -> Statblock:
                      # todo: if we implement a better op parser, could scale the cone from 15 to 60 ft.
                      description_template='The creature exhales a gout of flame in a 30 ft. cone. Each '
                                           'creature in the area must make a DC {8 + prof + CHA} Dexterity '
-                                          'saving throw, taking 5 (2 * prof - 1)d8 fire damage on a failed '
+                                          'saving throw, taking 5 ({2 * prof - 1}d8) fire damage on a failed '
                                           'save, or half as much damage on a successful one.',
                      can_multiattack=False
                      )
@@ -633,7 +633,7 @@ def apply(sb: Statblock) -> Statblock:
                      # todo: if we implement a better op parser, could scale the cone from 15 to 60 ft.
                      description_template='The creature exhales a spray of corrosive mist in a 30 ft. cone. Each '
                                           'creature in that area must make a DC {8 + prof + CHA} Dexterity '
-                                          'saving throw, taking 5 (2 * prof - 1)d8 necrotic damage on a failed '
+                                          'saving throw, taking 5 ({2 * prof - 1}d8) necrotic damage on a failed '
                                           'save, or half as much damage on a successful one.'
                                           ' Either way, any metal nonmagical, non-thokcha armor or '
                                           'shield an '
