@@ -530,6 +530,38 @@ all_tags.append(Tag('burning blade',
                     on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12,))
 
 def apply(sb: Statblock) -> Statblock:
+    feat = Feature(name='Howling Blade',
+                   description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) thunder damage. ',
+                   can_multiattack=True,
+                   )
+    sb.actions.append(feat)
+    feat = Feature(name='Thundering Bolt',
+                   description_template='*Ranged Weapon Attack:* +{prof + INT} to hit, range 30/60 ft., one target. '
+                                        '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) lightning damage. ',
+                   can_multiattack=True,
+                   )
+    sb.actions.append(feat)
+    feat = Feature(name='Flash of Lightning, Roar of Thunder',
+                   description_template='While a kostlyavets wields a howling blade, it may cast *blindness/deafness*'
+                                        ' at {max(2, prof)}th level'
+                                        ' at will, requiring no material components.',
+                   effect_hp=.25
+                   )
+    sb.actions.append(feat)
+    sb.loot.append(Loot('howling blade',
+                        properties={'wieldable': lambda s:
+                                    f'If wielded by a creature other than a kostlyavets, acts as a longsword '
+                                    f'that deals {max(s.proficiency - 1, 1)}d8 thunder damage instead of its '
+                                    f'regular damage and turns to ash '
+                                    f'at the end of the first combat it hits an enemy in.'
+                                    }))
+    return sb
+all_tags.append(Tag('howling blade',
+                    'add thunder/lightning attacks; cast blindness/deafness at will',
+                    on_apply=apply, overwrites={'kost_weapon'}, overwritten_by={'kost_weapon'}, weight=12,))
+
+def apply(sb: Statblock) -> Statblock:
     feat = Feature(name='Samosek Sword',
                    description_template='*Melee Weapon Attack:* +{prof + INT} to hit, reach 5 ft., one target. '
                                         '*Hit:* 7 ({max(prof / 2, 1)}d{size_die_size} + {INT}) slashing damage. ',
