@@ -312,19 +312,19 @@ input[type=number]{
 }
 
 .image-spin {
-    -webkit-animation:spin-anti 10s linear infinite;
-    -moz-animation:spin-anti 10s linear infinite;
-    animation:spin-anti 10s linear infinite;
+    -webkit-animation:spin-anti 25s linear infinite;
+    -moz-animation:spin-anti 25s linear infinite;
+    animation:spin-anti 25s linear infinite;
 }
 .image-spin2 {
-    -webkit-animation:spin 16s linear infinite;
-    -moz-animation:spin 16s linear infinite;
-    animation:spin 16s linear infinite;
+    -webkit-animation:spin-anti 12s linear infinite;
+    -moz-animation:spin-anti 12s linear infinite;
+    animation:spin-anti 12s linear infinite;
 }
 .image-spin3 {
-    -webkit-animation:spin-anti 22s linear infinite;
-    -moz-animation:spin-anti 22s linear infinite;
-    animation:spin-anti 22s linear infinite;
+    -webkit-animation:spin-anti 28s linear infinite;
+    -moz-animation:spin-anti 28s linear infinite;
+    animation:spin-anti 28s linear infinite;
 }
 
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }

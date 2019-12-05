@@ -183,6 +183,12 @@ def prepare_markdown(text: str) -> str:
     return text
 
 
+@app.route('/book')
+def get_book():
+    with open('templates/book.html', encoding='utf8') as file_handle:
+        return file_handle.read()
+
+
 @app.route('/modifyStatblock', methods=['POST', 'GET'])
 def get_modified_statblock():
     """Applies all the tags a user has selected to a statblock and prepares a preview of the result"""

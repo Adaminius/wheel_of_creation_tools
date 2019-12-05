@@ -8,10 +8,15 @@ The Wheel of Creation is a third-party setting and rules supplement for the 5th 
 The current plan is that there will be three products associated with the first release of the Wheel of Creation.
 
 1. A free PDF and web page which contains caravanning and monster creation rules, an introduction to the setting, a subset of additional race, class, and background options, and a handful of pre-written caravan destinations within the Wheel of Creation setting.
+
 2. A paid PDF with additional art, additional race and class options, full item creation rules, and additional setting description and pre-written caravan destinations.
+
 3. Web companion apps, including:
+
     * **The Monster Builder**, currently in development at [wheelofcreation.net/monster](wheelofcreation.net/monster). This tool helps you quickly generate and scale the difficulty of monsters that fit the WoC setting, and it provides a list of harvestable components for each to be used in the Item Crafter. It's nearly feature complete, and the current focus is on adding content, ironing out bugs, and adjusting game balance.
+    
     * The **Caravan Builder**, a system for itinerant adventuring. First version just released at [wheelofcreation.net/caravan_app](wheelofcreation.net/caravan_app)!
+    
     * The **Item Crafter**, still early in development.
 
 ## Rules and Gameplay
@@ -23,12 +28,19 @@ The Wheel of Creation is designed for compatibility with the 5th Edition SRD, wi
 * Alignment, language, and experience are different.
 
 In addition, the intended flow of gameplay is a specific structure of Expeditions, each of which are expected to take about 6 game sessions and take a few months of in-game time:
+
 * Players choose a destination and decide the initial composition of the caravan under their shared protection.
+
 * The GM decides what places and obstacles they will encounter along the way, aided by systems and tables provided in the caravan rules.
+
 * Throughout the Expedition, players use their skills and connections to learn more about what lies ahead and prepare accordingly.
+
 * Among other hazards, the caravan will be faced with monster raids, bandit attacks, harsh weather, and distances that drain the caravan's supplies. The players must support the caravan, and the caravan supports them.
+
 * At times, the caravan will be unable to progress until the seasons turn or the players may decide to halt of their own accord. They can use this time to solve problems for the locals, trade, gather information, craft items, and explore the area in search for specific monsters.
+
 * At the end of the Expedition, the players are rewarded according to how well their caravan fared and what treasures they were able to gather along the way.
+
 * The players choose a new destination.
 
 There are systems for generating monsters randomly (or not) using a system of tags, creating creatures which are fresh for both the players and GM. The players will need to consult with locals and experts, dig through dusty scrolls, and use their skills and magical abilities to determine the capabilities, behaviors, and weaknesses of these monsters in order to defeat them. A system for creating magical items using treasures and parts looted from these monsters will also be provided.
@@ -37,7 +49,7 @@ There are systems for generating monsters randomly (or not) using a system of ta
 
 The Wheel is a flat disk floating in a Void of shadowy chaos, divided into three rings which turn about an axle. The axle is called Heaven, where sits the Throne of the Sun.
 
-The innermost ring is called the **Ring of Earth**, which most closely resembles our own world. At the boundary of Heaven and Earth are the icy Walls of Heaven, which shield the Earth from the overpowering, fiery radiance of the Sun. Capping the Walls along one half is the Infinite Fortress of the Moon, which guards the path to heaven and blocks the Sun's light at night, allowing the Wheel's inhabitants a time of rest. Nearly all of the Ring of Earth belongs to one great landmass, and sea travel is limited by brutal storms and malevolent sea serpents. At the southern end of the world are the Ephemeral Wastes, an enormous, scorching desert which is dotted with the Ring of Earth's largest gateways to the Ring of Seasons.
+The innermost ring is called the **Ring of Earth**, which most closely resembles our own world. At the boundary of Heaven and Earth are the icy Walls of Heaven, which shield the Earth from the overpowering, fiery radiance of the Sun. Capping the Walls along one half is the Infinite Fortress of the Moon, which guards the path to Heaven and blocks the Sun's light at night, allowing the Wheel's inhabitants a time of rest. Nearly all of the Ring of Earth belongs to one great landmass, and sea travel is limited by brutal storms and malevolent sea serpents. At the southern end of the world are the Ephemeral Wastes, an enormous, scorching desert which is dotted with the Ring of Earth's largest gateways to the Ring of Seasons.
 
 The **Ring of Seasons** is a place of floating, shifting islands inhabited by alien creatures, most serving one of four Seasonal Courts. Its turning relative to Earth measures out the year.
 
