@@ -6,6 +6,7 @@ import markdown as md
 import re
 import json
 import argparse
+import os
 from os.path import basename
 from glob import glob
 from flask import Flask
@@ -183,10 +184,16 @@ def prepare_markdown(text: str) -> str:
     return text
 
 
-@app.route('/book')
-def get_book():
-    with open('templates/book.html', encoding='utf8') as file_handle:
-        return file_handle.read()
+def build_playtest_func(fn):
+    def playtest_func():
+        with open(fn, encoding='utf8') as file_handle:
+            return file_handle.read()
+    return playtest_func
+
+
+for filename in glob(os.path.join(app.template_folder, 'playtest*html')) + glob(os.path.join(app.template_folder, 'book.html')):
+    playtest_url = '/' + basename(filename).replace('.html', '')
+    app.add_url_rule(playtest_url, playtest_url, view_func=build_playtest_func(filename))
 
 
 @app.route('/modifyStatblock', methods=['POST', 'GET'])
