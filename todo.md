@@ -3,6 +3,7 @@
 ## Something need doing?
 
 * Features
+    * Fix tags that add skills so they use a formula
     * Include bloodied threshold in statblock to use for future mechanics
     * Use an int like 'num_can_multiattack' for actions instead of 'can_multiattack', might allow us to do stuff like claw-claw-bite
     * Open preview in new window
@@ -42,6 +43,7 @@
 
 ## Job's done!
 
+* Add saving throw proficiencies to misc table
 * Maybe do something like size sets die size, hit dice set # of dice
 * Set minimum stats for different types?
 * A 'create lesser minions' or 'create lesser undead' action that does something like

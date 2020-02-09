@@ -14,3 +14,4 @@ Werkzeug==0.15.3
 gunicorn==19.9.0
 Markdown==3.0.1
 pyparsing==2.4.2
+google-cloud-datastore

@@ -17,6 +17,8 @@ def build_grammar(stack: list):
         for t in tokens:  # use a loop because we can have multiple -'s in a row
             if t == '-':
                 stack.append('unary -')
+            elif t == '+':
+                stack.append('unary +')
             else:
                 break
 
@@ -72,7 +74,9 @@ def evaluate_stack(stack: list, vals: dict):
 
     if op == 'unary -':
         return -evaluate_stack(stack, vals)
-    if op in "+-*/":
+    elif op == 'unary +':
+        return evaluate_stack(stack, vals)
+    elif op in "+-*/":
         op2 = evaluate_stack(stack, vals)
         op1 = evaluate_stack(stack, vals)
         return opn[op](op1, op2)
@@ -144,4 +148,5 @@ if __name__ == '__main__':
     test("sgn(0)", 0)
     test("sgn(0.1)", 1)
     test("foo(0.1)", None)
+    test("+(5-3)", 2)
 

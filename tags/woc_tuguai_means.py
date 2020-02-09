@@ -324,7 +324,7 @@ def apply(sb: Statblock) -> Statblock:
                                         'as much on a success. Runestones may be disabled with a DC {8 + CON + prof} '
                                         'Dexterity (Sleight of Hand) check or Dexterity (thieves\' tools) check. '  
                                         'The runestones cease to function if this creature uses this ability again.',
-                   effect_dam=.1,
+                   effect_damage=.1,
                    )
     sb.actions.append(feat)
     sb.features.append(make_destructible_feature('Explosive Wards',

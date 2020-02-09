@@ -223,7 +223,7 @@ all_tags.append(Tag('crystalline eyes',
 def apply(sb: Statblock) -> Statblock:
     sb.ability_scores['CHA'].value += 2
     sb.ability_scores['WIS'].value -= 2
-    sb.skills['Insight'] = sb.proficiency + sb.ability_scores['WIS']
+    sb.skills['Insight'] = '{prof + WIS}'
     sb.loot.append(Loot('goat-like eyes', size='inherit', cr='inherit', properties=FEY_FREQUENT_LOOT_PROPERTIES))
     return sb
 all_tags.append(Tag('goat-like eyes',

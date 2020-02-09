@@ -10,7 +10,7 @@ table_description = 'Simple or unflavored operations'
 img_url = '../static/img/velnik.png'
 
 def apply(sb: Statblock) -> Statblock:
-    sb.legendary_actions.append(Feature('Attack', 'This creature makes a melee attack.', effect_damage=.5))
+    sb.legendary_actions.append(Feature('Attack', 'This creature makes an attack.', effect_damage=.5))
     return sb
 all_tags.append(Tag('legendary attacker', effect_text='add an attack legendary action', weight=10,
                     stacks=False, on_apply=apply))
@@ -96,5 +96,32 @@ all_tags.append(Tag('-Constitution', effect_text='-1 Constitution', weight=10, s
 all_tags.append(Tag('-Intelligence', effect_text='-1 Intelligence', weight=10, stacks=True, on_apply=basic_subtract_apply('INT')))
 all_tags.append(Tag('-Wisdom', effect_text='-1 Wisdom', weight=10, stacks=True, on_apply=basic_subtract_apply('WIS')))
 all_tags.append(Tag('-Charisma', effect_text='-1 Charisma', weight=10, stacks=True, on_apply=basic_subtract_apply('CHA')))
+
+
+def prof_saving_throw(ability_score_short, ability_score_long):
+    def apply(sb: Statblock) -> Statblock:
+        sb.saving_throws[ability_score_long] = f'{{prof + {ability_score_short}}}'
+        return sb
+    return apply
+
+def expertise_saving_throw(ability_score_short, ability_score_long):
+    def apply(sb: Statblock) -> Statblock:
+        sb.saving_throws[ability_score_long] = f'{{2 * prof + {ability_score_short}}}'
+        return sb
+    return apply
+
+all_tags.append((Tag('Save STR', effect_text='Add Strength saving throw proficiency', weight=10, stacks=False, on_apply=prof_saving_throw('STR', 'Strength'))))
+all_tags.append((Tag('Save DEX', effect_text='Add Dexterity saving throw proficiency', weight=10, stacks=False, on_apply=prof_saving_throw('DEX', 'Dexterity'))))
+all_tags.append((Tag('Save CON', effect_text='Add Constitution saving throw proficiency', weight=10, stacks=False, on_apply=prof_saving_throw('CON', 'Constitution'))))
+all_tags.append((Tag('Save WIS', effect_text='Add Wisdom saving throw proficiency', weight=10, stacks=False, on_apply=prof_saving_throw('WIS', 'Wisdom'))))
+all_tags.append((Tag('Save INT', effect_text='Add Intelligence saving throw proficiency', weight=10, stacks=False, on_apply=prof_saving_throw('INT', 'Intelligence'))))
+all_tags.append((Tag('Save CHA', effect_text='Add Charisma saving throw proficiency', weight=10, stacks=False, on_apply=prof_saving_throw('CHA', 'Charisma'))))
+
+all_tags.append((Tag('ExpSave STR', effect_text='Add Strength saving throw expertise', weight=10, stacks=False, on_apply=expertise_saving_throw('STR', 'Strength'))))
+all_tags.append((Tag('ExpSave DEX', effect_text='Add Dexterity saving throw expertise', weight=10, stacks=False, on_apply=expertise_saving_throw('DEX', 'Dexterity'))))
+all_tags.append((Tag('ExpSave CON', effect_text='Add Constitution saving throw expertise', weight=10, stacks=False, on_apply=expertise_saving_throw('CON', 'Constitution'))))
+all_tags.append((Tag('ExpSave WIS', effect_text='Add Wisdom saving throw expertise', weight=10, stacks=False, on_apply=expertise_saving_throw('WIS', 'Wisdom'))))
+all_tags.append((Tag('ExpSave INT', effect_text='Add Intelligence saving throw expertise', weight=10, stacks=False, on_apply=expertise_saving_throw('INT', 'Intelligence'))))
+all_tags.append((Tag('ExpSave CHA', effect_text='Add Charisma saving throw expertise', weight=10, stacks=False, on_apply=expertise_saving_throw('CHA', 'Charisma'))))
 
 all_tags = dict([(tag.name, tag) for tag in all_tags])

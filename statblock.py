@@ -213,7 +213,12 @@ class Statblock(object):
     @property
     def passive_perception(self) -> int:
         if self.__passive_perception is None:
-            return 10 + self.ability_scores['WIS'] + self.skills.get('Perception', 0)
+            if self.skills.get('Perception') is not None:
+                return 10 \
+                       + self.ability_scores['WIS'] \
+                       + int(substitute_values(self.skills.get('Perception', 0), self.get_substitutable_values()))
+            else:
+                return 10 + self.ability_scores['WIS']
         return self.__passive_perception
 
     @property
@@ -450,14 +455,14 @@ class Statblock(object):
                 save_texts = curr_line.split(',')
                 for save_text in save_texts:
                     save_name, save_mod = save_text.split()
-                    sb.saving_throws[save_name] = int(save_mod)
+                    sb.saving_throws[save_name] = save_mod
 
             if 'Skills' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Skills** ', '')
                 skill_texts = curr_line.split(',')
                 for skill_text in skill_texts:
                     skill_name, skill_mod = skill_text.split()
-                    sb.skills[skill_name] = int(skill_mod)
+                    sb.skills[skill_name] = skill_mod
 
             if 'Damage Vuln' in lines[0]:
                 curr_line = lines.pop(0).replace('> - **Damage Vulnerabilities** ', '')
@@ -611,17 +616,29 @@ class Statblock(object):
         lines.append('___')
 
         if self.saving_throws:
-            if any([v > 0 for v in self.saving_throws.values()]):
+            if any([v not in (0, None) for v in self.saving_throws.values()]):
                 save_line = '- **Saving Throws** '
-                save_line += ', '.join(['{} {}'.format(save, format_modifier(modifier)) for save, modifier in
-                                        sorted(self.saving_throws.items(), key=lambda x: x[0])])
+                formatted_saving_throws = []
+                for save, modifier in sorted(self.saving_throws.items(), key=lambda x: x[0]):
+                    if not modifier:
+                        continue
+                    if not isinstance(modifier, int):
+                        modifier = substitute_values(modifier, self.get_substitutable_values())
+                    formatted_saving_throws.append(f'{save} {format_modifier(modifier)}')
+                save_line += ', '.join(formatted_saving_throws)
                 lines.append(save_line)
 
         if self.skills:
-            if any([v > 0 for v in self.skills.values()]):
+            if any([v not in (0, None) for v in self.skills.values()]):
                 skill_line = '- **Skills** '
-                skill_line += ', '.join(['{} {}'.format(skill, format_modifier(modifier)) for skill, modifier in
-                                         sorted(self.skills.items(), key=lambda x: x[0])])
+                formatted_skills = []
+                for save, modifier in sorted(self.skills.items(), key=lambda x: x[0]):
+                    if not modifier:
+                        continue
+                    if not isinstance(modifier, int):
+                        modifier = substitute_values(modifier, self.get_substitutable_values())
+                    formatted_skills.append(f'{save} {format_modifier(modifier)}')
+                skill_line += ', '.join(formatted_skills)
                 lines.append(skill_line)
 
         if self.damage_vulnerabilities:

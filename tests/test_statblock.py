@@ -35,10 +35,10 @@ def test_statblock_md_parser(setup_statblock: statblock.Statblock):
     assert sb.ability_scores['STR'].value == 8
     assert sb.ability_scores['WIS'].value == 10
     assert sb.ability_scores['CHA'].value == 15
-    assert sb.saving_throws['Int'] == 2
-    assert sb.saving_throws['Cha'] == 3
-    assert sb.skills['Perception'] == -2
-    assert sb.skills['testSkill'] == 5
+    assert sb.saving_throws['Int'] == '+2'
+    assert sb.saving_throws['Cha'] == '+3'
+    assert sb.skills['Perception'] == '-2'
+    assert sb.skills['testSkill'] == '+5'
     assert sb.condition_immunities == ['testCondition', 'testCondition2']
     assert sb.blindsight == 10
     assert sb.tremorsense == 20
