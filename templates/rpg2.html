@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="width=device-width, initial-scale=1.0;" name="viewport">
+  <meta content="true" name="HandheldFriendly"/>
+  <meta content="320" name="MobileOptimized"/>
+  <meta charset="UTF-8">
+  <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+  <script crossorigin="anonymous"
+          integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+          src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script crossorigin="anonymous"
+          integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+          src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+  <script crossorigin="anonymous"
+          integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+          src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+  <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" rel="stylesheet">
+
+  <link
+      href="https://fonts.googleapis.com/css2?family=Alegreya+SC:ital,wght@0,400;0,700;1,400;1,700&family=Alegreya+Sans+SC:ital,wght@0,400;0,700;1,400;1,700&family=Alegreya+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Alegreya:ital,wght@0,400;0,700;1,400;1,700&family=Metal+Mania&display=swap"
+      rel="stylesheet">
+  <link href="../static/book/rpg2.css" rel="stylesheet">
+  <title>Cool RPG Name</title>
+</head>
+
+<body>
+<div class="container-fluid container-outer">
+
+  <div class="row">
+    <div class="col-lg-3" id="sidebarDiv">
+      <div class="row">
+        <div class="col ">
+<!--          <a href=""><img alt="God-Hunter Logo" src="../static/book/god-hunter-sm.png"-->
+<!--                          style="height: auto; width: 85%; margin: .75rem auto; display: block; max-width: 450px"></a>-->
+                    <a href=""><h1 class=" logo">Cool RPG Name</h1></a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+<div class="sidebar">
+    <ul class="sidebar-list-outer">
+
+<li><a aria-controls="content---about-md----" aria-expanded="True" class="sidebar-link sidebar-link-terminal " data-toggle="collapse"
+        href="#content---about-md----" role="button">
+        About
+    </a></li>
+
+
+<li class="sidebar-list-element">
+    <a aria-controls="content---game_rules" aria-expanded="False" class="collapsed sidebar-link sidebar-link-list" data-toggle="collapse"
+        href="#content---game_rules" role="button">
+        <i class="fa"></i> Game Rules (SRD)
+    </a>
+    <div class="collapse" id="content---game_rules">
+        <ul class="sidebar-list">
+
+<li class="sidebar-list-element">
+    <a aria-controls="content---game_rules---basics" aria-expanded="False" class="collapsed sidebar-link sidebar-link-list" data-toggle="collapse"
+        href="#content---game_rules---basics" role="button">
+        <i class="fa"></i> The Basics
+    </a>
+    <div class="collapse" id="content---game_rules---basics">
+        <ul class="sidebar-list">
+
+<li><a aria-controls="content---game_rules---basics---safety-md----" aria-expanded="False" class="sidebar-link sidebar-link-terminal collapsed" data-toggle="collapse"
+        href="#content---game_rules---basics---safety-md----" role="button">
+        Player Safety
+    </a></li>
+
+
+
+<li><a aria-controls="content---game_rules---basics---core-md----" aria-expanded="False" class="sidebar-link sidebar-link-terminal collapsed" data-toggle="collapse"
+        href="#content---game_rules---basics---core-md----" role="button">
+        The Game
+    </a></li>
+
+
+
+<li><a aria-controls="content---game_rules---basics---freeplay-md----" aria-expanded="False" class="sidebar-link sidebar-link-terminal collapsed" data-toggle="collapse"
+        href="#content---game_rules---basics---freeplay-md----" role="button">
+        Free-Play
+    </a></li>
+
+
+
+<li><a aria-controls="content---game_rules---basics---conflicts-md----" aria-expanded="False" class="sidebar-link sidebar-link-terminal collapsed" data-toggle="collapse"
+        href="#content---game_rules---basics---conflicts-md----" role="button">
+        Conflicts
+    </a></li>
+
+
+
+<li><a aria-controls="content---game_rules---basics---moves-html----" aria-expanded="False" class="sidebar-link sidebar-link-terminal collapsed" data-toggle="collapse"
+        href="#content---game_rules---basics---moves-html----" role="button">
+        Moves
+    </a></li>
+
+
+
+<li><a aria-controls="content---game_rules---basics---character-md----" aria-expanded="False" class="sidebar-link sidebar-link-terminal collapsed" data-toggle="collapse"
+        href="#content---game_rules---basics---character-md----" role="button">
+        Character Creation
+    </a></li>
+
+
+
+<li><a aria-controls="content---game_rules---basics---classes-md----" aria-expanded="False" class="sidebar-link sidebar-link-terminal collapsed" data-toggle="collapse"
+        href="#content---game_rules---basics---classes-md----" role="button">
+        Classes
+    </a></li>
+
+        </ul>
+    </div>
+</li>
+
+
+
+<li><a aria-controls="content---game_rules---changelog-md----" aria-expanded="False" class="sidebar-link sidebar-link-terminal collapsed" data-toggle="collapse"
+        href="#content---game_rules---changelog-md----" role="button">
+        Changelog
+    </a></li>
+
+        </ul>
+    </div>
+</li>
+
+
+<li><a aria-controls="content---resources-md----" aria-expanded="False" class="sidebar-link sidebar-link-terminal collapsed" data-toggle="collapse"
+        href="#content---resources-md----" role="button">
+        Resources
+    </a></li>
+
+
+<li><a aria-controls="content---appendix_n-md----" aria-expanded="False" class="sidebar-link sidebar-link-terminal collapsed" data-toggle="collapse"
+        href="#content---appendix_n-md----" role="button">
+        Inspirations & Thanks
+    </a></li>
+
+    </ul>
+</div>
+</div>
+      </div>
+
+      <div class="row">
+        <div class="col ">
+          <div class="custom-control custom-checkbox form-control-lg ml-auto mr-auto">
+            <input class="custom-control-input" id="nightModeCheckbox" type="checkbox">
+            <label class="custom-control-label" for="nightModeCheckbox" style="font-size: 1rem">Night Mode</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-9 h-100 mh-100">
+      <div id="contentDiv">
+
+
+<div class="collapse container-fluid main-content no-transition show" id="content---about-md----">
+   <div class="row"><div class="col section-title">About</div></div>
+   <div class="row"><div class="col section-text"><h2>Ideas</h2>
+<h3>Feel</h3>
+<ul>
+<li>Conflict, whether physical or social, is driven by emotions, beliefs, and relationships. Mechanics for verbal and physical combat are similar and intertwined.</li>
+<li>When conflicts happen, they are usually between two characters or two small groups of characters. The stakes of the conflict are mostly set up front, and there are consequences for not adhering to those terms when the fight is decided.</li>
+<li>Push-and-pull for every action.</li>
+<li>Elemental martial arts!</li>
+<li>PbtA-ish, Burning Wheel Fight!-ish, Burning Wheel Duel of Wits-ish. Emphasis on the '-ish'</li>
+</ul>
+<h3>Mechanics</h3>
+<p>See <a aria-controls="content---game_rules---basics---core-md----" aria-expanded="false"
+class="collapsed" data-toggle="collapse" href="#content---game_rules---basics---core-md----" role="button">here</a>.</p></div></div>
+</div>
+
+
+
+<div class="collapse container-fluid main-content no-transition " id="content---game_rules---basics---safety-md----">
+   <div class="row"><div class="col section-title">Player Safety</div></div>
+   <div class="row"><div class="col section-text"><p><span class="author-comment">&amp;&amp;todo: update from god-hunter&amp;&amp;</span></p>
+<p>We play RPGs with both friends and strangers, and with either we should promote the well-being of the people at the table over all else. There are times when the players or the GM may feel stressed or unsafe or otherwise may not be enjoying themselves. Use safety tools when playing God-Hunter as additional means and reminders to communicate with each other, and keep in mind that the use of safety tools is not an excuse to push each other's boundaries.</p>
+<p>Here are brief introductions on a few to get you started, along with some further reading to find the tools that best suit your group.</p>
+<h2>Session Zero and Lines &amp; Veils</h2>
+<p>The first time you play God-Hunter, discuss the tone and subjects of the game as a group. Introduce your safety tools. Create <strong>lines &amp; veils</strong>. Choose your <strong>campaign troubles</strong> (see <a aria-controls="content---game_rules---downtime---portents-md----" aria-expanded="false"
+class="collapsed" data-toggle="collapse" href="#content---game_rules---downtime---portents-md----" role="button">Portents</a>).</p>
+<p><strong>Lines</strong> are hard limits. The subject of a line doesn't show up in the game at all, even in the background or in reference.</p>
+<p><strong>Veils</strong> are soft limits. These things can happen "off-screen"; they are spoken about or we "fade to black" when they occur, but we don't depict or roleplay them.</p>
+<p>You can adjust your lines &amp; veils as you play.</p>
+<h2>The X-Card</h2>
+<p>If you're playing in person, mark an index card with an 'X' and place it where everyone can reach it. During play, when someone taps the X-Card (or types an 'X' in chat while playing online) or asks to 'X-Card' something, we skip over or undo whatever's going on right now. No explanation needed. If the person that used the X-Card is comfortable discussing the content after the session, they may bring it up if they like.</p>
+<h2>Breaks and Checking In</h2>
+<p>After a set amount of time or when someone asks for a break, take one. Ask each other how you're doing regularly, including before and after the session.</p>
+<h2>Further Reading</h2>
+<p><a href="bit.ly/ttrpgsafetytoolkit">Check out the TTRPG Safety Toolkit!</a></p>
+<p>The TTRPG Safety Toolkit is a resource created by Kienna Shaw and Lauren Bryant-Monk. The TTRPG Safety Toolkit is a compilation of safety tools that have been designed by members of the tabletop roleplaying games community for use by players and GMs at the table. You can find it at bit.ly/ttrpgsafetytoolkit.</p>
+<p><a href="https://rpg.stackexchange.com/questions/30906/what-do-the-terms-lines-and-veils-mean">Lines and Veils by Ron Edwards</a></p>
+<p><a href="http://tinyurl.com/x-card-rpg">The X-Card by John Stavropoulos</a></p></div></div>
+</div>
+
+
+
+<div class="collapse container-fluid main-content no-transition " id="content---game_rules---basics---core-md----">
+   <div class="row"><div class="col section-title">The Game</div></div>
+   <div class="row"><div class="col section-text"><p>Game is in two phases: <span class="game-term">free-play</span> and <span class="game-term">conflicts</span>.</p></div></div>
+</div>
+
+
+
+<div class="collapse container-fluid main-content no-transition " id="content---game_rules---basics---freeplay-md----">
+   <div class="row"><div class="col section-title">Free-Play</div></div>
+   <div class="row"><div class="col section-text"><h3>Attributes in Free-Play</h3>
+<p>Your attributes determine how many dice you roll when using moves in free-play.</p>
+<ul>
+<li><span class="game-element game-element-sky"><i class="fas fa-feather-alt"></i></span>  <span class="game-term">Sky</span>—perception, detachment from your own desires and fears</li>
+<li><span class="game-element game-element-wind"><i class="fas fa-wind"></i></span>  <span class="game-term">Wind</span>—grace in movement and speech</li>
+<li><span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  <span class="game-term">Fire</span>—passion and all-out offense</li>
+<li><span class="game-element game-element-water"><i class="fas fa-water"></i></span>  <span class="game-term">Water</span>—adaptability and understanding of others</li>
+<li><span class="game-element game-element-earth"><i class="fas fa-gem"></i></span>  <span class="game-term">Earth</span>—endurance and strength in body and mind</li>
+</ul>
+<h3>Obstacles &amp; Success</h3>
+<ul>
+<li>When you attempt something in free-play, you roll against an <span class="game-term">obstacle</span>. This is the number of <span class="game-term">successes</span> (rolls of 4+) you need to fully succeed.<ul>
+<li><span class="game-term">Obstacle 1:</span> A routine task.</li>
+<li><span class="game-term">Obstacle 2:</span> A difficult task.</li>
+<li><span class="game-term">Obstacle 3:</span> A challenging task.</li>
+<li><span class="game-term">Obstacle 4:</span> An impossible task.</li>
+</ul>
+</li>
+<li>If you <strong>meet or exceed</strong> the obstacle, you succeed.</li>
+<li>If you get <strong>at least one success but fall short of the obstacle</strong>, another player chooses one:<ul>
+<li>You don't succeed.</li>
+<li>You succeed, but with additional costs or consequences.</li>
+</ul>
+</li>
+<li>If you <strong>don't meet the obstacle</strong>, you don't succeed and must deal with additional costs or consequences.</li>
+</ul></div></div>
+</div>
+
+
+
+<div class="collapse container-fluid main-content no-transition " id="content---game_rules---basics---conflicts-md----">
+   <div class="row"><div class="col section-title">Conflicts</div></div>
+   <div class="row"><div class="col section-text"><p>When a fight or debate is nigh, we switch to the <span class="game-term">conflict phase</span>.</p>
+<h3>Stakes &amp; Manner</h3>
+<p>All players must agree what the resolution of this conflict will decide. Each side should state what they'll get if they win. All players must agree that stakes are plausible within the fiction. </p>
+<ul>
+<li>If the winning side wins with no wounds, they owe no concessions to the losing side.</li>
+<li>If the winning side wins with 1 or 2 wounds, they owe a <strong>minor concession</strong>.</li>
+<li>If the winning side wins with 3 or more wounds, they owe a <strong>major concession</strong>.</li>
+</ul>
+<blockquote>
+<p>The Lord of Flames and the Hero are fighting for the fate of Capital City. If the Lord of Flames wins, the he destroys Capital City utterly and leaves the Hero for dead. If the Hero wins, Capital City is unharmed and the Lord of Flames is captured. </p>
+<p>When the battle is said and done, the Hero is victorious, but they took 3 wounds in the process, thus they owe the Lord of Flames a major concession. Capital City is safe for now, but the Lord of Flames slips away.</p>
+<p>The Princess and the Monk are debating who should have the right to explore the Ancestral Shrine recently uncovered.</p>
+</blockquote>
+<p>All players must agree on whether the conflict is <span class="game-term">violent</span>. If not, you can't use any moves marked as <span class="game-term">violent</span> until the <span class="game-term">Escalate</span> move is used. Similarly, a move marked as <span class="game-term">nonviolent</span> can't be used in a violent conflict. All other moves may be used in both violent and nonviolent conflicts. <span class="author-comment">&amp;&amp;How should deescalating work?&amp;&amp;</span></p>
+<h3>The Build-Up</h3>
+<p>How you feel going into a fight or argument affects your starting <span class="game-term">pool</span>.</p>
+<p>You have 3 <span class="game-term">build-ups</span>. Spend 1 each to describe a scene before the fight, a memory you recall, or a belief you're focusing on. For each, sow <span class="game-element game-element-wind"><i class="fas fa-wind"></i></span>  / <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  / <span class="game-element game-element-water"><i class="fas fa-water"></i></span>  / <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span> —OR—reap <span class="game-element game-element-any"><i class="fas fa-circle"></i></span>  and sow <span class="game-element game-element-sky"><i class="fas fa-feather-alt"></i></span> —OR—reset a bond. Some examples:</p>
+<ul>
+<li>Do you recall long hours of training where you honed rhetoric or mastered obstacle courses? Sow a <span class="game-element game-element-wind"><i class="fas fa-wind"></i></span>  <span class="game-term">Wind</span>.</li>
+<li>Do your friends cheer your name from the stands, reminding you what you're fighting for? You've got a <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  <span class="game-term">Fire</span>.</li>
+<li>Did you spend time researching your foes, preparing yourself for anything they might throw at you? Take a <span class="game-element game-element-water"><i class="fas fa-water"></i></span>  <span class="game-term">Water</span>.</li>
+<li>Does your mentor take you aside to reassure you? You've got an <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span>  <span class="game-term">Earth</span> to work with.</li>
+<li>Did you take the time to meditate on everything you've learned? Reap <span class="game-element game-element-any"><i class="fas fa-circle"></i></span>  <span class="game-term">Any</span> element and sow one <span class="game-element game-element-sky"><i class="fas fa-feather-alt"></i></span>  <span class="game-term">Sky</span>, the element needed to create the most powerful effects.</li>
+<li><span class="author-comment">&amp;&amp;bond reset example&amp;&amp;</span></li>
+</ul>
+<h3>The Conflict</h3>
+<ul>
+<li>You accrue elemental resources (5 elements: sky, wind, fire, water, earth), using certain moves to add them to your <span class="game-term">pool</span> (<span class="game-term">sowing</span>)</li>
+<li>You spend those resources with other moves (<span class="game-term">reaping</span>)</li>
+<li>Your attributes (sky, wind, fire, water, earth) determine how many of a particular element you can have in your <span class="game-term">pool</span>.</li>
+<li>If you would ever sow more of an element than you can hold in your pool, you are <span class="game-term">unbalanced</span>. Your opponent may make an extra offensive move immediately, and you lose any excess elements.</li>
+</ul>
+<h3>Turns, Attacking &amp; Defending</h3>
+<p><span class="author-comment">&amp;&amp;Definitely turn-based, details are iffy.&amp;&amp;</span></p>
+<ul>
+<li>You take turns in the fight. Some moves give you <span class="game-term">initiative</span>, letting you take another turn right after.</li>
+<li>Starting <span class="game-term">initiative</span> is determined by rolling your <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  + <span class="game-element game-element-wind"><i class="fas fa-wind"></i></span>  attributes. Reroll ties.</li>
+<li>When it's your turn, you make a move. </li>
+<li>If you make move with the <span class="game-term">Defend</span> tag on your turn, it adds bonus dice to your next defense roll and usually sows an element, too. These extra dice are lost after you're attacked or at the start of your next turn.</li>
+<li>If you make a move with the <span class="game-term">Attack</span> tag, declare you are doing so and which opponent(s) it will affect, keeping which attack you're using a secret.<ul>
+<li>Your opponent chooses a move with the <span class="game-term">Defend</span> tag in secret. The element of a defense is always determined by <em>this</em> move.</li>
+<li>You both reveal your moves simultaneously and resolve any effects.</li>
+<li>You roll dice equal to the number next to the <span class="game-term">Attack</span> tag. Each roll of 4+ is a success.</li>
+<li>Your opponent rolls dice equal to the number next to the <span class="game-term">Defend</span> tag. Each roll of 4+ is a success.</li>
+<li>For each success you have above your opponent, you deal them a <span class="game-term">wound</span>. Your opponent records these and their fictional nature.</li>
+</ul>
+</li>
+</ul>
+<h3>Turns V2</h3>
+<ul>
+<li>Each round has 3 volleys</li>
+<li>Each player chooses 3 cards (duplicates ok) to play facedown</li>
+<li>Each volley, each player reveals their next card, resolving effects simultaneously</li>
+</ul>
+<p><span class="author-comment">&amp;&amp;Maybe it would be more interesting/fun to be able to choose from those 3 each volley instead of going in set order&amp;&amp;</span></p>
+<h4>Roleplay Die</h4>
+<ul>
+<li>Each time cards are revealed, players describe what they're doing. If their roleplay fits the descriptions and themes in their cards, they take +1d to their roll. You don't need to be master orator or duelist yourself--if the you make a sincere and deliberate attempt, you get the die.</li>
+</ul>
+<h3>Wounds</h3>
+<ul>
+<li>Wounds reduce each of the maximum number of elements in your pool. Example:<ul>
+<li>The highest value for any stat is 5.</li>
+<li>Your highest stat is <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  3. Your next-highest stat is <span class="game-element game-element-water"><i class="fas fa-water"></i></span>  2.</li>
+<li>Your first wound you take lowers your max from 5 to 4, which doesn't affect any of your stats.</li>
+<li>Your second wound you take lowers your max from 4 to 3, which doesn't affect any of your stats.</li>
+<li>Your third wound lowers your max from 3 to 2. You can only hold 2 <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  instead of 3, and if you had 3 <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  in your pool already, you lose one.</li>
+<li>Your fourth wound lowers your max from 2 to 1. You can only hold 1 <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  and 1 <span class="game-element game-element-water"><i class="fas fa-water"></i></span>  now. If you had 2 <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span> , lose 1 <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span> . If you had 2 <span class="game-element game-element-water"><i class="fas fa-water"></i></span> , lose 1 <span class="game-element game-element-water"><i class="fas fa-water"></i></span> .</li>
+<li>Your fifth wound knocks you out of the conflict.</li>
+</ul>
+</li>
+<li>Each time you take a wound, record its nature. <em>Burns? Damaged reputation? Bruised ribs? Bruised ego?</em></li>
+<li>With 1 or 2 wounds, you recover quickly on your own.</li>
+<li>With 3 or 4 wounds, </li>
+<li>With 5 wounds, you're unconscious. Someone must come to your aid. Who is it?</li>
+</ul>
+<h3>Conflict Moves</h3>
+<ul>
+<li>Use moves to sow elements, storing them in your pool. The number next to the element icon tells you how many of that element you gain. If the number is a variable like 'x', the move's description will tell you what to do with it. </li>
+<li>The maximum you can sow of a particular element is given by your stats.</li>
+<li>Use moves to reap elements, spending them from your pool. The number next to the element icon tells you spend. If the number is a variable like 'x', you choose how many of that element to reap unless the move's description says otherwise.</li>
+</ul>
+<p>See <a aria-controls="content---game_rules---basics---moves-html----" aria-expanded="false"
+class="collapsed" data-toggle="collapse" href="#content---game_rules---basics---moves-html----" role="button">moves</a>.</p>
+<h4>Misc</h4>
+<ul>
+<li>An element symbol without a number next to it means <strong>1</strong> of that element.</li>
+<li>If you ever need to roll 0 or negative dice, roll 2d6 and take the lowest instead.</li>
+<li>If after applying modifiers you ever need to sow or reap a negative amount, sow or reap 0 instead.</li>
+<li>If a move both sows and reaps, that reap cost can't be paid by an elements sown by that move that turn.</li>
+<li><span class="game-element game-element-any"><i class="fas fa-circle"></i></span>  represents <strong>any</strong> element. If a move tells you to sow <span class="game-element game-element-any"><i class="fas fa-circle"></i></span> , choose any element to add to your pool. If a move tells you to reap <span class="game-element game-element-any"><i class="fas fa-circle"></i></span> , pick any element from your pool to spend.</li>
+</ul></div></div>
+</div>
+
+
+
+<div class="collapse container-fluid main-content no-transition " id="content---game_rules---basics---moves-html----">
+   <div class="row"><div class="col section-title">Moves</div></div>
+   <div class="row"><div class="col section-text"><div class="container-fluid">
+  <div class="row text-center justify-content-center align-center">
+
+      <div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Perceive</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-any"><i class="fas fa-circle"></i></span> </span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"><span class="game-element game-element-sky"><i class="fas fa-feather-alt"></i></span>  Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2017/07/30/21/51/eye-2555760_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Defend <span class="game-element game-element-sky"><i class="fas fa-feather-alt"></i></span> .</strong> You consider yourself, your opposition, and your environment carefully, trying to see it all for what it really is.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Dance</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap </span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"><span class="game-element game-element-wind"><i class="fas fa-wind"></i></span>  Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2017/03/03/17/28/texture-2114505_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Defend <span class="game-element game-element-wind"><i class="fas fa-wind"></i></span> .</strong> You gracefully skirt around blows both physical and verbal, waiting for the right moment.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Flow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap </span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"><span class="game-element game-element-water"><i class="fas fa-water"></i></span>  Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2014/03/13/14/20/spiral-286596_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Defend <span class="game-element game-element-water"><i class="fas fa-water"></i></span> .</strong> You give way to your opponent's offense, redirecting their momentum into your own.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Simmer</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap </span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"><span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2015/09/27/19/50/fire-heart-961194_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Defend <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span> .</strong> You focus on your inner emotions, letting your love, passion, or anger build, turning pain into power.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Stand</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap </span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"><span class="game-element game-element-earth"><i class="fas fa-gem"></i></span>  Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2018/10/01/20/38/meteora-3717220_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Defend <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span> .</strong> You maintain your position in defense of yourself or others, no matter the jabs or gibes.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Harmonize</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span style='display: inline-block; transform: scale(.7);'><span class="game-element game-element-sky"><i class="fas fa-feather-alt"></i></span> <span class="game-element game-element-wind"><i class="fas fa-wind"></i></span> <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span> <span class="game-element game-element-water"><i class="fas fa-water"></i></span> <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span> </span></span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2015/12/09/01/02/psychedelic-1084082_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class="">You win the conflict.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Escalate</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span> </span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2017/05/29/19/13/fire-and-water-2354583_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class="">Conflict becomes <strong>violent</strong>. You owe a <strong>major concession</strong> if you win. Your opponent owes <strong>no concessions</strong> if you lose.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"><span class="game-element game-element-nonviolent"><i class="fas fa-dove"></i></span>  Nonviolent</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Flametongue</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span> </span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"><span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2015/10/23/07/26/banner-1002449_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Attack <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span> </strong>. You browbeat someone or strike with quick blows. If your opponent defends with <span class="game-element game-element-water"><i class="fas fa-water"></i></span>  / <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span> , <strong>sow <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  -1</strong>. If you used this move last turn, <strong>sow <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  +1</strong>.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Stoke</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap </span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2016/04/30/14/29/flame-1363003_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class="">You goad an opponent, stirring anger or fear. You sow <span class="game-element game-element-any"><i class="fas fa-circle"></i></span>  and they sow <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span> .</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Sunstrike</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-sky"><i class="fas fa-feather-alt"></i></span> <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  2</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2014/10/04/15/07/sunset-473604_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Attack <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  3</strong>. A devastating blow from above. If your opponent defends with <span class="game-element game-element-water"><i class="fas fa-water"></i></span>  / <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span> , treat their rolls as failures.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"><span class="game-element game-element-violent"><i class="fas fa-skull"></i></span>  Violent</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Dragon's Breath</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-sky"><i class="fas fa-feather-alt"></i></span>  <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  X</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2017/03/16/07/43/fire-2148381_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Attack <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  X+1.</strong> Unleash everything you've got. You must reap all <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  in your pool.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Smokescreen</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-wind"><i class="fas fa-wind"></i></span>  <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span> </span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Defend <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  2</strong>. You obfuscate your points or movements. Next turn, <strong>Defend %air% 2</strong>.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Counter</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-water"><i class="fas fa-water"></i></span>  X</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Attack <span class="game-element game-element-water"><i class="fas fa-water"></i></span>  X-1</strong>. <strong>Defend <span class="game-element game-element-water"><i class="fas fa-water"></i></span>  X-1</strong>. You parry your opponent's words or blows, then strike at an opening.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Flyby</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-wind"><i class="fas fa-wind"></i></span>  X</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Attack <span class="game-element game-element-wind"><i class="fas fa-wind"></i></span>  1</strong>. <strong>Defend <span class="game-element game-element-wind"><i class="fas fa-wind"></i></span>  X</strong>. You barb or strike your opponent indirectly while evading their own blows.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Mountain Stance</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span>  2</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Defend <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span>  2.</strong> If you're attacked, <strong>sow %air%</strong>. Otherwise, <strong>sow <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span> </strong>.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"><span class="game-element game-element-violent"><i class="fas fa-skull"></i></span>  Violent</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Eruption</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  X <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span>  Y <span class="game-element game-element-sky"><i class="fas fa-feather-alt"></i></span>  1</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Attack <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  X + Y + 1.</strong> You abandon your position to throw a tantrum or swing wildly. Take <strong>1 wound</strong>.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Boulder Toss</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span>  3</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Attack <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span>  3.</strong> A hefty strike or accusation which knocks your opponent senseless. If this wounds your opponent, they must <strong>reap</strong> (your choice) <span class="game-element game-element-any"><i class="fas fa-circle"></i></span> .</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Evaporate</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  X</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class="">You go after your opponent's arguments or motions directly. Your opponent must <strong>reap</strong> <span class="game-element game-element-water"><i class="fas fa-water"></i></span>  X.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Quench</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-water"><i class="fas fa-water"></i></span>  X</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class="">You put a point or vector of attack down. Your opponent must <strong>reap</strong> <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  X.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Pierce</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-sky"><i class="fas fa-feather-alt"></i></span>  4</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2016/05/24/16/48/mountains-1412683_1280.png');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Attack <span class="game-element game-element-sky"><i class="fas fa-feather-alt"></i></span>  2</strong>. You ignore all ceremony and get to the heart of the matter. If your opponent defended, treat their rolls as failures.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">General</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Wall of Earth</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span>  X</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"><span class="game-element game-element-earth"><i class="fas fa-gem"></i></span>  X Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2015/12/02/10/24/fire-1073217_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Defend <span class="game-element game-element-earth"><i class="fas fa-gem"></i></span>  X.</strong> You stonewall or raise up a wall of stone between you and your opponent.</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">Earth-Shaper</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-4-xl mx-1">
+  <div
+      style="" class="card-border">
+    <div class="card-full" style="height: 100%">
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 10%">
+        <div class="col-12 text-center inner-col card-name h-100"><span class="">Wave of Flame</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 10%">
+        <div class="col-6 text-left card-reap inner-col h-100" style=""><span class="edge-text; text-nowrap">Reap <span class="game-element game-element-wind"><i class="fas fa-wind"></i></span>  <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  X</span>
+        </div>
+        <div class="col-6 text-left card-sow inner-col h-100" style=""><span class="edge-text"> Sow</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-name h-100"
+             style="background-image: url('https://cdn.pixabay.com/photo/2015/12/02/10/24/fire-1073217_1280.jpg');
+                        background-size: 100%; background-position: 50% 50%"></div>
+      </div>
+
+      <div class="row inner-row " style="display:flex;align-items:center; height: 35%">
+        <div class="col-12 inner-col card-text h-100"><span class=""><strong>Attack <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  X.</strong> You unleash waves of fire or invectives at all around you. This attack affects ALL opponents (you only roll once).</span>
+        </div>
+      </div>
+
+      <div class="row inner-row" style="width: 285px; height: 10%">
+        <div class="col-6 card-playbook inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text">Fire-Shaper</span></div>
+        <div class="col-6 card-violence inner-col"
+             style="display:flex;align-items:center;"><span
+            class="edge-text"></span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+    </div>
+  </div></div></div>
+</div>
+
+
+
+<div class="collapse container-fluid main-content no-transition " id="content---game_rules---basics---character-md----">
+   <div class="row"><div class="col section-title">Character Creation</div></div>
+   <div class="row"><div class="col section-text"></div></div>
+</div>
+
+
+
+<div class="collapse container-fluid main-content no-transition " id="content---game_rules---basics---classes-md----">
+   <div class="row"><div class="col section-title">Classes</div></div>
+   <div class="row"><div class="col section-text"><p>Will be super simple if they exist at all? Here's an attempt, under the assumptions that</p>
+<ul>
+<li>only "shapers" are actually conjuring and manipulating physical elements</li>
+<li>shapers only control one element</li>
+</ul>
+<h3>Fire-Shaper</h3>
+<p>In <span class="game-term">free-play</span>, you can address challenges by conjuring small fires with the motions of your hands. When you do so, you may roll <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span> . </p>
+<p>In <span class="game-term">conflicts</span>, your speech is fierce and your strikes are enhanced by real flames. Whenever you roll an <span class="game-term">attack</span> with <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span> , you take an extra die. You also gain the following move:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Move</th>
+<th align="center">Violent</th>
+<th align="center">Sow</th>
+<th align="center">Reap</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Wave of Flame</td>
+<td align="center">Yes</td>
+<td align="center"></td>
+<td align="center"><span class="game-element game-element-wind"><i class="fas fa-wind"></i></span>  1 <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  x</td>
+<td align="left"><strong>Attack <span class="game-element game-element-fire"><i class="fas fa-fire"></i></span>  x</strong>. This attack affects ALL opponents. You roll only once.</td>
+</tr>
+</tbody>
+</table>
+<h3>Water-Shaper</h3>
+<h3>Earth-Shaper</h3>
+<h3>Wind-Shaper</h3>
+<h3>Warrior</h3>
+<p>In <span class="game-term">free-play</span>, you X.</p>
+<h3>Orator</h3>
+<h3>Sage</h3>
+<h3>Rogue</h3>
+<h2>Bonds/Relationships</h2>
+<p><span class="author-comment">&amp;&amp;PCs, NPCs, places, background, beliefs etc. give you bonus dice somehow probably. You have a finite list and you invoke them specifically during a conflict AFTER&amp;&amp;?&amp;&amp; a roll is made to try and change the outcome by digging in to your beliefs. Conflicts change your bonds&amp;&amp;</span></p></div></div>
+</div>
+
+
+
+<div class="collapse container-fluid main-content no-transition " id="content---game_rules---changelog-md----">
+   <div class="row"><div class="col section-title">Changelog</div></div>
+   <div class="row"><div class="col section-text"><p>This early in the game's development, changes are going to be wild and frequent, and some may go undocumented. Versioning should goes as follows: "Alpha/Beta/Release.Major.Minor"</p>
+<p><strong>Alpha/Beta/Release.</strong> Alpha: feature incomplete. Beta: mostly feature complete, polishing. Release: near publication-ready.</p>
+<p><strong>Major.</strong> Breaking changes or large content. Usually a public release.</p>
+<p><strong>Minor.</strong> Tweaks. Usually a private release.</p>
+<h2>Changelog</h2>
+<h4>Alpha.0.2</h4>
+<ul>
+<li>Rookie class playbook added.</li>
+<li>Priest class playbook now in a playable state.</li>
+<li>Sage class has some new abilities, not in playable state yet.</li>
+<li>Poet's Didactic Riddle material trigger is now only once per session.</li>
+<li>Warden's Evocation Ritual ability has been moved to the Priest. Open to suggestions for replacements. Maybe some kind of "Rage"?</li>
+<li>Warden's unique XP trigger is now "You addressed a challenge with instinct or animal ferocity."</li>
+<li>Warden's starting actions are now 1 each in Gallop, Survey, and Commune. If you're playing a Warden, keep your current ratings or adjust yours to match, your choice.</li>
+<li>Mount harm now works like this: You get 1 box to start, 1 box for barding, and 1 box for the "Tough" characteristic (now called "+1 Harm").</li>
+<li>All supernatural entities exude an aura of awe or terror to those who observe them directly. Previously, god-hunters were immune to this effect, while non-hunters needed to make a roll. Now, god-hunters must resist the aura or make the roll.</li>
+</ul>
+<p>Copied from daeva page:</p>
+<blockquote>
+<p>Like many magical entities, they inflict supernatural awe and terror. Anyone without a Golden Arrow must make a fortune roll using their quality or Tier when coming in direct contact with a daeva. If their quality or Tier is lower than the daeva's, they take <span class="game-term">-1 result level</span> (1-3 minimum). People with a Golden Arrow take <span class="game-term">+1 result level</span>.</p>
+<ul>
+<li><strong>Critical:</strong> They're immune to this entity's aura for this scene.</li>
+<li><strong>6:</strong> They can bite back their fear long enough to act.</li>
+<li><strong>4-5:</strong> They hesitate. Their effect is reduced or they're left open for attack.</li>
+<li><strong>1-3:</strong> They stand and drool or run screaming.</li>
+</ul>
+<p>PCs may resist this aura with <span class="game-term">Resolve</span> or use special armor (if applicable) as normal. If they choose not to, they roll using the caravan's Tier.</p>
+</blockquote>
+<p><span class="author-comment">&amp;&amp;<strong>To Yak Attack:</strong> Overall, XP is going much faster than I would like, as Blades in the Dark's progression was tuned for short campaigns. For now, you and the caravan can earn only 1 XP per item (instead of possibly 2). Big, sweeping changes to progression (and possibly the dragonsilk economy) are probably going to happen, so brace yourselves for a "soft reset" in the future. Thanks for your understanding in dealing with my playtest crap. Anyone who wants to brainstorm with me is welcome.&amp;&amp;</span></p></div></div>
+</div>
+
+
+
+<div class="collapse container-fluid main-content no-transition " id="content---resources-md----">
+   <div class="row"><div class="col section-title">Resources</div></div>
+   <div class="row"><div class="col section-text"><h2>Character Sheets</h2>
+<p><strong><a href="https://docs.google.com/spreadsheets/d/1db75dVwHxCOlIGVMMutj6yNglIzL1Mf-N2-UfRn9ews/edit?usp=sharing">Everything can be found at this Google Sheet.</a></strong></p>
+<ul>
+<li>Mechanics Cheatsheet</li>
+<li>Caravan Playbook</li>
+<li>Travel Sheet</li>
+<li>Factions Sheet</li>
+<li>Baghatur Class Playbook</li>
+<li>Artificer Class Playbook</li>
+<li>Poet Class Playbook</li>
+<li>Stalker Class Playbook</li>
+<li>Warden Class Playbook</li>
+<li>Sage Class Playbook (not ready for testing)</li>
+<li>Priest Class Playbook (not ready for testing)</li>
+</ul>
+<h2>Playlists</h2>
+<p>Unofficial soundtracks for your God-Hunter prep.</p></div></div>
+</div>
+
+
+
+<div class="collapse container-fluid main-content no-transition " id="content---appendix_n-md----">
+   <div class="row"><div class="col section-title">Inspirations & Thanks</div></div>
+   <div class="row"><div class="col section-text"><h4>Books</h4>
+<h4>Art</h4>
+<h4>Movies</h4>
+<h4>Tabletop Games</h4>
+<ul>
+<li><em>The Burning Wheel</em>, Luke Crane</li>
+<li><em>Magic: the Gathering</em>, Wizards of the Coast</li>
+</ul>
+<h4>Video Games</h4>
+<ul>
+<li><em>World of Warcraft: Wrath of the Lich King</em> (Death Knight runes!), Blizzard Entertainment</li>
+</ul>
+<h4>TV</h4>
+<ul>
+<li><em>Avatar: The Last Airbender</em>, Nickelodeon</li>
+<li><em>The Legend of Korra</em>, Nickelodeon</li>
+</ul>
+<h4>Music</h4>
+<h2>Thanks</h2></div></div>
+</div>
+</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+
+    $('a[href^="#"]').click(function () {
+        // if ($.attr(this, 'href').endsWith('StoryCollapse'))
+        //     return true;
+        if ($.attr(this, 'href').endsWith('----')) // ---- signals this is a terminal link
+            window.location.hash = '!' + $.attr(this, 'href').substr(1);
+        return true;
+    });
+
+    $('.diagram').click(function () {
+        $('.diagram').toggleClass('paused');
+        return true;
+    });
+
+    $('body').click(function (e) {
+        if (!$(e.target).hasClass('tooltip-anchor'))
+            $('.tooltip').tooltip('hide');
+        return true;
+    });
+
+    $(document).ready(function () {
+        const toggleSwitch = document.querySelector('#nightModeCheckbox');
+        const currentTheme = localStorage.getItem('theme');
+
+        if (currentTheme) {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            if (currentTheme === 'dark') {
+                toggleSwitch.checked = true;
+            }
+        }
+
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        toggleSwitch.addEventListener('change', switchTheme, false);
+
+        const mainContentCollapses = $('.main-content.collapse');
+        mainContentCollapses.on('show.bs.collapse', function (e) {
+            if ($(e.target).hasClass('main-content'))
+                $('.main-content.collapse.show').collapse('hide');
+        });
+
+        if (location.hash != null && location.hash !== "") {
+            $(location.hash.replace('!', '')).collapse('show');
+            let split_hash = location.hash.replace('#!', '').split('---');
+            for (let i = 0; i < split_hash.length; i++) {
+                let collapseId = '#' + split_hash.slice(0, i + 1).join('---');
+                $(collapseId).collapse('show');
+            }
+        }
+
+        window.addEventListener('popstate', function (e) {
+            console.log('foo');
+            if (location.hash != null && location.hash !== "") {
+                $(location.hash.replace('!', '')).collapse('show');
+                let split_hash = location.hash.replace('#!', '').split('---');
+                for (let i = 0; i < split_hash.length; i++) {
+                    let collapseId = '#' + split_hash.slice(0, i + 1).join('---');
+                    $(collapseId).collapse('show');
+                }
+            }
+        });
+    });
+</script>

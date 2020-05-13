@@ -20,6 +20,10 @@ def book():
     with open('templates/book.html', encoding='utf-8') as file_handle:
         return file_handle.read()
 
+@app.route('/rpg2')
+def rpg2():
+    with open('templates/rpg2.html', encoding='utf-8') as file_handle:
+        return file_handle.read()
 
 def parse_args(args):
     global DEBUG
